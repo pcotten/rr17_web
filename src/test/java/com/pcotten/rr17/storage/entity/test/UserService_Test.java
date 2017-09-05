@@ -19,20 +19,20 @@ import com.pcotten.rr17.model.Meal;
 import com.pcotten.rr17.model.MealPlan;
 import com.pcotten.rr17.model.Recipe;
 import com.pcotten.rr17.model.User;
-import com.pcotten.rr17.storage.entity.CookbookService;
-import com.pcotten.rr17.storage.entity.ImageService;
-import com.pcotten.rr17.storage.entity.IngredientService;
-import com.pcotten.rr17.storage.entity.InstructionService;
-import com.pcotten.rr17.storage.entity.MealPlanService;
-import com.pcotten.rr17.storage.entity.MealService;
-import com.pcotten.rr17.storage.entity.RecipeService;
-import com.pcotten.rr17.storage.entity.UserService;
-import com.pcotten.rr17.storage.entity.impl.CookbookServiceImpl;
-import com.pcotten.rr17.storage.entity.impl.ImageServiceImpl;
-import com.pcotten.rr17.storage.entity.impl.MealPlanServiceImpl;
-import com.pcotten.rr17.storage.entity.impl.MealServiceImpl;
-import com.pcotten.rr17.storage.entity.impl.RecipeServiceImpl;
-import com.pcotten.rr17.storage.entity.impl.UserServiceImpl;
+import com.pcotten.rr17.service.CookbookService;
+import com.pcotten.rr17.service.ImageService;
+import com.pcotten.rr17.service.IngredientService;
+import com.pcotten.rr17.service.InstructionService;
+import com.pcotten.rr17.service.MealPlanService;
+import com.pcotten.rr17.service.MealService;
+import com.pcotten.rr17.service.RecipeService;
+import com.pcotten.rr17.service.UserService;
+import com.pcotten.rr17.service.impl.CookbookServiceImpl;
+import com.pcotten.rr17.service.impl.ImageServiceImpl;
+import com.pcotten.rr17.service.impl.MealPlanServiceImpl;
+import com.pcotten.rr17.service.impl.MealServiceImpl;
+import com.pcotten.rr17.service.impl.RecipeServiceImpl;
+import com.pcotten.rr17.service.impl.UserServiceImpl;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 
 public class UserService_Test {
@@ -137,7 +137,7 @@ public class UserService_Test {
 		int result = 0;
 		
 		// Test create operation
-		user = userService.insertNewUser(user);
+		user = userService.createUser(user);
 		Assert.assertTrue(user.getId() != null); 
 		user = userService.getUserByUsername(user.getUsername());
 		
@@ -152,7 +152,7 @@ public class UserService_Test {
 
 		cookbook.setCreatorId(user.getId());
 		cookbook.getRecipes().add(recipe.getId());
-		cookbookService.insertNewCookbook(cookbook, user.getId());
+		cookbookService.createCookbook(cookbook, user.getId());
 
 		profilePic.setRecipeId(null);
 		profilePic.setUserId(user.getId());

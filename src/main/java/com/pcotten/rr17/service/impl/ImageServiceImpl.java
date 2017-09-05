@@ -1,4 +1,4 @@
-package com.pcotten.rr17.storage.entity.impl;
+package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,12 +10,12 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.pcotten.rr17.storage.entity.ImageService;
 import com.pcotten.rr17.storage.service.DatabaseConfig;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.DbCommonFunctions;
 import com.pcotten.rr17.storage.service.SQLBuilder;
 import com.pcotten.rr17.model.Image;
+import com.pcotten.rr17.service.ImageService;
 
 @Component
 public class ImageServiceImpl implements ImageService{

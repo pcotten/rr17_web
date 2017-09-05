@@ -1,4 +1,4 @@
-package com.pcotten.rr17.storage.entity.impl;
+package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,12 +11,12 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.pcotten.rr17.storage.entity.InstructionService;
 import com.pcotten.rr17.storage.service.DatabaseConfig;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.DbCommonFunctions;
 import com.pcotten.rr17.model.Instruction;
 import com.pcotten.rr17.model.Recipe;
+import com.pcotten.rr17.service.InstructionService;
 
 @Component
 public class InstructionServiceImpl implements InstructionService{

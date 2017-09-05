@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.pcotten.rr17.model.User;
-import com.pcotten.rr17.storage.entity.UserService;
+import com.pcotten.rr17.service.UserService;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 
 @Controller
@@ -72,12 +72,12 @@ public class DemoController {
 		}
 		
 		User user = null;
-		try {
-			user = userService.insertNewUser(account);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		try {
+//			user = userService.createUser(account);
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		if (user != null && user.getId() > 0) {
 			return "accountCreated";

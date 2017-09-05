@@ -11,8 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.pcotten.rr17.model.Image;
-import com.pcotten.rr17.storage.entity.ImageService;
-import com.pcotten.rr17.storage.entity.impl.ImageServiceImpl;
+import com.pcotten.rr17.service.ImageService;
+import com.pcotten.rr17.service.impl.ImageServiceImpl;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 
 public class ImageService_Test {

@@ -7,15 +7,15 @@ public class Cookbook {
 
 	private Integer id;
 	private String title;
-	private List<Integer> recipes;
-	private List<Integer> categories;
+	private List<Recipe> recipes;
+	private List<Category> categories;
 	private Integer creatorId;
 	
 	
 	public Cookbook() {
 		super();
-		this.recipes = new ArrayList<Integer>();
-		this.categories = new ArrayList<Integer>();
+		this.recipes = new ArrayList<Recipe>();
+		this.categories = new ArrayList<Category>();
 	}
 	
 	public Integer getId() {
@@ -32,18 +32,18 @@ public class Cookbook {
 		this.title = title;
 	}
 
-	public List<Integer> getRecipes() {
+	public List<Recipe> getRecipes() {
 		return recipes;
 	}
-	public void setRecipes(List<Integer> recipes) {
+	public void setRecipes(List<Recipe> recipes) {
 		this.recipes = recipes;
 	}
 
-	public List<Integer> getCategories() {
+	public List<Category> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(List<Integer> categories) {
+	public void setCategories(List<Category> categories) {
 		this.categories = categories;
 	}
 

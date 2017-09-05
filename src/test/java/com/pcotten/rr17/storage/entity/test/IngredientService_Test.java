@@ -11,8 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.pcotten.rr17.model.Ingredient;
-import com.pcotten.rr17.storage.entity.IngredientService;
-import com.pcotten.rr17.storage.entity.impl.IngredientServiceImpl;
+import com.pcotten.rr17.service.IngredientService;
+import com.pcotten.rr17.service.impl.IngredientServiceImpl;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 
 public class IngredientService_Test {
@@ -39,7 +39,7 @@ public class IngredientService_Test {
 		int result = 0;
 		
 		// Test create operation
-		ingredient = ingredientService.insertNewIngredient(ingredient);
+		ingredient = ingredientService.createIngredient(ingredient);
 		assertTrue(ingredient.getId() != null); 
 		
 		// Test read operations

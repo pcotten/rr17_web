@@ -12,8 +12,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.pcotten.rr17.model.Cookbook;
-import com.pcotten.rr17.storage.entity.CookbookService;
-import com.pcotten.rr17.storage.entity.impl.CookbookServiceImpl;
+import com.pcotten.rr17.service.CookbookService;
+import com.pcotten.rr17.service.impl.CookbookServiceImpl;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 
 public class CookbookService_Test {
@@ -40,7 +40,7 @@ public class CookbookService_Test {
 		int result = 0;
 		
 		// Test create operation
-		cookbook = cookbookService.insertNewCookbook(cookbook, 1);
+		cookbook = cookbookService.createCookbook(cookbook, 1);
 		assertTrue(cookbook.getId() != null); 
 		
 		// Test read operations

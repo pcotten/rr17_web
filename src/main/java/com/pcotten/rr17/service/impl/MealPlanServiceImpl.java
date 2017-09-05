@@ -1,4 +1,4 @@
-package com.pcotten.rr17.storage.entity.impl;
+package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,11 +10,11 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.pcotten.rr17.storage.entity.MealPlanService;
 import com.pcotten.rr17.storage.service.DatabaseConfig;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.DbCommonFunctions;
 import com.pcotten.rr17.model.MealPlan;
+import com.pcotten.rr17.service.MealPlanService;
 
 @Component
 public class MealPlanServiceImpl implements MealPlanService{

@@ -115,7 +115,7 @@ public class DatabaseManager {
 		return entity;
 	}
 	
-	public List<Object> retrieveEntities(Map<String, String> constraints, Class cls){
+	public List<?> retrieveEntities(String table, Map<String, String> constraints, Class cls){
 		
 		Object entity = null;
 		List<Object> entityList = new ArrayList<Object>();
@@ -124,7 +124,7 @@ public class DatabaseManager {
 		JSONArray jArray = null;
 		JSONObject jObj = null;
 		conn = getConnection();
-		sql = "SELECT * FROM " + cls.getSimpleName().toLowerCase();
+		sql = "SELECT * FROM " + table.toLowerCase();
 		sql = addSQLConstraints(sql, constraints);
 		mapList = mapListQuery(conn, sql);
 		String json = mapToJSON(mapList);
@@ -266,7 +266,7 @@ public class DatabaseManager {
 		return json;
 	}
 	
-	private Object mapToObject(String json, Class cls){
+	public Object mapToObject(String json, Class cls){
 		
 		Object result = null;
 		try {

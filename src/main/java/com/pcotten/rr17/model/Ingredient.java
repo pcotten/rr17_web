@@ -15,7 +15,7 @@ public class Ingredient {
 	private String description;
 	private Float quantity;
 	private String quantityUnit;
-	private List<Integer> categories;
+	private List<Category> categories;
 	
 	public Ingredient(){
 		
@@ -25,7 +25,7 @@ public class Ingredient {
 		super();
 		this.name = name;
 		this.description = description;
-		this.categories = new ArrayList<Integer>();
+		this.categories = new ArrayList<Category>();
 	}
 	
 	public Integer getId() {
@@ -68,11 +68,11 @@ public class Ingredient {
 		this.quantityUnit = quantityUnit;
 	}
 
-	public List<Integer> getCategories() {
+	public List<Category> getCategories() {
 		return categories;
 	}
 
-	public void setCategories(List<Integer> categories) {
+	public void setCategories(List<Category> categories) {
 		this.categories = categories;
 	}
 	

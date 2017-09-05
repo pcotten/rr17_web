@@ -8,15 +8,15 @@ import java.util.Map;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-import com.pcotten.rr17.storage.entity.MealService;
-import com.pcotten.rr17.storage.entity.PantryService;
-import com.pcotten.rr17.storage.entity.RecipeService;
-import com.pcotten.rr17.storage.entity.UserService;
-import com.pcotten.rr17.storage.entity.impl.RecipeServiceImpl;
-import com.pcotten.rr17.storage.entity.impl.UserServiceImpl;
 import com.pcotten.rr17.model.Meal;
 import com.pcotten.rr17.model.Recipe;
 import com.pcotten.rr17.model.User;
+import com.pcotten.rr17.service.MealService;
+import com.pcotten.rr17.service.PantryService;
+import com.pcotten.rr17.service.RecipeService;
+import com.pcotten.rr17.service.UserService;
+import com.pcotten.rr17.service.impl.RecipeServiceImpl;
+import com.pcotten.rr17.service.impl.UserServiceImpl;
 
 public class Test {
 
@@ -44,17 +44,20 @@ public class Test {
 		int result = 0;
 		
 		// INSERT NEW USER TEST
-//		user.setFirstName("Charles");
-//		user.setLastName("Chappell");
-//		user.setAge(43);
-//		user.setUsername("cchappell");
-//		user.setPassword("password");
-//		user.setEmail("cchappell@gmail.com");
-//		user.setBio("Chuck's bio");
-//		user.setGender('M');
-//		user.setCity("Irving");
-//		user.setState("TX");
-//		user.setCountry("USA");
+		user.setFirstName("Charles");
+		user.setLastName("Chappell");
+		user.setAge(43);
+		user.setUsername("cchappell");
+		user.setPassword("password");
+		user.setEmail("cchappell@gmail.com");
+		user.setBio("Chuck's bio");
+		user.setGender("M");
+		user.setCity("Irving");
+		user.setState("TX");
+		user.setCountry("USA");
+		
+		String json = dbManager.mapToJSON(user);
+		System.out.println(json);
 ////		user.setPantryCode("atM8-KtUd");
 //
 //		result = userService.insertNewUser(user);

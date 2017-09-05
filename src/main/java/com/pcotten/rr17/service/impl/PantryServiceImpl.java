@@ -1,4 +1,4 @@
-package com.pcotten.rr17.storage.entity.impl;
+package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,10 +12,10 @@ import java.util.Map;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.stereotype.Component;
 
-import com.pcotten.rr17.storage.entity.PantryService;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.DbCommonFunctions;
 import com.pcotten.rr17.model.Pantry;
+import com.pcotten.rr17.service.PantryService;
 
 @Component
 public class PantryServiceImpl implements PantryService{
@@ -103,18 +103,17 @@ public class PantryServiceImpl implements PantryService{
 		boolean unique = true;
 		boolean complete = false;
 		Map<String, String> constraints = new HashMap<String, String>();
-		List<Object> pantryList = manager.retrieveEntities(constraints, Pantry.class);
+		List<Pantry> pantryList = (List<Pantry>) manager.retrieveEntities("pantry", constraints, Pantry.class);
 		while (!complete){
 			newCode = RandomStringUtils.randomAlphanumeric(8);
 			newCode = newCode.substring(0, 4) + "-" + newCode.substring(4);
 			if (!pantryList.isEmpty())
-				for (Object o : pantryList){
-					Pantry p = (Pantry)o;
+				for (Pantry p: pantryList){
 					if (p.getPantryCode().equals(newCode)){
 						unique = false;
 						break;
 					}
-					if (pantryList.indexOf(o) == pantryList.size()-1){
+					if (pantryList.indexOf(p) == pantryList.size()-1){
 						unique = true;
 					}
 				}

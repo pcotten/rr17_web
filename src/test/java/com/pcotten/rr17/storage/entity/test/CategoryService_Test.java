@@ -11,8 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.pcotten.rr17.model.Category;
-import com.pcotten.rr17.storage.entity.CategoryService;
-import com.pcotten.rr17.storage.entity.impl.CategoryServiceImpl;
+import com.pcotten.rr17.service.CategoryService;
+import com.pcotten.rr17.service.impl.CategoryServiceImpl;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 
 public class CategoryService_Test {

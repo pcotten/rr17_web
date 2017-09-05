@@ -1,20 +1,24 @@
-package com.pcotten.rr17.storage.entity.impl;
+package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
-import com.pcotten.rr17.storage.entity.CookbookService;
 import com.pcotten.rr17.storage.service.DatabaseConfig;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.DbCommonFunctions;
+import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Cookbook;
+import com.pcotten.rr17.model.Recipe;
+import com.pcotten.rr17.service.CookbookService;
 
 @Component
 public class CookbookServiceImpl implements CookbookService {
@@ -32,7 +36,7 @@ public class CookbookServiceImpl implements CookbookService {
 	}
 	
 	
-	public Cookbook insertNewCookbook(Cookbook cookbook, Integer userId) throws SQLException{
+	public Cookbook createCookbook(Cookbook cookbook, Integer userId) throws SQLException{
 
 		int r = 0;
 		conn = manager.getConnection();
@@ -112,10 +116,10 @@ public class CookbookServiceImpl implements CookbookService {
 			conn = manager.getConnection();
 		}
 		if (!cookbook.getRecipes().isEmpty()){
-			for (Integer i : cookbook.getRecipes()){
+			for (Recipe recipe : cookbook.getRecipes()){
 				
 				pstmt = conn.prepareStatement("INSERT INTO recipe_cookbook (recipeId, cookbookId) VALUES (?, ?)");
-				pstmt.setInt(1, i);
+				pstmt.setInt(1, recipe.getId());
 				pstmt.setInt(2, cookbook.getId());
 	
 				result = pstmt.executeUpdate();
@@ -150,11 +154,11 @@ public class CookbookServiceImpl implements CookbookService {
 			conn = manager.getConnection();
 		}
 		if (!cookbook.getCategories().isEmpty()){
-			for (Integer i : cookbook.getCategories()){
+			for (Category category : cookbook.getCategories()){
 				
 				pstmt = conn.prepareStatement("INSERT INTO cookbook_category (cookbookId, categoryId) VALUES (?, ?)");
 				pstmt.setInt(1, cookbook.getId());
-				pstmt.setInt(2, i);
+				pstmt.setInt(2, category.getId());
 			
 				result = pstmt.executeUpdate();
 			}
@@ -205,5 +209,68 @@ public class CookbookServiceImpl implements CookbookService {
 		constraints.put("id", id.toString());
 		
 		return (Cookbook) manager.retrieveSingleEntity(constraints, Cookbook.class);
+	}
+
+
+	@Override
+	public List<Recipe> getCookbookRecipes(Integer id) {
+		List<Recipe> recipes = new ArrayList<Recipe>();
+		conn = manager.getConnection();
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM recipes_by_cookbookid WHERE cookbookId = ?");		
+			pstmt.setInt(1, id);
+			
+			ResultSet result = pstmt.executeQuery();
+			while (result.next()) {
+				Recipe recipe = new Recipe();
+				recipe.setId(result.getInt("id"));
+				recipe.setTitle(result.getString("title"));
+				recipe.setDescription(result.getString("description"));
+				recipe.setOwner(result.getString("owner"));
+				recipe.setAttributedTo(result.getString("attributedTo"));
+				recipe.setOvenTemp(result.getInt("ovenTemp"));
+				recipe.setNumberOfServings(result.getInt("numberOfServings"));
+				recipe.setServingSize(result.getInt("servingSize"));
+				recipe.setServingSizeUnit(result.getString("servingSize"));
+				recipe.setCookTime(result.getInt("cookTime"));
+				recipe.setCookTimeUnit(result.getString("cookTimeUnit"));
+				recipe.setPrepTime(result.getInt("prepTime"));
+				recipe.setPrepTimeUnit(result.getString("prepTimeUnit"));
+				recipe.setRating(result.getInt("rating"));
+				recipe.setLastPrepared(result.getDate("lastPrepared"));
+				
+				recipes.add(recipe);
+			}
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return recipes;
+	}
+
+
+	@Override
+	public List<Category> getCookbookCategories(Integer id) {
+		List<Category> categories = new ArrayList<Category>();
+		conn = manager.getConnection();
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM categories_by_cookbookid WHERE cookbookId = ?");		
+			pstmt.setInt(1, id);
+			
+			ResultSet result = pstmt.executeQuery();
+			while (result.next()) {
+				Category category = new Category();
+				category.setId(result.getInt("id"));
+				category.setName(result.getString("name"));
+				category.setDescription(result.getString("description"));
+
+				categories.add(category);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return categories;
 	}
 }

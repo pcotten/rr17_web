@@ -1,4 +1,4 @@
-package com.pcotten.rr17.storage.entity.impl;
+package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,13 +14,13 @@ import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.pcotten.rr17.storage.entity.RecipeService;
 import com.pcotten.rr17.storage.service.DatabaseConfig;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.DbCommonFunctions;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Instruction;
 import com.pcotten.rr17.model.Recipe;
+import com.pcotten.rr17.service.RecipeService;
 
 @Component
 public class RecipeServiceImpl implements RecipeService{
@@ -171,7 +171,7 @@ public class RecipeServiceImpl implements RecipeService{
 				}
 				if (!exists){
 					Ingredient newIngredient = new Ingredient(s, null);
-					newIngredient = ingredientService.insertNewIngredient(newIngredient);
+					newIngredient = ingredientService.createIngredient(newIngredient);
 					if (newIngredient.getId() == null){
 						System.out.println("Ingredient " + s + "could not be added to database.");
 						throw new SQLException();

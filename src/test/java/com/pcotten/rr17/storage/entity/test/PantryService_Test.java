@@ -11,8 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.pcotten.rr17.model.Pantry;
-import com.pcotten.rr17.storage.entity.PantryService;
-import com.pcotten.rr17.storage.entity.impl.PantryServiceImpl;
+import com.pcotten.rr17.service.PantryService;
+import com.pcotten.rr17.service.impl.PantryServiceImpl;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 
 public class PantryService_Test {

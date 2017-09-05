@@ -17,12 +17,12 @@ import org.junit.Test;
 import com.pcotten.rr17.model.Comment;
 import com.pcotten.rr17.model.Recipe;
 import com.pcotten.rr17.model.User;
-import com.pcotten.rr17.storage.entity.CommentService;
-import com.pcotten.rr17.storage.entity.RecipeService;
-import com.pcotten.rr17.storage.entity.UserService;
-import com.pcotten.rr17.storage.entity.impl.CommentServiceImpl;
-import com.pcotten.rr17.storage.entity.impl.RecipeServiceImpl;
-import com.pcotten.rr17.storage.entity.impl.UserServiceImpl;
+import com.pcotten.rr17.service.CommentService;
+import com.pcotten.rr17.service.RecipeService;
+import com.pcotten.rr17.service.UserService;
+import com.pcotten.rr17.service.impl.CommentServiceImpl;
+import com.pcotten.rr17.service.impl.RecipeServiceImpl;
+import com.pcotten.rr17.service.impl.UserServiceImpl;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 
 public class CommentService_Test {

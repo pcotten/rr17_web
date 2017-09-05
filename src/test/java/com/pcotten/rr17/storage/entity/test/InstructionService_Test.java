@@ -15,10 +15,10 @@ import org.junit.Test;
 
 import com.pcotten.rr17.model.Instruction;
 import com.pcotten.rr17.model.Recipe;
-import com.pcotten.rr17.storage.entity.InstructionService;
-import com.pcotten.rr17.storage.entity.RecipeService;
-import com.pcotten.rr17.storage.entity.impl.InstructionServiceImpl;
-import com.pcotten.rr17.storage.entity.impl.RecipeServiceImpl;
+import com.pcotten.rr17.service.InstructionService;
+import com.pcotten.rr17.service.RecipeService;
+import com.pcotten.rr17.service.impl.InstructionServiceImpl;
+import com.pcotten.rr17.service.impl.RecipeServiceImpl;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 
 public class InstructionService_Test {

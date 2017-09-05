@@ -1,4 +1,4 @@
-package com.pcotten.rr17.storage.entity;
+package com.pcotten.rr17.service;
 
 import java.sql.SQLException;
 
