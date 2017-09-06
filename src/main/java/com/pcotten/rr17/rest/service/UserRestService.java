@@ -75,8 +75,8 @@ public interface UserRestService {
 			@PathVariable ("userId") Integer userId,
 			@RequestBody Meal meal);
 	
-	@RequestMapping(value="/users/{userId}/meals/{mealId}", method=RequestMethod.PUT, consumes="application/json", produces="application/json")
-	public ResponseEntity<Meal> updateMeal(
+	@RequestMapping(value="/users/{userId}/meals/{mealId}", method=RequestMethod.PUT, consumes="application/json")
+	public ResponseEntity<Void> updateMeal(
 			@PathVariable ("userId") Integer userId,
 			@PathVariable ("mealId") Integer mealId,
 			@RequestBody Meal meal);

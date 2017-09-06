@@ -72,7 +72,7 @@ public class MealService_Test {
 		meal.getRecipes().add(recipe.getId());
 		
 		// Test create operation
-		meal = mealService.insertNewMeal(meal, 1);
+		meal = mealService.createMeal(meal, 1);
 		Assert.assertTrue(meal.getId() != null); 
 		
 		// Test read operations

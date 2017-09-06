@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.pcotten.rr17.storage.service.DatabaseConfig;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.DbCommonFunctions;
+import com.pcotten.rr17.model.Meal;
 import com.pcotten.rr17.model.MealPlan;
 import com.pcotten.rr17.service.MealPlanService;
 
@@ -104,11 +105,10 @@ public class MealPlanServiceImpl implements MealPlanService{
 			conn = manager.getConnection();
 		}
 		if (!mealPlan.getMeals().isEmpty()){
-			for (Integer i : mealPlan.getMeals()){
-				
+			for (Meal meal : mealPlan.getMeals()){
 				pstmt = conn.prepareStatement("INSERT INTO meal_mealplan (mealPlanId, mealId) VALUES (?, ?)");
 				pstmt.setInt(1, mealPlan.getId());
-				pstmt.setInt(2, i);
+				pstmt.setInt(2, meal.getId());
 	
 				result = pstmt.executeUpdate();
 				

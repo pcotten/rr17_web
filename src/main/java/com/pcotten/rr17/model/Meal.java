@@ -11,7 +11,8 @@ public class Meal {
 	private Integer id;
 	@NotNull @Size(min=3, max=255)
 	private String name;
-	private List<Integer> recipes;
+	private List<Recipe> recipes;
+	private Integer ownerId;
 	private LocalDate lastPrepared;
 	
 	public Meal(){
@@ -38,14 +39,22 @@ public class Meal {
 		this.name = name;
 	}
 	
-	public List<Integer> getRecipes() {
+	public List<Recipe> getRecipes() {
 		return recipes;
 	}
 	
-	public void setRecipes(List<Integer> recipes) {
+	public void setRecipes(List<Recipe> recipes) {
 		this.recipes = recipes;
 	}
 	
+	public Integer getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Integer ownerId) {
+		this.ownerId = ownerId;
+	}
+
 	public LocalDate getLastPrepared() {
 		return lastPrepared;
 	}

@@ -39,7 +39,7 @@ public interface UserService {
 
 	public ResponseEntity<Meal> createMeal(Integer userId, Meal meal);
 
-	public ResponseEntity<Meal> updateMeal(Integer userId, Integer mealId, Meal meal);
+	public ResponseEntity<Void> updateMeal(Integer userId, Integer mealId, Meal meal);
 
 	public ResponseEntity<Meal> deleteMeal(Integer userId, Integer mealId);
 

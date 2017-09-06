@@ -81,7 +81,7 @@ public class MealPlanService_Test {
 		recipe = recipeService.insertNewRecipe(recipe, 1);
 		meal.getRecipes().add(recipe.getId());
 		
-		meal = mealService.insertNewMeal(meal, 1);
+		meal = mealService.createMeal(meal, 1);
 		assertTrue(meal.getId() != null); 
 		
 		// Test create operation

@@ -1,11 +1,14 @@
 package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Component;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.DbCommonFunctions;
 import com.pcotten.rr17.model.Meal;
+import com.pcotten.rr17.model.Recipe;
 import com.pcotten.rr17.service.MealService;
 
 @Component
@@ -30,12 +34,12 @@ public class MealServiceImpl implements MealService {
 		
 	}
 
-	public Meal insertNewMeal(Meal meal, Integer userId) throws SQLException{
+	public Meal createMeal(Meal meal, Integer userId) throws SQLException{
 
 		int r = 0;
 		
 		conn = manager.getConnection();
-		meal = insertMealEntity(meal);
+		meal = createMeal(meal);
 		if (meal.getId() != null){
 			r = 1;
 		}
@@ -69,7 +73,7 @@ public class MealServiceImpl implements MealService {
 	}
 	
 	
-	public Meal insertMealEntity(Meal meal) throws SQLException{
+	public Meal createMeal(Meal meal) throws SQLException{
 		
 		conn = manager.getConnection();
 		int r = 0;
@@ -101,11 +105,11 @@ public class MealServiceImpl implements MealService {
 			conn = manager.getConnection();
 		}
 		if (!meal.getRecipes().isEmpty()){
-			for (Integer i : meal.getRecipes()){
+			for (Recipe recipe : meal.getRecipes()){
 				
 				pstmt = conn.prepareStatement("INSERT INTO recipe_meal (recipeId, mealId) "
 						+ "VALUES (?, ?)");
-				pstmt.setInt(1, i);
+				pstmt.setInt(1, recipe.getId());
 				pstmt.setInt(2, meal.getId());
 	
 				result = pstmt.executeUpdate();
@@ -136,10 +140,11 @@ public class MealServiceImpl implements MealService {
 	public int updateMeal(Meal meal) throws SQLException{
 		conn = manager.getConnection();
 		int r = 0;
-		pstmt = conn.prepareStatement("UPDATE meal SET name = ?, lastPrepared = ? WHERE id = ?");
+		pstmt = conn.prepareStatement("UPDATE meal SET name = ?, lastPrepared = ?, ownerId = ? WHERE id = ?");
 		pstmt.setString(1, meal.getName());
 		pstmt.setObject(2, meal.getLastPrepared());
-		pstmt.setInt(3, meal.getId());
+		pstmt.setInt(3, meal.getOwnerId());
+		pstmt.setInt(4, meal.getId());
 		
 		r = pstmt.executeUpdate();
 	
@@ -154,18 +159,48 @@ public class MealServiceImpl implements MealService {
 	}
 	
 	
-	public int deleteMeal(Integer id) throws SQLException{
+	public int deleteMeal(Integer id, Integer userId) throws SQLException{
 		int result = -1;
-
-		result = DbCommonFunctions.deleteEntity("meal", id);
-		if (result != -1){
-			System.out.println("Successfully removed meal with id " + id);
+		Integer ownerId = getMealOwner(id);
+		if (ownerId.equals(userId)) {
+			result = DbCommonFunctions.deleteEntity("meal", id);
+			if (result != -1){
+				System.out.println("Successfully removed meal with id " + id);
+			}
+			else {
+				System.out.println("Unable to remove recipe meal with id " + id);
+			}
 		}
 		else {
-			System.out.println("Unable to remove recipe meal with id " + id);
+			conn = manager.getConnection();
+			
+			pstmt = conn.prepareStatement("DELETE FROM meal_user WHERE userId = ? AND mealId = ?");
+			pstmt.setInt(1, userId);
+			pstmt.setInt(2, id);
+			
+			result = pstmt.executeUpdate();
+		}
+		return result;
+	}
+
+	private Integer getMealOwner(Integer id) {
+		conn = manager.getConnection();
+		
+		try {
+			pstmt = conn.prepareStatement("SELECT ownerId FROM meal WHERE id = ?");
+			pstmt.setInt(1, id);
+			
+			ResultSet result = pstmt.executeQuery();
+			if (result.next()) {
+				return result.getInt("ownerId");
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
-		return result;
+		return null;
 	}
 
 	public Meal getMealById(Integer id) {
@@ -173,5 +208,69 @@ public class MealServiceImpl implements MealService {
 		constraints.put("id", id.toString());
 		
 		return (Meal) manager.retrieveSingleEntity(constraints, Meal.class);
+	}
+
+	@Override
+	public List<Meal> getMealPlanMeals(Integer id) {
+		List<Meal> meals = new ArrayList<Meal>();
+		try {
+			conn = manager.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM meals_by_mealplanid WHERE mealPlanId = ?");
+			pstmt.setInt(1, id);
+			
+			ResultSet result = pstmt.executeQuery();
+			while(result.next()) {
+				Meal meal = new Meal();
+				meal.setId(result.getInt("id"));
+				meal.setName(result.getString("name"));
+				meal.setOwnerId(result.getInt("ownerId"));
+				Date date = result.getDate("lastPrepared");
+				meal.setLastPrepared(date.toLocalDate());
+				meal.setRecipes(getMealRecipes(meal.getId()));
+				
+				meals.add(meal);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return meals;
+	}
+
+	private List<Recipe> getMealRecipes(Integer id) {
+		List<Recipe> recipes = new ArrayList<Recipe>();
+		try {
+			conn = manager.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM recipes_by_mealid WHERE mealId = ?");
+			pstmt.setInt(1, id);
+			
+			ResultSet result = pstmt.executeQuery();
+			while(result.next()) {
+				Recipe recipe = new Recipe();
+				recipe.setId(result.getInt("id"));
+				recipe.setTitle(result.getString("title"));
+				recipe.setDescription(result.getString("description"));
+				recipe.setOwner(result.getString("owner"));
+				recipe.setAttributedTo(result.getString("attributedTo"));
+				recipe.setOvenTemp(result.getInt("ovenTemp"));
+				recipe.setNumberOfServings(result.getInt("numberOfServings"));
+				recipe.setServingSize(result.getInt("servingSize"));
+				recipe.setServingSizeUnit(result.getString("servingSize"));
+				recipe.setCookTime(result.getInt("cookTime"));
+				recipe.setCookTimeUnit(result.getString("cookTimeUnit"));
+				recipe.setPrepTime(result.getInt("prepTime"));
+				recipe.setPrepTimeUnit(result.getString("prepTimeUnit"));
+				recipe.setRating(result.getInt("rating"));
+				recipe.setLastPrepared(result.getDate("lastPrepared"));
+				
+				recipes.add(recipe);
+			}
+				
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return recipes;
 	}
 }

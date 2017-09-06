@@ -13,10 +13,11 @@ public class MealPlan {
 	private String name;
 	@Size(max=255)
 	private String description;
-	private List<Integer> meals;
+	private List<Meal> meals; // date as string, Meal
+	private Integer ownerId;
 	
 	public MealPlan(){
-		meals = new ArrayList<Integer>();
+		meals = new ArrayList<Meal>();
 	}
 	
 	public MealPlan(String name) {
@@ -43,11 +44,19 @@ public class MealPlan {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<Integer> getMeals() {
+	public List<Meal> getMeals() {
 		return meals;
 	}
-	public void setMeals(List<Integer> meals) {
+	public void setMeals(List<Meal> meals) {
 		this.meals = meals;
+	}
+
+	public Integer getOwnerId() {
+		return ownerId;
+	}
+
+	public void setOwnerId(Integer ownerId) {
+		this.ownerId = ownerId;
 	}
 	
 	

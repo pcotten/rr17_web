@@ -131,8 +131,8 @@ public class UserRestServiceImpl implements UserRestService {
 	}
 
 	@Override
-	public ResponseEntity<Meal> updateMeal(@PathVariable Integer userId, @PathVariable Integer mealId, @RequestBody Meal meal) {
-		ResponseEntity<Meal> response = null;
+	public ResponseEntity<Void> updateMeal(@PathVariable Integer userId, @PathVariable Integer mealId, @RequestBody Meal meal) {
+		ResponseEntity<Void> response = null;
 		response = service.updateMeal(userId, mealId, meal);
 		return response;
 	}

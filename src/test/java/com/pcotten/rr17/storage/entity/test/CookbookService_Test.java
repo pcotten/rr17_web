@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Cookbook;
+import com.pcotten.rr17.model.Recipe;
 import com.pcotten.rr17.service.CookbookService;
 import com.pcotten.rr17.service.impl.CookbookServiceImpl;
 import com.pcotten.rr17.storage.service.DatabaseManager;
@@ -30,7 +32,7 @@ public class CookbookService_Test {
 		
 		cookbook.setTitle("Test Cookbook");
 		cookbook.setCreatorId(1);
-		cookbook.setRecipes(new ArrayList<Integer>());
+		cookbook.setRecipes(new ArrayList<Recipe>());
 	}
 
 		
@@ -50,7 +52,7 @@ public class CookbookService_Test {
 		// Test update operation
 		
 		cookbook.setTitle("Changed title");
-		cookbook.setCategories(new ArrayList<Integer>());
+		cookbook.setCategories(new ArrayList<Category>());
 		
 		result = cookbookService.updateCookbook(cookbook);
 		assertTrue(result == 1);

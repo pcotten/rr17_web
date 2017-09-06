@@ -145,13 +145,13 @@ public class UserService_Test {
 		recipeService.insertNewRecipe(recipe, user.getId());
 
 		meal.getRecipes().add(recipe.getId());
-		mealService.insertNewMeal(meal, user.getId());
+		mealService.createMeal(meal, user.getId());
 
 		mealPlan.getMeals().add(meal.getId());
 		mealPlanService.insertNewMealPlan(mealPlan, user.getId());
 
 		cookbook.setCreatorId(user.getId());
-		cookbook.getRecipes().add(recipe.getId());
+		cookbook.getRecipes().add(recipe);
 		cookbookService.createCookbook(cookbook, user.getId());
 
 		profilePic.setRecipeId(null);
@@ -165,13 +165,13 @@ public class UserService_Test {
 		user.setAge(42);
 		user.setEmail("someone@somewhere.com");
 		
-		result = userService.updateUser(user);
+		userService.updateUser(user);
 		Assert.assertTrue(result == 1);
 		
 		// Test delete operation
 		result = -1;
 		try {
-			result = userService.deleteUser(user.getId());
+		userService.deleteUser(user.getId());
 //			result = userService.deleteUser(59);
 		} catch (SQLException e) {
 			e.printStackTrace();

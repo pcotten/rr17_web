@@ -1,11 +1,14 @@
 package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -200,13 +203,14 @@ public class UserServiceImpl implements UserService {
 		List<Ingredient> ingredients = new ArrayList<Ingredient>();
 		try {
 			conn = manager.getConnection();
-			pstmt = conn.prepareStatement("SELECT * FROM ingredients_by_userid WHERE userid = ?");
-			pstmt.setInt(1, userId);
+			Integer pantryId = getPantryId(userId);
+			pstmt = conn.prepareStatement("SELECT * FROM ingredients_by_pantryid WHERE pantryId = ?");
+			pstmt.setInt(1, pantryId);
 			
 			ResultSet result = pstmt.executeQuery();
 			while (result.next()) {
 				Ingredient ingredient = new Ingredient();
-				ingredient.setId(result.getInt("id"));
+				ingredient.setId(result.getInt("ingredientId"));
 				ingredient.setName(result.getString("name"));
 				ingredient.setDescription(result.getString("description"));
 				ingredient.setQuantity(result.getFloat("quantity"));
@@ -253,44 +257,133 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ResponseEntity<Void> updatePantryIngredient(Integer userId, Integer ingredientId, Ingredient ingredient) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			conn = manager.getConnection();
+			
+			pstmt = conn.prepareStatement("UPDATE pantry_igredient SET quantity = ?, quantityUnit = ?"
+					+ "WHERE pantryId = ? AND ingredientId = ?");
+			pstmt.setFloat(1, ingredient.getQuantity());
+			pstmt.setString(2, ingredient.getQuantityUnit());
+			pstmt.setInt(3, getPantryId(userId));
+			pstmt.setInt(4, ingredient.getId());
+			
+			int r = pstmt.executeUpdate();
+			if (r != 0){
+				System.out.println("Ingredient successfully updated");
+			}
+			else {
+				System.out.println("Ingredient not updated");
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok().build();
 	}
 
 	@Override
 	public ResponseEntity<Void> deletePantryIngredient(Integer userId, Integer ingredientId) {
-		// TODO Auto-generated method stub
+		conn = manager.getConnection();
+		
+		try {
+			pstmt = conn.prepareStatement("DELETE FROM pantry_ingredient WHERE pantryId = ? AND ingredientId = ?");
+			pstmt.setInt(1, getPantryId(userId));
+			pstmt.setInt(2, ingredientId);
+			
+			pstmt.executeUpdate();
+		
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
 		return null;
 	}
 
 	@Override
 	public ResponseEntity<List<Meal>> getMeals(Integer userId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Meal> meals = new ArrayList<Meal>();
+		try {
+			conn = manager.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM meals_by_userid WHERE userid = ?");
+			pstmt.setInt(1, userId);
+			
+			ResultSet result = pstmt.executeQuery();
+			while (result.next()) {
+				Meal meal = new Meal();
+				meal.setId(result.getInt("mealId"));
+				meal.setName(result.getString("name"));
+				Date date = result.getDate("lastPrepared");
+				meal.setLastPrepared(date.toLocalDate());
+				meals.add(meal);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return ResponseEntity.ok(meals);
 	}
 
 	@Override
 	public ResponseEntity<Meal> createMeal(Integer userId, Meal meal) {
-		// TODO Auto-generated method stub
+		try {
+			meal = mealService.createMeal(meal, userId);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return null;
 	}
 
 	@Override
-	public ResponseEntity<Meal> updateMeal(Integer userId, Integer mealId, Meal meal) {
-		// TODO Auto-generated method stub
-		return null;
+	public ResponseEntity<Void> updateMeal(Integer userId, Integer mealId, Meal meal) {
+		try {
+			meal.setId(mealId);
+			mealService.updateMeal(meal);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok().build();
 	}
 
 	@Override
 	public ResponseEntity<Meal> deleteMeal(Integer userId, Integer mealId) {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			mealService.deleteMeal(mealId, userId);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return ResponseEntity.ok().build();
 	}
 
 	@Override
 	public ResponseEntity<List<MealPlan>> getMealPlans(Integer userId) {
-		// TODO Auto-generated method stub
-		return null;
+		List<MealPlan> mealPlans = new ArrayList<MealPlan>();
+		try {
+			conn = manager.getConnection();
+			pstmt = conn.prepareStatement("SELECT * FROM mealplans_by_userid WHERE userid = ?");
+			pstmt.setInt(1, userId);
+			
+			ResultSet result = pstmt.executeQuery();
+			while (result.next()) {
+				MealPlan mealPlan = new MealPlan();
+				mealPlan.setId(result.getInt("mealPlanId"));
+				mealPlan.setName(result.getString("name"));
+				mealPlan.setOwnerId(result.getInt("ownerId"));
+				mealPlan.setMeals(mealService.getMealPlanMeals(mealPlan.getId()));
+				mealPlans.add(mealPlan);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return ResponseEntity.ok(mealPlans);
 	}
 
 	@Override
