@@ -281,6 +281,27 @@ public class IngredientServiceImpl implements IngredientService {
 		}
 		
 	}
+
+
+	@Override
+	public Integer getIngredientIdByName(String name) {
+		conn = manager.getConnection();
+		
+		try {
+			pstmt = conn.prepareStatement("SELECT id FROM ingredient WHERE name = ?");
+			pstmt.setString(1, name);
+			
+			ResultSet result = pstmt.executeQuery();
+			if (result.next()) {
+				return result.getInt("id");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 	
 	
 }

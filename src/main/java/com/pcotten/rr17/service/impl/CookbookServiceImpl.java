@@ -273,4 +273,21 @@ public class CookbookServiceImpl implements CookbookService {
 		}
 		return categories;
 	}
+	
+	@Override
+	public boolean cookbookExists(Integer userId, Cookbook cookbook) {
+		
+		conn = manager.getConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = conn.prepareStatement("SELECT COUNT(*) FROM cookbooks_by_userid "
+					+ "WHERE title = ? AND userId = ?");
+			pstmt.setString(1, cookbook.getTitle());
+			pstmt.setInt(2, userId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+			return manager.isExists(pstmt);
+	}
 }

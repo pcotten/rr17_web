@@ -21,4 +21,6 @@ public interface IngredientService {
 	public Ingredient createRecipeIngredient(Ingredient ingredient, Integer recipeId);
 	
 	public Ingredient createPantryIngredient(Ingredient ingredient, Integer pantryId);
+
+	public Integer getIngredientIdByName(String name);
 }

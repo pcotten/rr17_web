@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.pcotten.rr17.storage.service.DatabaseConfig;
@@ -33,7 +34,7 @@ public class MealPlanServiceImpl implements MealPlanService{
 	}
 	
 	
-	public MealPlan insertNewMealPlan(MealPlan mealPlan, Integer userId) throws SQLException{
+	public MealPlan createMealPlan(MealPlan mealPlan, Integer userId) throws SQLException{
 
 		int r = 0;
 		
@@ -77,9 +78,10 @@ public class MealPlanServiceImpl implements MealPlanService{
 		
 		conn = manager.getConnection();
 		int r = 0;
-		pstmt = conn.prepareStatement("INSERT INTO mealplan (name)"
-				+ "VALUES (?);", Statement.RETURN_GENERATED_KEYS);
+		pstmt = conn.prepareStatement("INSERT INTO mealplan (name, description)"
+				+ "VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
 		pstmt.setString(1, mealPlan.getName());
+		pstmt.setString(2, mealPlan.getDescription());
 		r = pstmt.executeUpdate();
 		ResultSet rs = pstmt.getGeneratedKeys();
 		if (rs.next()){
@@ -141,9 +143,10 @@ public class MealPlanServiceImpl implements MealPlanService{
 
 		conn = manager.getConnection();
 		int r = 0;
-		pstmt = conn.prepareStatement("UPDATE mealplan SET name = ? WHERE id = ?");
+		pstmt = conn.prepareStatement("UPDATE mealplan SET name = ?, description = ? WHERE id = ?");
 		pstmt.setString(1, mealPlan.getName());
-		pstmt.setInt(2, mealPlan.getId());
+		pstmt.setString(2, mealPlan.getDescription());
+		pstmt.setInt(3, mealPlan.getId());
 		r = pstmt.executeUpdate();
 
 		if (r != 0 && mealPlan.getId() != null){
@@ -177,5 +180,22 @@ public class MealPlanServiceImpl implements MealPlanService{
 		constraints.put("id", id.toString());
 		
 		return (MealPlan) manager.retrieveSingleEntity(constraints, MealPlan.class);
+	}
+	
+	@Override
+	public boolean mealPlanExists(Integer userId, MealPlan mealPlan) {
+		
+		conn = manager.getConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = conn.prepareStatement("SELECT COUNT(*) FROM mealplans_by_userid "
+					+ "WHERE name = ? AND userid = ?");
+			pstmt.setString(1, mealPlan.getName());
+			pstmt.setInt(2, userId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+			return manager.isExists(pstmt);
+	
 	}
 }

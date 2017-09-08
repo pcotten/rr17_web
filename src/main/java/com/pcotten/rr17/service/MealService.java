@@ -16,5 +16,7 @@ public interface MealService {
 	public Meal getMealById(Integer id);
 
 	public List<Meal> getMealPlanMeals(Integer id);
+
+	boolean mealExists(Integer userId, Meal meal);
 	
 }

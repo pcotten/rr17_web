@@ -3,8 +3,6 @@ package com.pcotten.rr17.service;
 import java.sql.SQLException;
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
-
 import com.pcotten.rr17.model.Cookbook;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Meal;
@@ -19,37 +17,42 @@ public interface UserService {
 	
 	public User getUserByUsername(String username);
 	
-	public ResponseEntity<Void> updateUser(User user) throws SQLException;
+	public boolean updateUser(User user) throws SQLException;
 	
-	public ResponseEntity<Void> deleteUser(Integer id) throws SQLException;
+	public boolean deleteUser(Integer id) throws SQLException;
 
-	public ResponseEntity<List<Cookbook>> getCookbooks(Integer userId);
+	public List<Cookbook> getCookbooks(Integer userId);
 
-	public ResponseEntity<Cookbook> createCookbook(Integer userId, Cookbook cookbook);
+	public Cookbook createCookbook(Integer userId, Cookbook cookbook);
 
-	public ResponseEntity<List<Ingredient>> getPantryIngredients(Integer userId);
+	public List<Ingredient> getPantryIngredients(Integer userId);
 
-	public ResponseEntity<Ingredient> createPantryIngredient(Integer userId, Ingredient ingredient);
+	public Ingredient createPantryIngredient(Integer userId, Ingredient ingredient);
 
-	public ResponseEntity<Void> updatePantryIngredient(Integer userId, Integer ingredientId, Ingredient ingredient);
+	public boolean updatePantryIngredient(Integer userId, Integer ingredientId, Ingredient ingredient);
 
-	public ResponseEntity<Void> deletePantryIngredient(Integer userId, Integer ingredientId);
+	public boolean deletePantryIngredient(Integer userId, Integer ingredientId);
 
-	public ResponseEntity<List<Meal>> getMeals(Integer userId);
+	public List<Meal> getMeals(Integer userId);
 
-	public ResponseEntity<Meal> createMeal(Integer userId, Meal meal);
+	public Meal createMeal(Integer userId, Meal meal);
 
-	public ResponseEntity<Void> updateMeal(Integer userId, Integer mealId, Meal meal);
+	public boolean updateMeal(Integer userId, Integer mealId, Meal meal);
 
-	public ResponseEntity<Meal> deleteMeal(Integer userId, Integer mealId);
+	public boolean deleteMeal(Integer userId, Integer mealId);
 
-	public ResponseEntity<List<MealPlan>> getMealPlans(Integer userId);
+	public List<MealPlan> getMealPlans(Integer userId);
 
-	public ResponseEntity<MealPlan> createMealPlan(Integer userId, MealPlan mealPlan);
+	public MealPlan createMealPlan(Integer userId, MealPlan mealPlan);
 
-	public ResponseEntity<MealPlan> updateMealPlan(Integer userId, Integer mealId, MealPlan mealplan);
+	public boolean updateMealPlan(Integer userId, Integer mealId, MealPlan mealPlan);
 
-	public ResponseEntity<MealPlan> deleteMealPlan(Integer userId, Integer mealPlanId);
+	public boolean deleteMealPlan(Integer userId, Integer mealPlanId);
+
+	public boolean userExists(User user);
+
+
+	
 
 	
 

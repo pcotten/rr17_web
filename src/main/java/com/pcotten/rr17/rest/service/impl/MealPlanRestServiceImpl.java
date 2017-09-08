@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.pcotten.rr17.model.Recipe;
-import com.pcotten.rr17.rest.service.MealRestService;
+import com.pcotten.rr17.rest.service.MealPlanRestService;
 
 @RestController
-public class MealRestServiceImpl implements MealRestService {
+public class MealPlanRestServiceImpl implements MealPlanRestService {
 
 	@Override
-	public ResponseEntity<Void> updateMeal(
+	public ResponseEntity<Void> updateMealPlan(
 			@PathVariable Integer mealId, 
 			@RequestBody String payload) {
 		// TODO Auto-generated method stub
@@ -23,21 +23,21 @@ public class MealRestServiceImpl implements MealRestService {
 	}
 
 	@Override
-	public ResponseEntity<Void> deleteMeal(
+	public ResponseEntity<Void> deleteMealPlan(
 			@PathVariable Integer mealId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ResponseEntity<List<Recipe>> getMealRecipes(
+	public ResponseEntity<List<Recipe>> getMealPlanMeals(
 			@PathVariable Integer mealId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public ResponseEntity<Void> createMealRecipe(
+	public ResponseEntity<Void> createMealPlanMeal(
 			@PathVariable Integer mealId, 
 			@RequestBody String payload, 
 			UriComponentsBuilder uriBuilder) {
@@ -46,7 +46,7 @@ public class MealRestServiceImpl implements MealRestService {
 	}
 
 	@Override
-	public ResponseEntity<Void> deleteMealRecipe(
+	public ResponseEntity<Void> deleteMealPlanMeal(
 			@PathVariable Integer mealId, 
 			@PathVariable Integer recipeId) {
 		// TODO Auto-generated method stub

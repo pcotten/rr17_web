@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.DbCommonFunctions;
+import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Pantry;
 import com.pcotten.rr17.service.PantryService;
 
@@ -33,7 +34,7 @@ public class PantryServiceImpl implements PantryService{
 	}
 	
 	// creates a new Pantry Entity in the database and returns it's pantryCode
-	public Pantry insertNewPantry(Pantry pantry) throws SQLException{
+	public Pantry createPantry(Pantry pantry) throws SQLException{
 		
 		int result = 0;
 		if (pantry.getPantryCode() == null){
@@ -130,5 +131,43 @@ public class PantryServiceImpl implements PantryService{
 		constraints.put("id", id.toString());
 		
 		return (Pantry) manager.retrieveSingleEntity(constraints, Pantry.class);
+	}
+	
+	@Override
+	public boolean pantryIngredientExists(Integer userId, Ingredient ingredient) {
+		
+		conn = manager.getConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = conn.prepareStatement("SELECT COUNT(*) FROM ingredients_by_pantryid "
+					+ "WHERE name = ? AND pantryId = ?");
+			pstmt.setString(1, ingredient.getName());
+			pstmt.setInt(2, getPantryId(userId));
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+			return manager.isExists(pstmt);
+	
+	}
+	
+	public Integer getPantryId(Integer userId) {
+		Integer pantryId = null;
+		try {
+			conn = manager.getConnection();
+			
+			PreparedStatement pstmt = conn.prepareStatement("SELECT pantryId FROM user_pantry WHERE userId = ?");
+			pstmt.setInt(1, userId);
+			
+			ResultSet result = pstmt.executeQuery();
+			if (result.next()) {
+				pantryId = result.getInt("pantryId");
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return pantryId;
 	}
 }

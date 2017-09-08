@@ -32,7 +32,7 @@ public class PantryService_Test {
 		int result = 0;
 		
 		// Test create operation
-		pantry = pantryService.insertNewPantry(pantry);
+		pantry = pantryService.createPantry(pantry);
 		assertTrue(pantry.getPantryCode() != null);
 		
 		String code = pantry.getPantryCode();

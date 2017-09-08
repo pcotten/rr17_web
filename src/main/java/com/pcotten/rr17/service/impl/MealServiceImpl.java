@@ -273,4 +273,21 @@ public class MealServiceImpl implements MealService {
 		}
 		return recipes;
 	}
+	
+	@Override
+	public boolean mealExists(Integer userId, Meal meal) {
+		
+		conn = manager.getConnection();
+		PreparedStatement pstmt = null;
+		try {
+			pstmt = conn.prepareStatement("SELECT COUNT(*) FROM meals_by_userid "
+					+ "WHERE name = ? AND userid = ?");
+			pstmt.setString(1, meal.getName());
+			pstmt.setInt(2, userId);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+			return manager.isExists(pstmt);
+	
+	}
 }

@@ -86,7 +86,7 @@ public class MealPlanService_Test {
 		
 		// Test create operation
 		
-		mealPlan = mealPlanService.insertNewMealPlan(mealPlan, 1);
+		mealPlan = mealPlanService.createMealPlan(mealPlan, 1);
 		assertTrue(mealPlan.getId() != null);
 		
 		// Test read operations

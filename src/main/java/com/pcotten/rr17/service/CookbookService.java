@@ -20,5 +20,7 @@ public interface CookbookService {
 	public List<Recipe> getCookbookRecipes(Integer id);
 
 	public List<Category> getCookbookCategories(Integer id);
+
+	boolean cookbookExists(Integer userId, Cookbook cookbook);
 	
 }

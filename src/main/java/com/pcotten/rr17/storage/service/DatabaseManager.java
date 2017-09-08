@@ -321,4 +321,22 @@ public class DatabaseManager {
 		}		
 		return username;
 	}
+	
+	public boolean isExists(PreparedStatement pstmt) {
+		int count = 0;
+		conn = getConnection();
+		try {
+			
+			ResultSet result = pstmt.executeQuery();
+			if (result.next()) {
+				return true;
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
 }

@@ -148,7 +148,7 @@ public class UserService_Test {
 		mealService.createMeal(meal, user.getId());
 
 		mealPlan.getMeals().add(meal.getId());
-		mealPlanService.insertNewMealPlan(mealPlan, user.getId());
+		mealPlanService.createMealPlan(mealPlan, user.getId());
 
 		cookbook.setCreatorId(user.getId());
 		cookbook.getRecipes().add(recipe);

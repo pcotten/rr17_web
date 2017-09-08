@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.pcotten.rr17.model.Cookbook;
 import com.pcotten.rr17.model.Ingredient;
@@ -14,19 +15,17 @@ import com.pcotten.rr17.model.Meal;
 import com.pcotten.rr17.model.MealPlan;
 import com.pcotten.rr17.model.User;
 
-@RequestMapping("/rest")
+@RequestMapping("/")
 public interface UserRestService {
 	
 	@RequestMapping(value="/users", method=RequestMethod.POST, consumes="application/json", produces="application/json")
-	public ResponseEntity<User> createUser(@RequestBody User user);
+	public ResponseEntity<Void> createUser(
+			@RequestBody User user, 
+			UriComponentsBuilder uriBuilder);
 	
 	@RequestMapping(value="/users/{userId}", method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<User> getUser(
 			@PathVariable ("userId") Integer userId);
-	
-//	@RequestMapping(value="/users/{username}", method=RequestMethod.GET, produces="application/json")
-//	public ResponseEntity<User> getUser(
-//			@PathVariable ("username") String username);
 	
 	@RequestMapping(value="/users/{userId}", method=RequestMethod.PUT, consumes="application/json")
 	public ResponseEntity<Void> updateUser(
@@ -39,21 +38,23 @@ public interface UserRestService {
 	
 	@RequestMapping(value="/users/{userId}/cookbooks", method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<List<Cookbook>> getCookbooks(
-			@PathVariable ("userId") String userId);
+			@PathVariable ("userId") Integer userId);
 	
 	@RequestMapping(value="/users/{userId}/cookbooks", method=RequestMethod.POST, consumes="application/json", produces="application/json")
-	public ResponseEntity<Cookbook> createCookbook(
+	public ResponseEntity<Void> createCookbook(
 			@PathVariable ("userId") Integer userId,
-			@RequestBody Cookbook cookbook);
+			@RequestBody Cookbook cookbook,
+			UriComponentsBuilder uriBuilder);
 
 	@RequestMapping(value="/users/{userId}/pantry/ingredients", method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<List<Ingredient>> getPantryIngredients(
 			@PathVariable ("userId") Integer userId);
 	
 	@RequestMapping(value="/users/{userId}/pantry/ingredients", method=RequestMethod.POST, consumes="application/json", produces="application/json")
-	public ResponseEntity<Ingredient> createPantryIngredient(
+	public ResponseEntity<Void> createPantryIngredient(
 			@PathVariable ("userId") Integer userId,
-			@RequestBody Ingredient ingredient);
+			@RequestBody Ingredient ingredient,
+			UriComponentsBuilder uriBuilder);
 	
 	@RequestMapping(value="/users/{userId}/pantry/ingredients/{ingredientId}", method=RequestMethod.PUT, consumes="application/json", produces="application/json")
 	public ResponseEntity<Void> updatePantryIngredient(
@@ -71,9 +72,10 @@ public interface UserRestService {
 			@PathVariable ("userId") Integer userId);
 	
 	@RequestMapping(value="/users/{userId}/meals", method=RequestMethod.POST, consumes="application/json", produces="application/json")
-	public ResponseEntity<Meal> createMeal(
+	public ResponseEntity<Void> createMeal(
 			@PathVariable ("userId") Integer userId,
-			@RequestBody Meal meal);
+			@RequestBody Meal meal,
+			UriComponentsBuilder uriBuilder);
 	
 	@RequestMapping(value="/users/{userId}/meals/{mealId}", method=RequestMethod.PUT, consumes="application/json")
 	public ResponseEntity<Void> updateMeal(
@@ -82,7 +84,7 @@ public interface UserRestService {
 			@RequestBody Meal meal);
 
 	@RequestMapping(value="/users/{userId}/meals/{mealId}", method=RequestMethod.DELETE)
-	public ResponseEntity<Meal> deleteMeal(
+	public ResponseEntity<Void> deleteMeal(
 			@PathVariable ("userId") Integer userId,
 			@PathVariable ("mealId") Integer mealId);
 	
@@ -91,18 +93,19 @@ public interface UserRestService {
 			@PathVariable ("userId") Integer userId);
 	
 	@RequestMapping(value="/users/{userId}/mealplans", method=RequestMethod.POST, consumes="application/json", produces="application/json")
-	public ResponseEntity<MealPlan> createMealPlan(
+	public ResponseEntity<Void> createMealPlan(
 			@PathVariable ("userId") Integer userId,
-			@RequestBody MealPlan mealPlan);
+			@RequestBody MealPlan mealPlan,
+			UriComponentsBuilder uriBuilder);
 	
 	@RequestMapping(value="/users/{userId}/mealplans/{mealPlanId}", method=RequestMethod.PUT, consumes="application/json", produces="application/json")
-	public ResponseEntity<MealPlan> updateMealPlan(
+	public ResponseEntity<Void> updateMealPlan(
 			@PathVariable ("userId") Integer userId,
 			@PathVariable ("mealPlanId") Integer mealPlanId,
 			@RequestBody MealPlan mealplan);
 
 	@RequestMapping(value="/users/{userId}/mealplans/{mealPlanId}", method=RequestMethod.DELETE)
-	public ResponseEntity<MealPlan> deleteMealPlan(
+	public ResponseEntity<Void> deleteMealPlan(
 			@PathVariable ("userId") Integer userId,
 			@PathVariable ("mealPlanId") Integer mealPlanId);
 }
