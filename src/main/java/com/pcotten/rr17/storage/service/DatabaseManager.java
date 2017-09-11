@@ -329,7 +329,9 @@ public class DatabaseManager {
 			
 			ResultSet result = pstmt.executeQuery();
 			if (result.next()) {
-				return true;
+				int r = result.getInt("count(*)");
+				if (r > 0)
+					return true;
 			}
 
 		} catch (SQLException e) {

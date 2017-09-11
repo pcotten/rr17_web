@@ -9,7 +9,7 @@ public class Cookbook {
 	private String title;
 	private List<Recipe> recipes;
 	private List<Category> categories;
-	private Integer creatorId;
+	private Integer owner;
 	
 	
 	public Cookbook() {
@@ -47,12 +47,12 @@ public class Cookbook {
 		this.categories = categories;
 	}
 
-	public Integer getCreatorId() {
-		return creatorId;
+	public Integer getOwner() {
+		return owner;
 	}
 
-	public void setCreatorId(Integer creatorId) {
-		this.creatorId = creatorId;
+	public void setOwner(Integer owner) {
+		this.owner = owner;
 	}
 	
 	

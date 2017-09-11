@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.pcotten.rr17.model.Cookbook;
 import com.pcotten.rr17.model.Recipe;
 
 @Controller
@@ -18,7 +19,7 @@ public interface CookbookRestService {
 	@RequestMapping(value="/cookbooks/{cookbookId}", method=RequestMethod.PUT)
 	public ResponseEntity<Void> updateCookbook(
 			@PathVariable ("cookbookId") Integer cookbookId,
-			@RequestBody String payload);
+			@RequestBody Cookbook cookbook);
 	
 	@RequestMapping(value="/cookbooks/{cookbookId}", method=RequestMethod.DELETE)
 	public ResponseEntity<Void> deleteCookbook(
@@ -31,7 +32,7 @@ public interface CookbookRestService {
 	@RequestMapping(value="/cookbooks/{cookbookId}/recipes", method=RequestMethod.POST)
 	public ResponseEntity<Void> createCookbookRecipe(
 			@PathVariable ("cookbookId") Integer cookbookId,
-			@RequestBody String payload,
+			@RequestBody Recipe recipe,
 			UriComponentsBuilder uriBuilder);
 	
 	@RequestMapping(value="/cookbooks/{cookbookId}/recipes/{recipeId}", method=RequestMethod.DELETE)

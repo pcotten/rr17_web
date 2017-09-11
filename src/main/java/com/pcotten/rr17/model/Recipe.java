@@ -16,7 +16,7 @@ public class Recipe {
 	private String title;
 	@Size(max=255)
 	private String description;
-	private String owner;  // username of user acct that created recipe
+	private Integer owner;  // userId of user acct that created recipe
 	@Size(max=30)
 	private String attributedTo;
 	private Integer numberOfServings;
@@ -109,11 +109,11 @@ public class Recipe {
 		this.images = images;
 	}
 
-	public String getOwner() {
+	public Integer getOwner() {
 		return owner;
 	}
 
-	public void setOwner(String owner) {
+	public void setOwner(Integer owner) {
 		this.owner = owner;
 	}
 

@@ -1,7 +1,9 @@
 package com.pcotten.rr17.model;
 
+import java.util.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class Comment {
@@ -13,7 +15,7 @@ public class Comment {
 	private Integer recipeId;
 	private String text;
 	private List<Integer> comments;
-	private LocalDate timestamp;
+	private Date timestamp;
 	
 	public Comment(){
 		
@@ -28,7 +30,7 @@ public class Comment {
 		this.recipeId = recipeId;
 		this.text = text;
 		this.comments = new ArrayList<Integer>();
-		this.timestamp = LocalDate.now();
+		this.timestamp = Calendar.getInstance().getTime();
 	}
 	
 	public Integer getId() {
@@ -86,11 +88,11 @@ public class Comment {
 		this.comments = comments;
 	}
 
-	public LocalDate getTimestamp() {
+	public Date getTimestamp() {
 		return timestamp;
 	}
 
-	public void setTimestamp(LocalDate timestamp) {
+	public void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
 	

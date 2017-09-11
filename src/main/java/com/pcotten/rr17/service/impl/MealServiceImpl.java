@@ -251,7 +251,7 @@ public class MealServiceImpl implements MealService {
 				recipe.setId(result.getInt("id"));
 				recipe.setTitle(result.getString("title"));
 				recipe.setDescription(result.getString("description"));
-				recipe.setOwner(result.getString("owner"));
+				recipe.setOwner(result.getInt("owner"));
 				recipe.setAttributedTo(result.getString("attributedTo"));
 				recipe.setOvenTemp(result.getInt("ovenTemp"));
 				recipe.setNumberOfServings(result.getInt("numberOfServings"));

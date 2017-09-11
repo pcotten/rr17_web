@@ -20,13 +20,13 @@ public interface RecipeRestService {
 	@RequestMapping(value="/recipes", method=RequestMethod.GET)
 	public ResponseEntity<List<Recipe>> getRecipes(
 			@RequestParam ("category") String category,
-			@RequestParam ("name") String name,
+			@RequestParam ("title") String title,
 			@RequestParam ("username") String username);
 	
 	@RequestMapping(value="/recipes/{recipeId}", method=RequestMethod.PUT)
 	public ResponseEntity<Void> updateRecipe(
 			@PathVariable ("recipeId") Integer recipeId,
-			@RequestBody String payload);
+			@RequestBody Recipe recipe);
 	
 	@RequestMapping(value="/recipes/{recipeId}", method=RequestMethod.DELETE)
 	public ResponseEntity<Void> deleteRecipe(
@@ -47,7 +47,7 @@ public interface RecipeRestService {
 	public ResponseEntity<Void> updateRecipeIngredient(
 			@PathVariable ("recipeId") Integer recipeId, 
 			@PathVariable ("ingredientId") Integer ingredientId,
-			@RequestBody String payload);
+			@RequestBody Ingredient ingredient);
 	
 	@RequestMapping(value="/recipes/{recipeId}/ingredients/{ingredientID}", method=RequestMethod.DELETE)
 	public ResponseEntity<Void> deleteRecipeIngredient(

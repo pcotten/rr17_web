@@ -1,5 +1,6 @@
 package com.pcotten.rr17.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +10,9 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
 
-public class User {
+public class User implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	private Integer id;
 	@NotNull @Size(min=8, max=30)

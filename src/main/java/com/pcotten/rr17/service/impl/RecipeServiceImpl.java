@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
+
 import org.apache.commons.dbutils.QueryRunner;
 import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Component;
@@ -25,26 +28,23 @@ import com.pcotten.rr17.service.RecipeService;
 @Component
 public class RecipeServiceImpl implements RecipeService{
 
-	DatabaseConfig config = new DatabaseConfig();
-	QueryRunner queryRunner = new QueryRunner();
-	ObjectMapper mapper = new ObjectMapper();
-	JSONParser parser = new JSONParser();
-	DatabaseManager manager = new DatabaseManager();
+	@Inject
+	DatabaseManager manager;
+	@Inject
+	IngredientServiceImpl ingredientService;
+	@Inject
+	InstructionServiceImpl instructionService;
 	
 	Connection conn = null;
-	Statement stmt = null;
-	PreparedStatement pstmt = null;
-	String sql = null;
+
 	Map<String, String> constraints = new HashMap<String, String>();
-	IngredientServiceImpl ingredientService = new IngredientServiceImpl();
-	InstructionServiceImpl instructionService = new InstructionServiceImpl();
 	
 	public RecipeServiceImpl(){
 		
 	}
 	
 	
-	public Recipe insertNewRecipe(Recipe recipe, Integer userId) throws SQLException{
+	public Recipe createRecipe(Recipe recipe, Integer userId) throws SQLException{
 		
 		int r = 0;
 		conn = manager.getConnection();
@@ -104,16 +104,209 @@ public class RecipeServiceImpl implements RecipeService{
 	}
 
 
+	
+
+	public Recipe getRecipeByRecipeId(Integer recipeId) throws SQLException{
+		
+		conn = manager.getConnection();
+		Recipe recipe = new Recipe();
+		
+		// retrieve entity
+		constraints.clear();
+		constraints.put("id", recipeId.toString());
+		recipe = (Recipe) manager.retrieveSingleEntity(constraints, Recipe.class);
+		
+	// retrieve ingredients
+		PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM ingredients_by_recipeid WHERE recipeId = ?");
+		pstmt.setInt(1, recipeId);
+		
+		ResultSet resultSet = pstmt.executeQuery();
+		Map<String, Map<String, Object>> ingredientsMap = new HashMap<String, Map<String, Object>>();
+		while (resultSet.next()){
+			Map<String, Object> quantityMap = new HashMap<String, Object>();
+			quantityMap.put("quantity", resultSet.getInt("quantity"));
+			quantityMap.put("quantityUnit", resultSet.getString("quantityUnit"));
+			ingredientsMap.put(resultSet.getString("name"), quantityMap);
+		}
+		recipe.setIngredients(ingredientsMap);
+		
+	// retrieve instructions
+		pstmt = conn.prepareStatement("SELECT * FROM instruction WHERE recipeId = ?");
+		pstmt.setInt(1, recipeId);
+		
+		resultSet = pstmt.executeQuery();
+		Map<Integer, String> instructionMap = new HashMap<Integer, String>();
+		while (resultSet.next()){
+			instructionMap.put(resultSet.getInt("orderIndex"), resultSet.getString("text"));
+		}
+		recipe.setInstructions(instructionMap);
+	
+	
+	// retrieve images
+		pstmt = conn.prepareStatement("SELECT * FROM image WHERE recipeId = ?");
+		pstmt.setInt(1, recipeId);
+		
+		resultSet = pstmt.executeQuery();
+		List<String> stringList = new ArrayList<String>();
+		while (resultSet.next()){
+			stringList.add(resultSet.getString("imagePath"));
+		}
+		recipe.getImages().addAll(stringList);
+	
+	// retrieve categories
+		pstmt = conn.prepareStatement("SELECT * FROM category_by_recipeid WHERE recipeId = ?");
+		pstmt.setInt(1, recipeId);
+		
+		resultSet = pstmt.executeQuery();
+		stringList.clear();
+		while (resultSet.next()){
+			stringList.add(resultSet.getString("name"));
+		}
+		recipe.getCategories().addAll(stringList);
+
+		return recipe;
+	}
+	
+	public boolean updateRecipe(Recipe recipe) throws SQLException{
+		
+		int r = 0;
+		boolean success = false;
+		
+		PreparedStatement pstmt = conn.prepareStatement("UPDATE recipe SET title = ?, description = ?, owner = ?, attributedTo = ?, "
+				+ "numberOfServings = ?, ovenTemp = ?, servingSize = ?, servingSizeUnit = ?, cookTime = ?, "
+				+ "cookTimeUnit = ?, prepTime = ?, prepTimeUnit = ? WHERE id = ?");
+		pstmt.setString(1, recipe.getTitle());
+		pstmt.setString(2, recipe.getDescription());
+		pstmt.setInt(3, recipe.getOwner());
+		pstmt.setString(4, recipe.getAttributedTo());
+		if (recipe.getNumberOfServings() != null){
+			pstmt.setInt(5, recipe.getNumberOfServings());
+		}
+		else 
+			pstmt.setNull(5, java.sql.Types.INTEGER);
+		if (recipe.getOvenTemp() != null){
+			pstmt.setInt(6, recipe.getOvenTemp());
+		}
+		else 
+			pstmt.setNull(6, java.sql.Types.INTEGER);
+		if (recipe.getServingSize() != null){
+			pstmt.setInt(7, recipe.getServingSize());
+		}
+		else 
+			pstmt.setNull(7, java.sql.Types.INTEGER);
+		pstmt.setString(8, recipe.getServingSizeUnit());
+		if (recipe.getCookTime() != null){
+			pstmt.setInt(9, recipe.getCookTime());
+		}
+		else 
+			pstmt.setNull(9, java.sql.Types.INTEGER);
+		
+		pstmt.setString(10, recipe.getCookTimeUnit());
+		if (recipe.getPrepTime() != null){
+			pstmt.setInt(11, recipe.getPrepTime());
+		}
+		else 
+			pstmt.setNull(11, java.sql.Types.INTEGER);
+		pstmt.setString(12, recipe.getPrepTimeUnit());
+		pstmt.setInt(13, recipe.getId());
+		
+		r = pstmt.executeUpdate();
+		if (r < 0) {
+			success = true;
+			System.out.println("Successfully updated recipe " + recipe.getId());
+		}
+		else {
+			System.out.println("Failed to update recipe " + recipe.getId());
+		}
+		
+		return success;
+	}
+	
+	public boolean deleteRecipe(Integer id) throws SQLException{
+		
+		int result = -1;
+		boolean success = false;
+
+		result = DbCommonFunctions.deleteEntity("recipe", id);
+		if (result != -1){
+			System.out.println("Successfully removed recipe with recipeId " + id);
+			success = true;
+		}
+		else {
+			System.out.println("Unable to remove recipe entity with recipeId " + id);
+		}
+		
+		return success;
+	}
+
+	public Recipe getRecipeById(Integer id) {
+		Map<String, String> constraints = new HashMap<String, String>();
+		constraints.put("id", id.toString());
+		return (Recipe) manager.retrieveSingleEntity(constraints, Recipe.class);
+	}
+
+	@Override
+	public boolean recipeExists(Recipe recipe) throws SQLException {
+
+		conn = manager.getConnection();
+		
+		PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM recipes_by_userId WHERE title = ? AND owner = ?");
+		pstmt.setString(1, recipe.getTitle());
+		pstmt.setInt(2, recipe.getOwner());
+		
+		return manager.isExists(pstmt);
+	}
+	
+	@Override
+	public List<Recipe> getRecipes(String category, String title, String username) throws SQLException {
+		conn = manager.getConnection();
+		String sql = "SELECT * FROM recipe WHERE ";
+		int paramCount = 0;
+		Map<Integer, String> params = new HashMap<Integer, String>();
+		if (category != null) {
+			sql += "category LIKE ? ";
+			params.put(++paramCount, category);
+		}
+		if (title != null) {
+			if (category != null) {
+				sql += "AND ";
+			}
+			sql += "title LIKE ? ";
+			params.put(++paramCount, title);
+		}
+		if (username != null) {
+			if (category != null || title != null) {
+				sql += "AND ";
+			}
+			sql += "owner LIKE ? || attributedTo LIKE ?";
+			params.put(++paramCount, "%" + username + "%");
+			params.put(++paramCount, "%" + username + "%");
+		}
+		
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+		for (Integer i : params.keySet()) {
+			pstmt.setString(i, params.get(i));
+		}
+		
+		ResultSet result = pstmt.executeQuery();
+		
+		List<Recipe> recipes = new ArrayList<Recipe>();
+		
+		
+		return null;
+	}
+	
 	private Recipe insertRecipeEntity(Recipe recipe) throws SQLException {
 
-		pstmt = conn.prepareStatement("INSERT INTO recipe (title, description, owner, attributedTo, "
-			+ "numberOfServings, ovenTemp, servingSize, servingSizeUnit, cookTime, cookTimeUnit, "
-			+ "prepTime, prepTimeUnit) "
+		PreparedStatement pstmt = conn.prepareStatement("INSERT INTO recipe (title, description, "
+			+ "owner, attributedTo, numberOfServings, ovenTemp, servingSize, servingSizeUnit, "
+			+ "cookTime, cookTimeUnit, prepTime, prepTimeUnit) "
 			+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
 		pstmt.setString(1, recipe.getTitle());
 		pstmt.setString(2, recipe.getDescription());
-		pstmt.setString(3, recipe.getOwner());
+		pstmt.setInt(3, recipe.getOwner());
 		pstmt.setString(4, recipe.getAttributedTo());
+		
 		if (recipe.getNumberOfServings() != null){
 			pstmt.setInt(5, recipe.getNumberOfServings());
 		}
@@ -199,7 +392,7 @@ public class RecipeServiceImpl implements RecipeService{
 			
 			for (String m : recipe.getIngredients().keySet()){
 				
-				pstmt = conn.prepareStatement("INSERT INTO ingredient_recipe (recipeId, ingredientId, quantity, quantityUnit) VALUES (?, ?, ?, ?)");
+				PreparedStatement pstmt = conn.prepareStatement("INSERT INTO ingredient_recipe (recipeId, ingredientId, quantity, quantityUnit) VALUES (?, ?, ?, ?)");
 				pstmt.setInt(1, recipe.getId());
 				pstmt.setInt(2, ingredientMap.get(m));
 				pstmt.setFloat(3, (Float) recipe.getIngredients().get(m).get("quantity"));
@@ -246,7 +439,7 @@ public class RecipeServiceImpl implements RecipeService{
 			conn = manager.getConnection();
 		}
 		
-		pstmt = conn.prepareStatement("INSERT INTO user_recipe (recipeId, userId) VALUES (?, ?)");
+		PreparedStatement pstmt = conn.prepareStatement("INSERT INTO user_recipe (recipeId, userId) VALUES (?, ?)");
 		pstmt.setInt(1, recipe.getId());
 		pstmt.setInt(2, userId);
 		
@@ -258,141 +451,5 @@ public class RecipeServiceImpl implements RecipeService{
 		
 		return result;
 	}
-
-	public Recipe getRecipeByRecipeId(Integer recipeId){
-		
-		conn = manager.getConnection();
-		Recipe recipe = new Recipe();
-		ResultSet resultSet = null;
-		// retrieve entity
-		constraints.clear();
-		constraints.put("id", recipeId.toString());
-		recipe = (Recipe) manager.retrieveSingleEntity(constraints, Recipe.class);
-		
-		// retrieve ingredients
-		try {
-			pstmt = conn.prepareStatement("SELECT * FROM ingredients_by_recipeid WHERE recipeId = ?");
-			pstmt.setInt(1, recipeId);
-			
-			resultSet = pstmt.executeQuery();
-			Map<String, Map<String, Object>> ingredientsMap = new HashMap<String, Map<String, Object>>();
-			while (resultSet.next()){
-				Map<String, Object> quantityMap = new HashMap<String, Object>();
-				quantityMap.put("quantity", resultSet.getInt("quantity"));
-				quantityMap.put("quantityUnit", resultSet.getString("quantityUnit"));
-				ingredientsMap.put(resultSet.getString("name"), quantityMap);
-			}
-			recipe.setIngredients(ingredientsMap);
-			
-		// retrieve instructions
-			pstmt = conn.prepareStatement("SELECT * FROM instruction WHERE recipeId = ?");
-			pstmt.setInt(1, recipeId);
-			
-			resultSet = pstmt.executeQuery();
-			Map<Integer, String> instructionMap = new HashMap<Integer, String>();
-			while (resultSet.next()){
-				instructionMap.put(resultSet.getInt("orderIndex"), resultSet.getString("text"));
-			}
-			recipe.setInstructions(instructionMap);
-		
-		
-		// retrieve images
-			pstmt = conn.prepareStatement("SELECT * FROM image WHERE recipeId = ?");
-			pstmt.setInt(1, recipeId);
-			
-			resultSet = pstmt.executeQuery();
-			List<String> stringList = new ArrayList<String>();
-			while (resultSet.next()){
-				stringList.add(resultSet.getString("imagePath"));
-			}
-			recipe.getImages().addAll(stringList);
-		
-		// retrieve categories
-			pstmt = conn.prepareStatement("SELECT * FROM category_by_recipeid WHERE recipeId = ?");
-			pstmt.setInt(1, recipeId);
-			
-			resultSet = pstmt.executeQuery();
-			stringList.clear();
-			while (resultSet.next()){
-				stringList.add(resultSet.getString("name"));
-			}
-			recipe.getCategories().addAll(stringList);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return recipe;
-	}
-	
-	public int updateRecipe(Recipe recipe) throws SQLException{
-		
-		int r = 0;
-		
-		pstmt = conn.prepareStatement("UPDATE recipe SET title = ?, description = ?, owner = ?, attributedTo = ?, "
-				+ "numberOfServings = ?, ovenTemp = ?, servingSize = ?, servingSizeUnit = ?, cookTime = ?, "
-				+ "cookTimeUnit = ?, prepTime = ?, prepTimeUnit = ? WHERE id = ?");
-		pstmt.setString(1, recipe.getTitle());
-		pstmt.setString(2, recipe.getDescription());
-		pstmt.setString(3, recipe.getOwner());
-		pstmt.setString(4, recipe.getAttributedTo());
-		if (recipe.getNumberOfServings() != null){
-			pstmt.setInt(5, recipe.getNumberOfServings());
-		}
-		else 
-			pstmt.setNull(5, java.sql.Types.INTEGER);
-		if (recipe.getOvenTemp() != null){
-			pstmt.setInt(6, recipe.getOvenTemp());
-		}
-		else 
-			pstmt.setNull(6, java.sql.Types.INTEGER);
-		if (recipe.getServingSize() != null){
-			pstmt.setInt(7, recipe.getServingSize());
-		}
-		else 
-			pstmt.setNull(7, java.sql.Types.INTEGER);
-		pstmt.setString(8, recipe.getServingSizeUnit());
-		if (recipe.getCookTime() != null){
-			pstmt.setInt(9, recipe.getCookTime());
-		}
-		else 
-			pstmt.setNull(9, java.sql.Types.INTEGER);
-		
-		pstmt.setString(10, recipe.getCookTimeUnit());
-		if (recipe.getPrepTime() != null){
-			pstmt.setInt(11, recipe.getPrepTime());
-		}
-		else 
-			pstmt.setNull(11, java.sql.Types.INTEGER);
-		pstmt.setString(12, recipe.getPrepTimeUnit());
-		pstmt.setInt(13, recipe.getId());
-		
-		r = pstmt.executeUpdate();
-		
-		return r;
-	}
-	
-	//
-	public int deleteRecipe(Integer id) throws SQLException{
-		
-		int result = -1;
-
-		result = DbCommonFunctions.deleteEntity("recipe", id);
-		if (result != -1){
-			System.out.println("Successfully removed recipe with recipeId " + id);
-		}
-		else {
-			System.out.println("Unable to remove recipe entity with recipeId " + id);
-		}
-		
-		return result;
-	}
-
-
-	public Recipe getRecipeById(Integer id) {
-		Map<String, String> constraints = new HashMap<String, String>();
-		constraints.put("id", id.toString());
-		return (Recipe) manager.retrieveSingleEntity(constraints, Recipe.class);
-	}
-	
 	
 }

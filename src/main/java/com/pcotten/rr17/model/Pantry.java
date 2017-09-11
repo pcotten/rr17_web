@@ -44,16 +44,14 @@ public class Pantry {
 		this.description = description;
 	}
 
+	public List<Integer> getUsers() {
+		return users;
+	}
+	
 	public void setUsers(List<Integer> users) {
 		this.users = users;
 	}
 
-	public List<Integer> getUsers() {
-		return users;
-	}
-	public void setUserId(List<Integer> users) {
-		this.users = users;
-	}
 	public List<Ingredient> getIngredients() {
 		return ingredients;
 	}

@@ -10,7 +10,9 @@
 	<mvc:annotation-driven/>
 	<mvc:resources mapping="/resources/**" location="/resources/" />
 	
-	<context:component-scan base-package="com.pcotten.rr17.service, com.pcotten.rr17.rest.service, com.pcotten.rr17.storage, com.pcotten.rr17.controllers"></context:component-scan>
+	<context:component-scan base-package="com.pcotten.rr17.service, com.pcotten.rr17.rest.service, 
+		com.pcotten.rr17.storage, com.pcotten.rr17.controllers, com.pcotten.rr17.dao.impl" />
+	<context:property-placeholder location="/WEB-INF/config/database.properties"/>
 	
 	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<property name="prefix" value="/WEB-INF/jsp/" />
@@ -28,7 +30,20 @@
 		<property name="config" ref="dbConfig" />
 	</bean>
 	
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="${dbDriver}" />
+		<property name="url" value="${dbUrl}" />
+		<property name="username" value="${dbUsername}" />
+		<property name="password" value="${dbPassword}" />
+	</bean>
 	
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+<!-- 	<bean id="userDAOImpl" class="com.pcotten.rr17.dao.impl.UserDAOImpl" > -->
+<!-- 		<property name="dataSource" ref="dataSource" /> -->
+<!-- 	</bean> -->
 
 </beans>
 

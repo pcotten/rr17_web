@@ -11,16 +11,20 @@ public interface CookbookService {
 
 	public Cookbook createCookbook(Cookbook cookbook, Integer userId) throws SQLException;
 	
-	public int updateCookbook(Cookbook cookbook) throws SQLException;
+	public boolean updateCookbook(Cookbook cookbook) throws SQLException;
 	
-	public int deleteCookbook(Integer id) throws SQLException;
+	public boolean deleteCookbook(Integer id) throws SQLException;
 
 	public Cookbook getCookbookById(Integer id);
 
-	public List<Recipe> getCookbookRecipes(Integer id);
+	public List<Recipe> getCookbookRecipes(Integer id) throws SQLException;
 
-	public List<Category> getCookbookCategories(Integer id);
+	public List<Category> getCookbookCategories(Integer id) throws SQLException;
 
-	boolean cookbookExists(Integer userId, Cookbook cookbook);
+	boolean cookbookExists(Integer userId, Cookbook cookbook) throws SQLException;
+
+	public boolean deleteCookbookRecipe(Integer cookbookId, Integer recipeId) throws SQLException;
+
+	public Recipe createCookbookRecipe(Integer cookbookId, Recipe recipe) throws SQLException;
 	
 }

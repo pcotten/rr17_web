@@ -139,12 +139,18 @@ public class UserRestServiceImpl implements UserRestService {
 			@PathVariable Integer userId) {
 		
 		ResponseEntity<List<Cookbook>> response = null;
-		List<Cookbook> cookbooks = service.getCookbooks(userId);
-		if (cookbooks != null && !cookbooks.isEmpty()) {
-			response = ResponseEntity.ok(cookbooks);
-		}
-		else {
-			response = new ResponseEntity<List<Cookbook>>(HttpStatus.BAD_REQUEST);
+		try {
+			response = null;
+			List<Cookbook> cookbooks = service.getCookbooks(userId);
+			if (cookbooks != null && !cookbooks.isEmpty()) {
+				response = ResponseEntity.ok(cookbooks);
+			}
+			else {
+				response = new ResponseEntity<List<Cookbook>>(HttpStatus.NOT_FOUND);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return response;
@@ -158,22 +164,27 @@ public class UserRestServiceImpl implements UserRestService {
 		
 		ResponseEntity<Void> response = null;
 		
-		if (cookbookService.cookbookExists(userId, cookbook)) {
-			response = new ResponseEntity<Void>(HttpStatus.CONFLICT);
-		}
-		else {
-			cookbook = service.createCookbook(userId, cookbook);
-			if (cookbook != null && cookbook.getId() != null) {
-				HttpHeaders headers = new HttpHeaders();
-				Map<String, Integer> uriVariables = new HashMap<String, Integer>();
-				uriVariables.put("userId", userId);
-				uriVariables.put("cookbookId", cookbook.getId());
-				headers.setLocation(uriBuilder.path("users/{userId}/cookbook/{cookbookId}").buildAndExpand(uriVariables).toUri());
-				response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+		try {
+			if (cookbookService.cookbookExists(userId, cookbook)) {
+				response = new ResponseEntity<Void>(HttpStatus.CONFLICT);
 			}
 			else {
-				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+				cookbook = service.createCookbook(userId, cookbook);
+				if (cookbook != null && cookbook.getId() != null) {
+					HttpHeaders headers = new HttpHeaders();
+					Map<String, Integer> uriVariables = new HashMap<String, Integer>();
+					uriVariables.put("userId", userId);
+					uriVariables.put("cookbookId", cookbook.getId());
+					headers.setLocation(uriBuilder.path("users/{userId}/cookbook/{cookbookId}").buildAndExpand(uriVariables).toUri());
+					response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+				}
+				else {
+					response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+				}
 			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return response;
 	}
@@ -181,13 +192,19 @@ public class UserRestServiceImpl implements UserRestService {
 	@Override
 	public ResponseEntity<List<Ingredient>> getPantryIngredients(
 			@PathVariable Integer userId) {
+		
 		ResponseEntity<List<Ingredient>> response = null;
-		List<Ingredient> ingredients = service.getPantryIngredients(userId);
-		if (ingredients != null && !ingredients.isEmpty()) {
-			response = ResponseEntity.ok(ingredients);
-		}
-		else {
-			response = new ResponseEntity<List<Ingredient>>(HttpStatus.BAD_REQUEST);
+		try {
+			List<Ingredient> ingredients = service.getPantryIngredients(userId);
+			if (ingredients != null && !ingredients.isEmpty()) {
+				response = ResponseEntity.ok(ingredients);
+			}
+			else {
+				response = new ResponseEntity<List<Ingredient>>(HttpStatus.NOT_FOUND);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return response;
@@ -201,29 +218,34 @@ public class UserRestServiceImpl implements UserRestService {
 		
 		ResponseEntity<Void> response = null;
 		
-		if (pantryService.pantryIngredientExists(userId, ingredient)) {
-			Integer ingredientId = ingredientService.getIngredientIdByName(ingredient.getName());
-			boolean success = service.updatePantryIngredient(userId, ingredientId, ingredient);
-			if (success) {
-				response = ResponseEntity.ok().build();
+		try {
+			if (pantryService.pantryIngredientExists(userId, ingredient)) {
+				Integer ingredientId = ingredientService.getIngredientIdByName(ingredient.getName());
+				boolean success = service.updatePantryIngredient(userId, ingredientId, ingredient);
+				if (success) {
+					response = ResponseEntity.ok().build();
+				}
+				else {
+					response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+				}
 			}
 			else {
-				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+				ingredient = service.createPantryIngredient(userId, ingredient);
+				if (ingredient != null && ingredient.getId() != null) {
+					HttpHeaders headers = new HttpHeaders();
+					Map<String, Integer> uriVariables = new HashMap<String, Integer>();
+					uriVariables.put("userId", userId);
+					uriVariables.put("ingredientId", ingredient.getId());
+					headers.setLocation(uriBuilder.path("users/{userId}/pantry/ingredient/{ingredientId}").buildAndExpand(uriVariables).toUri());
+					response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+				}
+				else {
+					response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+				}
 			}
-		}
-		else {
-			ingredient = service.createPantryIngredient(userId, ingredient);
-			if (ingredient != null && ingredient.getId() != null) {
-				HttpHeaders headers = new HttpHeaders();
-				Map<String, Integer> uriVariables = new HashMap<String, Integer>();
-				uriVariables.put("userId", userId);
-				uriVariables.put("ingredientId", ingredient.getId());
-				headers.setLocation(uriBuilder.path("users/{userId}/pantry/ingredient/{ingredientId}").buildAndExpand(uriVariables).toUri());
-				response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
-			}
-			else {
-				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return response;
@@ -237,13 +259,19 @@ public class UserRestServiceImpl implements UserRestService {
 		
 		ResponseEntity<Void> response = null;
 		
-		boolean success = service.updatePantryIngredient(userId, ingredientId, ingredient);
-		if (success) {
-			response = ResponseEntity.ok().build();
+		try {
+			boolean success = service.updatePantryIngredient(userId, ingredientId, ingredient);
+			if (success) {
+				response = ResponseEntity.ok().build();
+			}
+			else {
+				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		else {
-			response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-		}
+		
 		return response;
 	}
 
@@ -253,14 +281,21 @@ public class UserRestServiceImpl implements UserRestService {
 			@PathVariable Integer ingredientId) {
 		
 		ResponseEntity<Void> response = null;
-		boolean success;
-		success = service.deletePantryIngredient(userId, ingredientId);
-		if (success) {
-			response = ResponseEntity.ok().build();
+		
+		try {
+			boolean success;
+			success = service.deletePantryIngredient(userId, ingredientId);
+			if (success) {
+				response = ResponseEntity.ok().build();
+			}
+			else {
+				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		else {
-			response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-		}
+		
 		return response;
 	}
 
@@ -269,12 +304,17 @@ public class UserRestServiceImpl implements UserRestService {
 			@PathVariable Integer userId) {
 		
 		ResponseEntity<List<Meal>> response = null;
-		List<Meal> meals = service.getMeals(userId);;
-		if (meals != null && !meals.isEmpty()) {
-			response = ResponseEntity.ok(meals);
-		}
-		else {
-			response = new ResponseEntity<List<Meal>>(HttpStatus.BAD_REQUEST);
+		try {
+			List<Meal> meals = service.getMeals(userId);;
+			if (meals != null && !meals.isEmpty()) {
+				response = ResponseEntity.ok(meals);
+			}
+			else {
+				response = new ResponseEntity<List<Meal>>(HttpStatus.NOT_FOUND);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return response;
@@ -287,21 +327,26 @@ public class UserRestServiceImpl implements UserRestService {
 			UriComponentsBuilder uriBuilder) {
 		
 		ResponseEntity<Void> response = null;
-		if (mealService.mealExists(userId, meal)) {
-			response = new ResponseEntity<Void>(HttpStatus.CONFLICT);
-		} else {
-			meal = service.createMeal(userId, meal);
-			if (meal != null && meal.getId() != null) {
-				HttpHeaders headers = new HttpHeaders();
-				Map<String, Integer> uriVariables = new HashMap<String, Integer>();
-				uriVariables.put("userId", userId);
-				uriVariables.put("mealId", meal.getId());
-				headers.setLocation(uriBuilder.path("users/{userId}/meals/{mealId}").buildAndExpand(uriVariables).toUri());
-				response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+		try {
+			if (mealService.mealExists(userId, meal)) {
+				response = new ResponseEntity<Void>(HttpStatus.CONFLICT);
+			} else {
+				meal = service.createMeal(userId, meal);
+				if (meal != null && meal.getId() != null) {
+					HttpHeaders headers = new HttpHeaders();
+					Map<String, Integer> uriVariables = new HashMap<String, Integer>();
+					uriVariables.put("userId", userId);
+					uriVariables.put("mealId", meal.getId());
+					headers.setLocation(uriBuilder.path("users/{userId}/meals/{mealId}").buildAndExpand(uriVariables).toUri());
+					response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+				}
+				else {
+					response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+				}
 			}
-			else {
-				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	
 		return response;
@@ -315,12 +360,17 @@ public class UserRestServiceImpl implements UserRestService {
 		
 		ResponseEntity<Void> response = null;
 		boolean success;
-		success = service.updateMeal(userId, mealId, meal);
-		if (success) {
-			response = ResponseEntity.ok().build();
-		}
-		else {
-			response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+		try {
+			success = service.updateMeal(userId, mealId, meal);
+			if (success) {
+				response = ResponseEntity.ok().build();
+			}
+			else {
+				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return response;
@@ -333,12 +383,17 @@ public class UserRestServiceImpl implements UserRestService {
 		
 		ResponseEntity<Void> response = null;
 		boolean success;
-		success = service.deleteMeal(userId, mealId);
-		if (success) {
-			response = ResponseEntity.ok().build();
-		}
-		else {
-			response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+		try {
+			success = service.deleteMeal(userId, mealId);
+			if (success) {
+				response = ResponseEntity.ok().build();
+			}
+			else {
+				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return response;
@@ -349,12 +404,17 @@ public class UserRestServiceImpl implements UserRestService {
 			@PathVariable Integer userId) {
 		
 		ResponseEntity<List<MealPlan>> response = null;
-		List<MealPlan> meals = service.getMealPlans(userId);
-		if (meals != null && !meals.isEmpty()) {
-			response = ResponseEntity.ok(meals);
-		}
-		else {
-			response = new ResponseEntity<List<MealPlan>>(HttpStatus.BAD_REQUEST);
+		try {
+			List<MealPlan> meals = service.getMealPlans(userId);
+			if (meals != null && !meals.isEmpty()) {
+				response = ResponseEntity.ok(meals);
+			}
+			else {
+				response = new ResponseEntity<List<MealPlan>>(HttpStatus.NOT_FOUND);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return response;
@@ -367,21 +427,26 @@ public class UserRestServiceImpl implements UserRestService {
 			UriComponentsBuilder uriBuilder) {
 		
 		ResponseEntity<Void> response = null;
-		if (mealPlanService.mealPlanExists(userId, mealPlan)) {
-			response = new ResponseEntity<Void>(HttpStatus.CONFLICT);
-		} else {
-			mealPlan = service.createMealPlan(userId, mealPlan);
-			if (mealPlan != null && mealPlan.getId() != null) {
-				HttpHeaders headers = new HttpHeaders();
-				Map<String, Integer> uriVariables = new HashMap<String, Integer>();
-				uriVariables.put("userId", userId);
-				uriVariables.put("mealId", mealPlan.getId());
-				headers.setLocation(uriBuilder.path("users/{userId}/meals/{mealId}").buildAndExpand(uriVariables).toUri());
-				response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+		try {
+			if (mealPlanService.mealPlanExists(userId, mealPlan)) {
+				response = new ResponseEntity<Void>(HttpStatus.CONFLICT);
+			} else {
+				mealPlan = service.createMealPlan(userId, mealPlan);
+				if (mealPlan != null && mealPlan.getId() != null) {
+					HttpHeaders headers = new HttpHeaders();
+					Map<String, Integer> uriVariables = new HashMap<String, Integer>();
+					uriVariables.put("userId", userId);
+					uriVariables.put("mealId", mealPlan.getId());
+					headers.setLocation(uriBuilder.path("users/{userId}/meals/{mealId}").buildAndExpand(uriVariables).toUri());
+					response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+				}
+				else {
+					response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+				}
 			}
-			else {
-				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	
 		return response;
@@ -395,12 +460,17 @@ public class UserRestServiceImpl implements UserRestService {
 		
 		ResponseEntity<Void> response = null;
 		boolean success;
-		success = service.updateMealPlan(userId, mealPlanId, mealplan);
-		if (success) {
-			response = ResponseEntity.ok().build();
-		}
-		else {
-			response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+		try {
+			success = service.updateMealPlan(userId, mealPlanId, mealplan);
+			if (success) {
+				response = ResponseEntity.ok().build();
+			}
+			else {
+				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return response;
@@ -413,12 +483,17 @@ public class UserRestServiceImpl implements UserRestService {
 		
 		ResponseEntity<Void> response = null;
 		boolean success;
-		success = service.deleteMealPlan(userId, mealPlanId);
-		if (success) {
-			response = ResponseEntity.ok().build();
-		}
-		else {
-			response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+		try {
+			success = service.deleteMealPlan(userId, mealPlanId);
+			if (success) {
+				response = ResponseEntity.ok().build();
+			}
+			else {
+				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		return response;

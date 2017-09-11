@@ -21,35 +21,35 @@ public interface UserService {
 	
 	public boolean deleteUser(Integer id) throws SQLException;
 
-	public List<Cookbook> getCookbooks(Integer userId);
+	public List<Cookbook> getCookbooks(Integer userId) throws SQLException;
 
-	public Cookbook createCookbook(Integer userId, Cookbook cookbook);
+	public Cookbook createCookbook(Integer userId, Cookbook cookbook) throws SQLException;
 
-	public List<Ingredient> getPantryIngredients(Integer userId);
+	public List<Ingredient> getPantryIngredients(Integer userId) throws SQLException;
 
 	public Ingredient createPantryIngredient(Integer userId, Ingredient ingredient);
 
-	public boolean updatePantryIngredient(Integer userId, Integer ingredientId, Ingredient ingredient);
+	public boolean updatePantryIngredient(Integer userId, Integer ingredientId, Ingredient ingredient) throws SQLException;
 
-	public boolean deletePantryIngredient(Integer userId, Integer ingredientId);
+	public boolean deletePantryIngredient(Integer userId, Integer ingredientId) throws SQLException;
 
-	public List<Meal> getMeals(Integer userId);
+	public List<Meal> getMeals(Integer userId) throws SQLException ;
 
-	public Meal createMeal(Integer userId, Meal meal);
+	public Meal createMeal(Integer userId, Meal meal) throws SQLException;
 
-	public boolean updateMeal(Integer userId, Integer mealId, Meal meal);
+	public boolean updateMeal(Integer userId, Integer mealId, Meal meal) throws SQLException;
 
-	public boolean deleteMeal(Integer userId, Integer mealId);
+	public boolean deleteMeal(Integer userId, Integer mealId) throws SQLException;
 
-	public List<MealPlan> getMealPlans(Integer userId);
+	public List<MealPlan> getMealPlans(Integer userId) throws SQLException;
 
-	public MealPlan createMealPlan(Integer userId, MealPlan mealPlan);
+	public MealPlan createMealPlan(Integer userId, MealPlan mealPlan) throws SQLException;
 
-	public boolean updateMealPlan(Integer userId, Integer mealId, MealPlan mealPlan);
+	public boolean updateMealPlan(Integer userId, Integer mealId, MealPlan mealPlan) throws SQLException;
 
-	public boolean deleteMealPlan(Integer userId, Integer mealPlanId);
+	public boolean deleteMealPlan(Integer userId, Integer mealPlanId) throws SQLException;
 
-	public boolean userExists(User user);
+	public boolean userExists(User user) throws SQLException;
 
 
 	
