@@ -47,7 +47,7 @@ public class CookbookService_Test {
 		
 		// Test read operations
 		
-		cookbook = cookbookService.getCookbookById(cookbook.getId());
+		cookbook = cookbookService.getCookbook(cookbook.getId());
 		
 		// Test update operation
 		

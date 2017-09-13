@@ -1,87 +1,71 @@
 package com.pcotten.rr17.service.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
-import com.pcotten.rr17.storage.service.DatabaseConfig;
 import com.pcotten.rr17.storage.service.DatabaseManager;
-import com.pcotten.rr17.storage.service.DbCommonFunctions;
-import com.pcotten.rr17.storage.service.SQLBuilder;
+import com.pcotten.rr17.dao.CategoryDAO;
 import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.service.CategoryService;
 
 @Component
 public class CategoryServiceImpl implements CategoryService {
 	
-	DatabaseConfig config = new DatabaseConfig();
-	DatabaseManager manager = new DatabaseManager();
-	
-	Connection conn = null;
-	Statement stmt = null;
-	PreparedStatement pstmt = null;
-	String sql = null;
+	@Inject
+	DatabaseManager manager;
+	@Inject
+	CategoryDAO categoryDAO;
 	
 	public CategoryServiceImpl(){
 		
 	}
-
-	public Category insertNewCategory(Category category) throws SQLException{
+	
+	public Category getCategory(Integer id){
 		
-		conn = manager.getConnection();
-		int r = 0;
-		pstmt = conn.prepareStatement("INSERT INTO category (name, description) "
-				+ "VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
-		pstmt.setString(1, category.getName());
-		pstmt.setString(2, category.getDescription());
+		Category category = categoryDAO.getCategory(id);
+		
+		return category;
 
-		r = pstmt.executeUpdate();
-		ResultSet rs = pstmt.getGeneratedKeys();
-		if (rs.next()){
-			Integer id = Integer.valueOf(rs.getString("GENERATED_KEY"));
-			category.setId(id);
-		}
-		if (r != 0){
-			System.out.println("Category '" + category.getName() + "' successfully inserted into database");
+	}
+
+	public Category createCategory(Category category) throws SQLException{
+		
+		category = categoryDAO.createCategory(category);
+		
+		if (category.getId() != null){
+			System.out.println("Category '" + category.getName() 
+			+ "' successfully inserted into database with id " + category.getId());
 		}
 		else {
-			System.out.println("Category '" + category.getName() + "' not created");
+			System.out.println("Failed to create category '" + category.getName() + "'");
 		}
 
 		return category;
 	}
 	
-	public int updateCategory(Category category) throws SQLException{
-		conn = manager.getConnection();
-		int r = 0;
-
-		pstmt = conn.prepareStatement("UPDATE category SET name = ?, description = ? WHERE id = ?");
-		pstmt.setString(1, category.getName());
-		pstmt.setString(2, category.getDescription());
-		pstmt.setInt(3, category.getId());
+	public Integer updateCategory(Category category) throws SQLException{
 		
-		r = pstmt.executeUpdate();
-		if (r != 0){
+		int result = categoryDAO.updateCategory(category);
+		
+		if (result > 0){
 			System.out.println("Category '" + category.getName() + "' successfully updated in database");
 		}
 		else {
-			System.out.println("Category '" + category.getName() + "' not updated");
+			System.out.println("Failed to update category");
 		}
 
-		return r;
+		return result;
 	}
 	
-	public int deleteCategory(Integer id) throws SQLException{
+	public Integer deleteCategory(Integer id) throws SQLException{
 		
 		int result = -1;
 
-		result = DbCommonFunctions.deleteEntity("category", id);
+		result = categoryDAO.deleteCategory(id);
+		
 		if (result != -1){
 			System.out.println("Successfully removed category with id " + id);
 		}
@@ -91,13 +75,54 @@ public class CategoryServiceImpl implements CategoryService {
 		
 		return result;
 	}
-	
-	public Category getCategoryByName(String name){
-		
-		Map<String, String> constraints = new HashMap<String, String>();
-		constraints.put("name", SQLBuilder.toSQLString(name));
-		
-		return (Category) manager.retrieveSingleEntity(constraints, Category.class);
 
+	@Override
+	public List<Category> getRecipeCategories(Integer recipeId) {
+
+		List<Category> categories = categoryDAO.getRecipeCategories(recipeId);
+		
+		return categories;
 	}
+
+	@Override
+	public List<Category> getIngredientCategories(Integer ingredientId) {
+		
+		List<Category> categories = categoryDAO.getIngredientCategories(ingredientId);
+		
+		return categories;
+	}
+
+	@Override
+	public List<Category> getCookbookCategories(Integer cookbookId) {
+		
+		List<Category> categories = categoryDAO.getCookbookCategories(cookbookId);
+		
+		return categories;
+	}
+
+	@Override
+	public Integer linkCategoryToRecipe(Integer categoryId, Integer recipeId) {
+		
+		int result = categoryDAO.linkCategoryToRecipe(categoryId, recipeId);
+		
+		return result;
+	}
+
+	@Override
+	public Integer linkCategoryToIngredient(Integer categoryId, Integer ingredientId) {
+		
+		int result = categoryDAO.linkCategoryToIngredient(categoryId, ingredientId);
+		
+		return result;
+	}
+
+	@Override
+	public Integer linkCategoryToCookbook(Integer categoryId, Integer cookbookId) {
+		
+		int result = categoryDAO.linkCategoryToCookbook(categoryId, cookbookId);
+		
+		return result;
+	}
+
+
 }

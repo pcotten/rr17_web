@@ -21,4 +21,6 @@ public interface CookbookDAO {
 	public Integer linkCategoryToCookbook(Integer cookbookId, Integer categoryId);
 
 	public Integer addRecipeToCookbook(Integer cookbookId, Integer recipeId);
+
+	public Integer deleteCookbookRecipe(Integer cookbookId, Integer recipeId);
 }

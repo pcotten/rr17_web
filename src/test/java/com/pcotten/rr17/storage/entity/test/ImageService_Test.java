@@ -39,12 +39,12 @@ public class ImageService_Test {
 		int result = 0;
 		
 		// Test create operation
-		image = imageService.insertNewImage(image);
+		image = imageService.createImage(image);
 		assertTrue(image.getId() != null); 
 		
 		// Test read operations
 		
-		image = imageService.getImageById(image.getId());
+		image = imageService.getImage(image.getId());
 		
 		// Test update operation
 		

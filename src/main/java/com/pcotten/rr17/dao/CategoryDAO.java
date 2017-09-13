@@ -21,4 +21,10 @@ public interface CategoryDAO {
 	public List<Category> getIngredientCategories(Integer ingredientId);
 	
 	public List<Category> getCookbookCategories(Integer cookbookId);
+
+	public int linkCategoryToRecipe(Integer categoryId, Integer recipeId);
+
+	public int linkCategoryToIngredient(Integer categoryId, Integer ingredientId);
+
+	public int linkCategoryToCookbook(Integer categoryId, Integer cookbookId);
 }

@@ -17,5 +17,9 @@ public interface RecipeDAO {
 	public List<Recipe> getCookbookRecipes(Integer cookbookId);
 	
 	public List<Recipe> getMealRecipes(Integer mealId);
+
+	public Integer addRecipeToCookbook(Integer id, Integer cookbookId);
+	
+	public List<Recipe> findRecipes(String category, String title, String username);
 	
 }

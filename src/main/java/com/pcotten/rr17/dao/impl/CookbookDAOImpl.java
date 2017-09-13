@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 
 import com.pcotten.rr17.dao.CookbookDAO;
 import com.pcotten.rr17.model.Cookbook;
-import com.pcotten.rr17.model.User;
 
 @Component
 public class CookbookDAOImpl extends JdbcDaoSupport implements CookbookDAO{
@@ -53,6 +52,7 @@ public class CookbookDAOImpl extends JdbcDaoSupport implements CookbookDAO{
 				"SELECT * FROM cookbook WHERE id = ?", 
 				new Object[] {id}, 
 				new CookbookRowMapper());
+		
 		return cookbook;
 	}
 
@@ -75,6 +75,7 @@ public class CookbookDAOImpl extends JdbcDaoSupport implements CookbookDAO{
 		if (id != null) {
 			cookbook.setId(id);
 		}
+		
 		return cookbook;
 	}
 
@@ -87,6 +88,7 @@ public class CookbookDAOImpl extends JdbcDaoSupport implements CookbookDAO{
 						cookbook.getOwner(),
 						cookbook.getId()
 				});
+		
 		return result;
 	}
 
@@ -95,18 +97,18 @@ public class CookbookDAOImpl extends JdbcDaoSupport implements CookbookDAO{
 		Integer result = getJdbcTemplate().update(
 				"DELETE FROM cookbook WHERE id = ?", 
 				new Object[] {id});
+		
 		return result;
 	}
 
 	@Override
 	public List<Cookbook> getUserCookbooks(Integer userId) {
-		List<Cookbook> cookbooks = getJdbcTemplate().queryForList(
+		List<Cookbook> cookbooks = getJdbcTemplate().query(
 				"SELECT * FROM cookbooks_by_userId WHERE userId = ?",
 				new Object[] {userId},
-				Cookbook.class);
-		return cookbooks;
+				new CookbookRowMapper());
 		
-
+		return cookbooks;
 	}
 
 	@Override
@@ -114,6 +116,7 @@ public class CookbookDAOImpl extends JdbcDaoSupport implements CookbookDAO{
 		Integer result = getJdbcTemplate().update(
 				"call link_cookbook_to_user (?, ?)", 
 				new Object[] {cookbookId, userId});
+		
 		return result;
 	}
 
@@ -121,15 +124,35 @@ public class CookbookDAOImpl extends JdbcDaoSupport implements CookbookDAO{
 	public Integer linkCategoryToCookbook(Integer cookbookId, Integer categoryId) {
 		Integer result = getJdbcTemplate().update(
 				"call link_category_to_cookbook (?, ?)", 
-				new Object[] {cookbookId, categoryId});
+				new Object[] {
+						cookbookId, 
+						categoryId
+				});
+		
 		return result;
 	}
-
+	
 	@Override
 	public Integer addRecipeToCookbook(Integer cookbookId, Integer recipeId) {
 		Integer result = getJdbcTemplate().update(
 				"call add_recipe_to_cookbook (?, ?)", 
-				new Object[] {cookbookId, recipeId});
+				new Object[] {
+						cookbookId, 
+						recipeId
+				});
+		
+		return result;
+	}
+
+	@Override
+	public Integer deleteCookbookRecipe(Integer cookbookId, Integer recipeId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM recipe_cookbook WHERE cookbookId = ? AND recipeId = ?", 
+				new Object[] {
+						cookbookId, 
+						recipeId
+				});
+		
 		return result;
 	}
 	

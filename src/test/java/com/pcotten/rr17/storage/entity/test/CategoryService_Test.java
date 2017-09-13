@@ -33,7 +33,7 @@ public class CategoryService_Test {
 		int result = 0;
 		
 		// Test create operation
-		category = categoryService.insertNewCategory(category);
+		category = categoryService.createCategory(category);
 		assertTrue(category.getId() != null);
 		
 		category = categoryService.getCategoryByName(category.getName());

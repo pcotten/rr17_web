@@ -1,7 +1,6 @@
 package com.pcotten.rr17.model;
 
 import java.util.Date;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;

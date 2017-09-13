@@ -2,59 +2,45 @@ package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
-import com.pcotten.rr17.storage.service.DatabaseConfig;
 import com.pcotten.rr17.storage.service.DatabaseManager;
-import com.pcotten.rr17.storage.service.DbCommonFunctions;
-import com.pcotten.rr17.storage.service.SQLBuilder;
+import com.pcotten.rr17.dao.IngredientDAO;
 import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Ingredient;
-import com.pcotten.rr17.model.Recipe;
+import com.pcotten.rr17.service.CategoryService;
 import com.pcotten.rr17.service.IngredientService;
 
 @Component
 public class IngredientServiceImpl implements IngredientService {
-
-	DatabaseConfig config = new DatabaseConfig();
-	DatabaseManager manager = new DatabaseManager();
 	
-	Connection conn = null;
-	Statement stmt = null;
-	PreparedStatement pstmt = null;
-	String sql = null;
+	@Inject
+	DatabaseManager manager;
+	@Inject
+	IngredientDAO ingredientDAO;
+	@Inject
+	CategoryService categoryService;
 	
 	public IngredientServiceImpl(){
 		
 	}
 	
+	public Ingredient getIngredient(Integer id) {
+		
+		return ingredientDAO.getIngredient(id);
+		
+	}
 	
 	public Ingredient createIngredient(Ingredient ingredient) throws SQLException{
 		
-		conn = manager.getConnection();
-		int r = 0;
-
-		pstmt = conn.prepareStatement("INSERT INTO ingredient (name, description) "
-				+ "VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
-		pstmt.setString(1, ingredient.getName());
-		pstmt.setString(2, ingredient.getDescription());
-
-		r = pstmt.executeUpdate();
-		ResultSet rs = pstmt.getGeneratedKeys();
-		if (rs.next()){
-			Integer id = Integer.valueOf(rs.getString("GENERATED_KEY"));
-			ingredient.setId(id);
-		}
-		if (r != 0){
-			System.out.println("Ingredient " + ingredient.getName() + " successfully inserted into database");
+		ingredient = ingredientDAO.createIngredient(ingredient);
+		
+		if (ingredient.getId() != null){
+			System.out.println("Ingredient " + ingredient.getName() + " successfully inserted into database with id " + ingredient.getId());
 		}
 		else {
 			System.out.println("Ingredient " + ingredient.getName() + " not created");
@@ -64,51 +50,25 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 	
 
-	public List<Map<String, Object>> queryIngredients(Recipe recipe){
+	public Integer updateIngredient(Ingredient ingredient) throws SQLException {
+
 		
-		String ingredientList = "";
-		for (String s : recipe.getIngredients().keySet()){
-			ingredientList += SQLBuilder.toSQLString(s) + ",";
-		}
-		if (ingredientList.length() > 0 ){
-			ingredientList = ingredientList.substring(0, ingredientList.length()-1);
-			sql = "SELECT id, name FROM ingredient WHERE name IN (" + ingredientList + ");";
-			
-			conn = manager.getConnection();
-			List<Map<String, Object>> ingredientMapList = manager.mapListQuery(conn, sql);
-	
-			System.out.println("MapList : " + ingredientMapList);
-			return ingredientMapList;
-		}
-		return null;
-	}
-
-
-	public int updateIngredient(Ingredient ingredient) throws SQLException {
-
-		conn = manager.getConnection();
-		int r = 0;
-
-		pstmt = conn.prepareStatement("UPDATE ingredient SET name = ?, description = ? WHERE id = ?");
-		pstmt.setString(1, ingredient.getName());
-		pstmt.setString(2, ingredient.getDescription());
-		pstmt.setInt(3, ingredient.getId());
-
-		r = pstmt.executeUpdate();
-		if (r != 0){
+		int result = ingredientDAO.updateIngredient(ingredient);
+		
+		if (result != 0){
 			System.out.println("Ingredient " + ingredient.getName() + " successfully updated in database");
 		}
 		else {
 			System.out.println("Ingredient " + ingredient.getName() + " not updated");
 		}
-		return r;
+		return result;
 	}
 
 
-	public int deleteIngredient(Integer id) throws SQLException {
-		int result = -1;
+	public Integer deleteIngredient(Integer id) throws SQLException {
+		
+		int result = ingredientDAO.deleteIngredient(id);
 
-		result = DbCommonFunctions.deleteEntity("ingredient", id);
 		if (result != -1){
 			System.out.println("Successfully removed ingredient with id " + id);
 		}
@@ -119,189 +79,139 @@ public class IngredientServiceImpl implements IngredientService {
 		return result;
 	}
 
-
-	public Ingredient getIngredientById(Integer id) {
-		Map<String, String> constraints = new HashMap<String, String>();
-		constraints.put("id", id.toString());
-		
-		return (Ingredient) manager.retrieveSingleEntity(constraints, Ingredient.class);
-	}
-
-
+	
 	@Override
 	public List<Category> getIngredientCategories(Integer id) {
-		List<Category> categories = new ArrayList<Category>();
-		conn = manager.getConnection();
-		try {
-			pstmt = conn.prepareStatement("SELECT * FROM categories_by_ingredientid WHERE ingredientId = ?");
-			pstmt.setInt(1, id);
-			
-			ResultSet result = pstmt.executeQuery();
-			while (result.next()) {
-				Category category = new Category();
-				category.setId(result.getInt("id"));
-				category.setName(result.getString("name"));
-				category.setDescription(result.getString("description"));
-
-				categories.add(category);
-			}
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		List<Category> categories = categoryService.getIngredientCategories(id);
 		
 		return categories;
 	}
-
-
-	@Override
-	public Ingredient createRecipeIngredient(Ingredient ingredient, Integer recipeId) {
-		try {
-			if (!ingredientExists(ingredient)) {
-				ingredient = this.createIngredient(ingredient);
-			}
-			else {
-				ingredient.setId(getIngredientId(ingredient.getName()));
-			}
-			if (ingredient.getId() != null) {
-				linkIngredientToRecipe(ingredient, recipeId);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return ingredient;
-	}
-
-	private void linkIngredientToRecipe(Ingredient ingredient, Integer recipeId) {
-		try {
-			if (conn.isClosed())
-				conn = manager.getConnection();
-			
-			pstmt = conn.prepareStatement("INSERT INTO ingredient_recipe (ingredientId, recipeId, quantity, quantityUnit) "
-					+ "VALUES (?, ?, ?, ?)");
-			pstmt.setInt(1, ingredient.getId());
-			pstmt.setInt(2, recipeId);
-			pstmt.setFloat(3, ingredient.getQuantity());
-			pstmt.setString(4, ingredient.getQuantityUnit());
-			
-			int r =pstmt.executeUpdate();
-			if (r == 1)
-				System.out.println("Successfully linked ingredient to recipe");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	
-	}
-
-
+	
 	@Override
-	public Ingredient createPantryIngredient(Ingredient ingredient, Integer pantryId) {
-		try {
-			if (!ingredientExists(ingredient)) {
-				ingredient = this.createIngredient(ingredient);
-			}
-			else {
-				ingredient.setId(getIngredientId(ingredient.getName()));
-			}
-			if (ingredient.getId() != null) {
-				linkIngredientToPantry(ingredient, pantryId);
-			}	
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public List<Ingredient> getRecipeIngredients(Integer recipeId) {
+
+		List<Ingredient> ingredients = ingredientDAO.getRecipeIngredients(recipeId);
+		
+		return ingredients;
+	}
+	
+	
+	@Override
+	public Integer createRecipeIngredient(Ingredient ingredient, Integer recipeId) throws SQLException {
+
+		int result = 0;
+		
+		if (!ingredientExists(ingredient)) {
+			ingredient = ingredientDAO.createIngredient(ingredient);
+		}
+		else {
+			ingredient.setId(getIngredientId(ingredient.getName()));
+		}
+		if (ingredient.getId() != null) {
+			result = ingredientDAO.createRecipeIngredient(ingredient, recipeId);
+		}
+
+		return result;
+	}
+	
+	
+	@Override
+	public Integer updateRecipeIngredient(Ingredient ingredient, Integer recipeId) {
+
+		int result = ingredientDAO.updateRecipeIngredient(ingredient, recipeId);
+		
+		if (result > 0) {
+			System.out.println("Successfully updated ingredient");
+		}
+		else {
+			System.out.println("Failed to update ingredient");
 		}
 		
-		return ingredient;	
+		return result;
+	}
+
+	
+	@Override
+	public Integer deleteRecipeIngredient(Integer ingredientId, Integer recipeId) {
+		
+		int result = ingredientDAO.deleteRecipeIngredient(ingredientId, recipeId);
+	
+		return result;
+	}
+	
+	
+	@Override
+	public List<Ingredient> getPantryIngredients(Integer pantryId) {
+
+		List<Ingredient> ingredients = ingredientDAO.getPantryIngredients(pantryId);
+		
+		return ingredients;
+	}
+	
+	@Override
+	public Integer createPantryIngredient(Ingredient ingredient, Integer pantryId) throws SQLException {
+
+		int result = 0;
+		
+		if (!ingredientExists(ingredient)) {
+			ingredient = ingredientDAO.createIngredient(ingredient);
+		}
+		else {
+			ingredient.setId(getIngredientId(ingredient.getName()));
+		}
+		if (ingredient.getId() != null) {
+			result = ingredientDAO.createPantryIngredient(ingredient, pantryId);
+		}	
+
+		return result;	
 		
 	}
 
-
-	private Integer getIngredientId(String name) {
-		conn = manager.getConnection();
-		try {
-			pstmt = conn.prepareStatement("SELECT id FROM ingredient WHERE name = ?");
-			pstmt.setString(1, name);
-			
-			ResultSet result = pstmt.executeQuery();
-			if (result.next()) {
-				return result.getInt("id");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+	
+	@Override
+	public Integer updatePantryIngredient(Ingredient ingredient, Integer pantryId) {
+		
+		int result = ingredientDAO.updatePantryIngredient(pantryId, ingredient);
+		
+		return result;
 	}
 
+	
+	@Override
+	public Integer deletePantryIngredient(Integer ingredientId, Integer pantryId) {
 
-	private boolean ingredientExists(Ingredient ingredient) {
-		conn = manager.getConnection();
-		int count = 0;
-		try {
-			pstmt = conn.prepareStatement("SELECT count(*) AS 'COUNT' FROM ingredient WHERE name = ?");
-			pstmt.setString(1, ingredient.getName());
-			
-			ResultSet result = pstmt.executeQuery();
-			if (result.next()) {
-				count = result.getInt("COUNT");
-				if (count > 0) {
-					return true;
-				}
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		int result = ingredientDAO.deletePantryIngredient(pantryId, ingredientId);
 		
-		return false;
-	}
-
-
-	private void linkIngredientToPantry(Ingredient ingredient, Integer pantryId) {
-		try {
-			if (conn.isClosed())
-				conn = manager.getConnection();
-			
-			pstmt = conn.prepareStatement("INSERT INTO pantry_ingredient (pantryId, ingredientId, quantity, quantityUnit) "
-					+ "VALUES (?, ?, ?, ?)");
-			pstmt.setInt(1, pantryId);
-			pstmt.setInt(2, ingredient.getId());
-			pstmt.setFloat(3, ingredient.getQuantity());
-			pstmt.setString(4, ingredient.getQuantityUnit());
-			
-			int r =pstmt.executeUpdate();
-			if (r == 1)
-				System.out.println("Successfully linked ingredient to pantry");
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		return result;
 	}
 
 
 	@Override
-	public Integer getIngredientIdByName(String name) {
-		conn = manager.getConnection();
+	public Integer getIngredientId(String name) {
 		
-		try {
-			pstmt = conn.prepareStatement("SELECT id FROM ingredient WHERE name = ?");
-			pstmt.setString(1, name);
-			
-			ResultSet result = pstmt.executeQuery();
-			if (result.next()) {
-				return result.getInt("id");
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Ingredient ingredient = ingredientDAO.getIngredientByName(name);
 		
-		return null;
+		return ingredient.getId();
 	}
 	
 	
+	public boolean ingredientExists(Ingredient ingredient) throws SQLException {
+		
+		Connection conn = manager.getConnection();
+		
+		PreparedStatement pstmt = conn.prepareStatement("SELECT count(*) FROM ingredient WHERE name = ?");
+		pstmt.setString(1, ingredient.getName());
+		
+		return manager.isExists(pstmt);
+	}
+
+
+
+
+	
+
+
+
 }

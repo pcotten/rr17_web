@@ -77,7 +77,7 @@ public class MealService_Test {
 		
 		// Test read operations
 		
-		meal = mealService.getMealById(meal.getId());
+		meal = mealService.getMeal(meal.getId());
 		
 		
 		// Test update operation

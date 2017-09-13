@@ -156,7 +156,7 @@ public class UserService_Test {
 
 		profilePic.setRecipeId(null);
 		profilePic.setUserId(user.getId());
-		imageService.insertNewImage(profilePic);
+		imageService.createImage(profilePic);
 		user.setProfilePic(profilePic);
 		
 		// Test update operation

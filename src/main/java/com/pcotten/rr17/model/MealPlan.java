@@ -14,7 +14,7 @@ public class MealPlan {
 	@Size(max=255)
 	private String description;
 	private List<Meal> meals; // date as string, Meal
-	private Integer ownerId;
+	private Integer owner;
 	
 	public MealPlan(){
 		meals = new ArrayList<Meal>();
@@ -51,12 +51,12 @@ public class MealPlan {
 		this.meals = meals;
 	}
 
-	public Integer getOwnerId() {
-		return ownerId;
+	public Integer getOwner() {
+		return owner;
 	}
 
-	public void setOwnerId(Integer ownerId) {
-		this.ownerId = ownerId;
+	public void setOwner(Integer ownerId) {
+		this.owner = ownerId;
 	}
 	
 	

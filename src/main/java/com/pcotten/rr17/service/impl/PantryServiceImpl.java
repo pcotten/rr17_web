@@ -5,15 +5,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import javax.inject.Inject;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.stereotype.Component;
 
 import com.pcotten.rr17.storage.service.DatabaseManager;
-import com.pcotten.rr17.storage.service.DbCommonFunctions;
+import com.pcotten.rr17.dao.IngredientDAO;
+import com.pcotten.rr17.dao.PantryDAO;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Pantry;
 import com.pcotten.rr17.service.PantryService;
@@ -21,90 +21,81 @@ import com.pcotten.rr17.service.PantryService;
 @Component
 public class PantryServiceImpl implements PantryService{
 
-//	DatabaseConfig config = new DatabaseConfig();
-	DatabaseManager manager = new DatabaseManager();
+	@Inject
+	DatabaseManager manager;
+	@Inject
+	PantryDAO pantryDAO;
+	@Inject
+	IngredientDAO ingredientDAO;
 	
 	Connection conn = null;
 	Statement stmt = null;
-	PreparedStatement pstmt = null;
 	String sql = null;
 	
 	public PantryServiceImpl(){
 		
 	}
+
+	public Pantry getPantryById(Integer id) {
+		
+		return pantryDAO.getPantry(id);
+	}
 	
-	// creates a new Pantry Entity in the database and returns it's pantryCode
 	public Pantry createPantry(Pantry pantry) throws SQLException{
 		
-		int result = 0;
+		
 		if (pantry.getPantryCode() == null){
 			pantry.setPantryCode(generatePantryCode());
 		}
 
-		conn = manager.getConnection();
-		pstmt = conn.prepareStatement("INSERT INTO pantry (pantryCode, description) "
-				+ "VALUES (?, ?);", Statement.RETURN_GENERATED_KEYS);
-		pstmt.setString(1, pantry.getPantryCode());
-		pstmt.setString(2, pantry.getDescription());
+		pantry = pantryDAO.createPantry(pantry);
 
-		result = pstmt.executeUpdate();
-		ResultSet rs = pstmt.getGeneratedKeys();
-		if (rs.next()){
-			Integer id = Integer.valueOf(rs.getString("GENERATED_KEY"));
-			pantry.setId(id);
-		}
-		if (result != 0){
-			System.out.println("New pantry successfully created in database");
+		if (pantry.getId() != null){
+			System.out.println("New pantry successfully created in database with id " + pantry.getId());
 		}
 		else System.out.println("Pantry not created");
 			
 		return pantry;
 	}
 	
-	public int updatePantry(Pantry pantry){
-		int result = 0;
-		try {
-			conn = manager.getConnection();
-			pstmt = conn.prepareStatement("UPDATE pantry SET pantryCode = ?, description = ? WHERE id = ?");
-			pstmt.setString(1, pantry.getPantryCode());
-			pstmt.setString(2, pantry.getDescription());
-			pstmt.setInt(3, pantry.getId());
-
-				result = pstmt.executeUpdate();
-				if (result != 0){
-					System.out.println("Pantry updated in database");
-				}
-				else System.out.println("Pantry not updated");
-				
-			} catch (SQLException e) {
-				System.out.println("SQLException: Unable to update pantry");
-				e.printStackTrace();
-			}
-			return result;
+	public boolean updatePantry(Pantry pantry){
+		
+		boolean success = false;
+		
+		int result = pantryDAO.updatePantry(pantry);
+		
+		if (result != 0){
+			System.out.println("Pantry updated in database");
+			success = true;
+		}
+		else {
+			System.out.println("Pantry not updated");	
+		}
+		return success;
 	}
 	
-	public int deletePantry(Integer id) throws SQLException{
-		int result = -1;
+	public boolean deletePantry(Integer id) throws SQLException{
+		
+		boolean success = false;
 
-		result = DbCommonFunctions.deleteEntity("pantry", id);
+		int result = pantryDAO.deletePantry(id);
+		
 		if (result != -1){
 			System.out.println("Successfully removed pantry with id " + id);
+			success = true;
 		}
 		else {
 			System.out.println("Unable to remove pantry entity with id " + id);
 		}
 		
-		return result;
+		return success;
 	}
-	
-
 	
 	private String generatePantryCode(){
 		String newCode = null;
 		boolean unique = true;
 		boolean complete = false;
-		Map<String, String> constraints = new HashMap<String, String>();
-		List<Pantry> pantryList = (List<Pantry>) manager.retrieveEntities("pantry", constraints, Pantry.class);
+		List<Pantry> pantryList = pantryDAO.getPantries();
 		while (!complete){
 			newCode = RandomStringUtils.randomAlphanumeric(8);
 			newCode = newCode.substring(0, 4) + "-" + newCode.substring(4);
@@ -126,12 +117,6 @@ public class PantryServiceImpl implements PantryService{
 		return newCode;
 	}
 
-	public Pantry getPantryById(Integer id) {
-		Map<String, String> constraints = new HashMap<String, String>();
-		constraints.put("id", id.toString());
-		
-		return (Pantry) manager.retrieveSingleEntity(constraints, Pantry.class);
-	}
 	
 	@Override
 	public boolean pantryIngredientExists(Integer userId, Ingredient ingredient) {
@@ -170,4 +155,66 @@ public class PantryServiceImpl implements PantryService{
 		
 		return pantryId;
 	}
+
+	@Override
+	public List<Ingredient> getPantryIngredients(Integer userId) {
+
+		List<Ingredient> ingredients = ingredientDAO.getPantryIngredients(userId);
+		
+		return ingredients;
+	}
+	
+
+	@Override
+	public boolean createPantryIngredient(Ingredient ingredient, Integer userId) {
+
+		boolean success = false;
+		
+		int result = ingredientDAO.createPantryIngredient(ingredient, getPantryId(userId));
+		
+		if (result > 0) {
+			System.out.println("Successfully added " + ingredient.getName() + " to pantry.");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to add ingredient to pantry");
+		}
+		
+		return success;
+	}
+
+	@Override
+	public boolean updatePantryIngredient(Integer userId, Ingredient ingredient) {
+		
+		boolean success = false;
+		
+		int result = ingredientDAO.updatePantryIngredient(getPantryId(userId), ingredient);
+		
+		if (result > 0 ) {
+			System.out.println("Successfully updated ingredient");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to update ingredient");
+		}
+		return success;
+	}
+
+	@Override
+	public boolean deletePantryIngredient(Integer userId, Integer ingredientId) {
+		
+		boolean success = false;
+		
+		int result = ingredientDAO.deletePantryIngredient(getPantryId(userId), ingredientId);
+		
+		if (result > 0 ) {
+			System.out.println("Successfully updated ingredient");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to update ingredient");
+		}
+		return success;
+	}
+
 }

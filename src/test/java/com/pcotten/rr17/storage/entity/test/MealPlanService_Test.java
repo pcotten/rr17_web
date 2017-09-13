@@ -91,7 +91,7 @@ public class MealPlanService_Test {
 		
 		// Test read operations
 		
-		mealPlan = mealPlanService.getMealPlanById(mealPlan.getId());
+		mealPlan = mealPlanService.getMealPlan(mealPlan.getId());
 		
 		
 		// Test update operation

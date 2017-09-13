@@ -1,12 +1,8 @@
 package com.pcotten.rr17.service.impl;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +11,7 @@ import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
 
-//import com.pcotten.rr17.storage.service.DatabaseConfig;
 import com.pcotten.rr17.storage.service.DatabaseManager;
-import com.pcotten.rr17.storage.service.DbCommonFunctions;
 import com.pcotten.rr17.storage.service.SQLBuilder;
 import com.pcotten.rr17.dao.UserDAO;
 import com.pcotten.rr17.model.Cookbook;
@@ -50,35 +44,10 @@ public class UserServiceImpl implements UserService {
 	PantryService pantryService;
 	@Inject
 	UserDAO userDAO;
-	
-	Connection conn = null;
+
 	
 	public UserServiceImpl(){
 		
-	}
-	
-	public User createUser(User user) throws SQLException{
-
-		int r = 0;
-		
-		if (user.getPantryCode() == null){
-			user.setPantryCode(pantryService.createPantry(new Pantry()).getPantryCode());
-		}
-		
-		user = userDAO.createUser(user);
-		
-		if (user.getId() != null){
-			r = 1;
-		}
-		if (r != 0){
-			System.out.println("User entity " + user.getUsername() + " successfully inserted into database");
-		}
-		else {
-			System.out.println("Unable to complete user insert - failed to insert user entity");
-			throw new SQLException();
-		}
-		
-		return user;
 	}
 	
 	@Override
@@ -89,19 +58,38 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public User getUserByUsername(String username){
+	public User createUser(User user) throws SQLException{
+
+		int r = 0;
+
+		if (user.getPantryCode() == null){
+			user.setPantryCode(pantryService.createPantry(new Pantry()).getPantryCode());
+		}
+
+		user = userDAO.createUser(user);
+
+		if (user.getId() != null){
+			r = 1;
+		}
+		if (r != 0){
+			System.out.println("User entity " + user.getUsername() + " successfully inserted into database with id " + user.getId());
+		}
+		else {
+			System.out.println("Unable to complete user insert - failed to insert user entity");
+			throw new SQLException();
+		}
 		
-		Map<String, String> constraints = new HashMap<String, String>();
-		constraints.put("username", SQLBuilder.toSQLString(username));
-		
-		return (User) manager.retrieveSingleEntity(constraints, User.class);
+		return user;
 	}
+	
+
+
 
 	@Override
 	public boolean updateUser(User user) throws SQLException{
 		
 		int r = userDAO.updateUser(user);
-		
+		// check for success 
 		if (r != 0){
 			System.out.println("User " + user.getUsername() + " successfully updated");
 			return true;
@@ -118,7 +106,7 @@ public class UserServiceImpl implements UserService {
 		int result = -1;
 
 		result = userDAO.deleteUser(id);
-
+		// check for success
 		if (result != -1){
 			System.out.println("Successfully removed user " + id);
 			return true;
@@ -132,23 +120,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<Cookbook> getCookbooks(Integer userId) throws SQLException {
 		
-		List<Cookbook> cookbooks = new ArrayList<Cookbook>();
-
-		conn = manager.getConnection();
-		PreparedStatement pstmt = null;
-		pstmt = conn.prepareStatement("SELECT * FROM cookbooks_by_userid WHERE userId = ?");
-		pstmt.setInt(1, userId);
-		
-		ResultSet result = pstmt.executeQuery();
-		while (result.next()) {
-			Cookbook cookbook = new Cookbook();
-			cookbook.setId(result.getInt("id"));
-			cookbook.setTitle(result.getString("title"));
-			cookbook.setOwner(result.getInt("owner"));
-			cookbook.setRecipes(cookbookService.getCookbookRecipes(cookbook.getId()));
-			cookbook.setCategories(cookbookService.getCookbookCategories(cookbook.getId()));
-			cookbooks.add(cookbook);
-		}
+		List<Cookbook> cookbooks = cookbookService.getCookbooks(userId);
 		
 		return cookbooks;
 	}
@@ -163,105 +135,96 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<Ingredient> getPantryIngredients(Integer userId) throws SQLException {
-		List<Ingredient> ingredients = new ArrayList<Ingredient>();
-
-		conn = manager.getConnection();
-		PreparedStatement pstmt = null;
-		Integer pantryId = pantryService.getPantryId(userId);
-		pstmt = conn.prepareStatement("SELECT * FROM ingredients_by_pantryid WHERE pantryId = ?");
-		pstmt.setInt(1, pantryId);
+		// This should be delegated to the pantry service and pantryDAO
 		
-		ResultSet result = pstmt.executeQuery();
-		while (result.next()) {
-			Ingredient ingredient = new Ingredient();
-			ingredient.setId(result.getInt("ingredientId"));
-			ingredient.setName(result.getString("name"));
-			ingredient.setDescription(result.getString("description"));
-			ingredient.setQuantity(result.getFloat("quantity"));
-			ingredient.setQuantityUnit(result.getString("quantityUnit"));
-			ingredient.setCategories(ingredientService.getIngredientCategories(ingredient.getId()));
-			ingredients.add(ingredient);
-		}
+		List<Ingredient> ingredients = pantryService.getPantryIngredients(userId);
+
+//		conn = manager.getConnection();
+//		PreparedStatement pstmt = null;
+//		Integer pantryId = pantryService.getPantryId(userId);
+//		pstmt = conn.prepareStatement("SELECT * FROM ingredients_by_pantryid WHERE pantryId = ?");
+//		pstmt.setInt(1, pantryId);
+//		
+//		ResultSet result = pstmt.executeQuery();
+//		while (result.next()) {
+//			Ingredient ingredient = new Ingredient();
+//			ingredient.setId(result.getInt("ingredientId"));
+//			ingredient.setName(result.getString("name"));
+//			ingredient.setDescription(result.getString("description"));
+//			ingredient.setQuantity(result.getFloat("quantity"));
+//			ingredient.setQuantityUnit(result.getString("quantityUnit"));
+//			ingredient.setCategories(ingredientService.getIngredientCategories(ingredient.getId()));
+//			ingredients.add(ingredient);
+//		}
 		
 		return ingredients;
 	}
 
 	@Override
-	public Ingredient createPantryIngredient(Integer userId, Ingredient ingredient) {
+	public boolean createPantryIngredient(Integer userId, Ingredient ingredient) {
 		
-		ingredient = ingredientService.createPantryIngredient(ingredient, pantryService.getPantryId(userId));
+		boolean success = pantryService.createPantryIngredient(ingredient, userId);
 		
-		return ingredient;
+		return success;
 	}
 
 	@Override
 	public boolean updatePantryIngredient(Integer userId, Integer ingredientId, Ingredient ingredient) throws SQLException {
-		int r = 0;
-
-		conn = manager.getConnection();
-		PreparedStatement pstmt = null;
+		// This should be delegated to the pantry service
 		
-		pstmt = conn.prepareStatement("UPDATE pantry_ingredient SET quantity = ?, quantityUnit = ? "
-				+ "WHERE pantryId = ? AND ingredientId = ?");
-		pstmt.setFloat(1, ingredient.getQuantity());
-		pstmt.setString(2, ingredient.getQuantityUnit());
-		pstmt.setInt(3, pantryService.getPantryId(userId));
-		pstmt.setInt(4, ingredient.getId());
-		
-		r = pstmt.executeUpdate();
+		return pantryService.updatePantryIngredient(userId, ingredient);
 
-		if (r != 0){
-			System.out.println("Ingredient successfully updated");
-			return true;
-		}
-		else {
-			System.out.println("Ingredient not updated");
-			return false;
-		}
+//		conn = manager.getConnection();
+//		PreparedStatement pstmt = null;
+//		
+//		pstmt = conn.prepareStatement("UPDATE pantry_ingredient SET quantity = ?, quantityUnit = ? "
+//				+ "WHERE pantryId = ? AND ingredientId = ?");
+//		pstmt.setFloat(1, ingredient.getQuantity());
+//		pstmt.setString(2, ingredient.getQuantityUnit());
+//		pstmt.setInt(3, pantryService.getPantryId(userId));
+//		pstmt.setInt(4, ingredient.getId());
+//		
+//		r = pstmt.executeUpdate();
+
 	}
 
 	@Override
 	public boolean deletePantryIngredient(Integer userId, Integer ingredientId) throws SQLException {
+		// This should be delegated to the pantry service
 		
-		int r = -1;
+		return pantryService.deletePantryIngredient(userId, ingredientId);
 		
-		conn = manager.getConnection();
-		PreparedStatement pstmt = null;
-		
-		pstmt = conn.prepareStatement("DELETE FROM pantry_ingredient WHERE pantryId = ? AND ingredientId = ?");
-		pstmt.setInt(1, pantryService.getPantryId(userId));
-		pstmt.setInt(2, ingredientId);
-		
-		r = pstmt.executeUpdate();
-			
-		if (r == 0) {
-			System.out.println("Ingredient " + ingredientId + " deleted from pantry.");
-			return true;
-		}
-		else {
-			System.out.println("Failed to delete " + ingredientId + " ingredient from pantry");
-			return false;
-		}
+//		conn = manager.getConnection();
+//		PreparedStatement pstmt = null;
+//		
+//		pstmt = conn.prepareStatement("DELETE FROM pantry_ingredient WHERE pantryId = ? AND ingredientId = ?");
+//		pstmt.setInt(1, pantryService.getPantryId(userId));
+//		pstmt.setInt(2, ingredientId);
+//		
+//		r = pstmt.executeUpdate();
+//			
+
 	}
 
 	@Override
 	public List<Meal> getMeals(Integer userId) throws SQLException {
-		List<Meal> meals = new ArrayList<Meal>();
-
-		conn = manager.getConnection();
-		PreparedStatement pstmt = null;
-		pstmt = conn.prepareStatement("SELECT * FROM meals_by_userid WHERE userid = ?");
-		pstmt.setInt(1, userId);
 		
-		ResultSet result = pstmt.executeQuery();
-		while (result.next()) {
-			Meal meal = new Meal();
-			meal.setId(result.getInt("mealId"));
-			meal.setName(result.getString("name"));
-			Date date = result.getDate("lastPrepared");
-			meal.setLastPrepared(date.toLocalDate());
-			meals.add(meal);
-		}
+		List<Meal> meals = mealService.getMeals(userId);
+
+//		conn = manager.getConnection();
+//		PreparedStatement pstmt = null;
+//		pstmt = conn.prepareStatement("SELECT * FROM meals_by_userid WHERE userid = ?");
+//		pstmt.setInt(1, userId);
+//		
+//		ResultSet result = pstmt.executeQuery();
+//		while (result.next()) {
+//			Meal meal = new Meal();
+//			meal.setId(result.getInt("mealId"));
+//			meal.setName(result.getString("name"));
+//			Date date = result.getDate("lastPrepared");
+//			meal.setLastPrepared(date.toLocalDate());
+//			meals.add(meal);
+//		}
 		
 		return meals;
 	}
@@ -311,22 +274,24 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public List<MealPlan> getMealPlans(Integer userId) throws SQLException {
-		List<MealPlan> mealPlans = new ArrayList<MealPlan>();
-
-		conn = manager.getConnection();
-		PreparedStatement pstmt = null;
-		pstmt = conn.prepareStatement("SELECT * FROM mealplans_by_userid WHERE userid = ?");
-		pstmt.setInt(1, userId);
+		// delegate to MealPlanService
 		
-		ResultSet result = pstmt.executeQuery();
-		while (result.next()) {
-			MealPlan mealPlan = new MealPlan();
-			mealPlan.setId(result.getInt("mealPlanId"));
-			mealPlan.setName(result.getString("name"));
-			mealPlan.setOwnerId(result.getInt("ownerId"));
-			mealPlan.setMeals(mealService.getMealPlanMeals(mealPlan.getId()));
-			mealPlans.add(mealPlan);
-		}
+		List<MealPlan> mealPlans = mealPlanService.getMealPlans(userId);
+
+//		conn = manager.getConnection();
+//		PreparedStatement pstmt = null;
+//		pstmt = conn.prepareStatement("SELECT * FROM mealplans_by_userid WHERE userid = ?");
+//		pstmt.setInt(1, userId);
+//		
+//		ResultSet result = pstmt.executeQuery();
+//		while (result.next()) {
+//			MealPlan mealPlan = new MealPlan();
+//			mealPlan.setId(result.getInt("mealPlanId"));
+//			mealPlan.setName(result.getString("name"));
+//			mealPlan.setOwner(result.getInt("ownerId"));
+//			mealPlan.setMeals(mealService.getMealPlanMeals(mealPlan.getId()));
+//			mealPlans.add(mealPlan);
+//		}
 		
 		return mealPlans;
 	}
@@ -376,7 +341,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean userExists(User user) throws SQLException {
-		conn = manager.getConnection();
+		Connection conn = manager.getConnection();
 		PreparedStatement pstmt = null;
 
 		pstmt = conn.prepareStatement("SELECT count(*) FROM user WHERE username = ?");
@@ -385,8 +350,14 @@ public class UserServiceImpl implements UserService {
 		return manager.isExists(pstmt);
 	}
 
-
-
+	@Override
+	public User getUserByUsername(String username){
+		
+		Map<String, String> constraints = new HashMap<String, String>();
+		constraints.put("username", SQLBuilder.toSQLString(username));
+		
+		return (User) manager.retrieveSingleEntity(constraints, User.class);
+	}
 
 
 

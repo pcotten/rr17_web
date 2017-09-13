@@ -73,7 +73,7 @@ public class InstructionService_Test {
 		int result = 0;
 		
 		// Test create operation
-		instruction = instructionService.insertNewInstruction(instruction);
+		instruction = instructionService.createInstruction(instruction);
 		assertTrue(instruction.getId() != null); 
 		
 		// Test read operations

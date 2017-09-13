@@ -220,7 +220,7 @@ public class UserRestServiceImpl implements UserRestService {
 		
 		try {
 			if (pantryService.pantryIngredientExists(userId, ingredient)) {
-				Integer ingredientId = ingredientService.getIngredientIdByName(ingredient.getName());
+				Integer ingredientId = ingredientService.getIngredientId(ingredient.getName());
 				boolean success = service.updatePantryIngredient(userId, ingredientId, ingredient);
 				if (success) {
 					response = ResponseEntity.ok().build();
@@ -230,14 +230,9 @@ public class UserRestServiceImpl implements UserRestService {
 				}
 			}
 			else {
-				ingredient = service.createPantryIngredient(userId, ingredient);
-				if (ingredient != null && ingredient.getId() != null) {
-					HttpHeaders headers = new HttpHeaders();
-					Map<String, Integer> uriVariables = new HashMap<String, Integer>();
-					uriVariables.put("userId", userId);
-					uriVariables.put("ingredientId", ingredient.getId());
-					headers.setLocation(uriBuilder.path("users/{userId}/pantry/ingredient/{ingredientId}").buildAndExpand(uriVariables).toUri());
-					response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+				boolean success = service.createPantryIngredient(userId, ingredient);
+				if (success) {
+					response = new ResponseEntity<Void>(HttpStatus.CREATED);
 				}
 				else {
 					response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);

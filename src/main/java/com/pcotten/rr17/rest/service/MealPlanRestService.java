@@ -17,26 +17,26 @@ public interface MealPlanRestService {
 	
 	@RequestMapping(value="/mealplans/{mealPlanId}", method=RequestMethod.PUT)
 	public ResponseEntity<Void> updateMealPlan(
-			@PathVariable ("mealPlanId") Integer mealId,
+			@PathVariable ("mealPlanId") Integer mealPlanId,
 			@RequestBody String payload);
 	
 	@RequestMapping(value="/mealplans/{mealPlanId}", method=RequestMethod.DELETE)
 	public ResponseEntity<Void> deleteMealPlan(
-			@PathVariable ("mealPlanId") Integer mealId);
+			@PathVariable ("mealPlanId") Integer mealPlanId);
 	
 	@RequestMapping(value="/mealplans/{mealPlanId}/meals", method=RequestMethod.GET)
 	public ResponseEntity<List<Recipe>> getMealPlanMeals(
-			@PathVariable ("mealPlanId") Integer mealId);
+			@PathVariable ("mealPlanId") Integer mealPlanId);
 	
 	@RequestMapping(value="/mealplans/{mealPlanId}/meals", method=RequestMethod.POST)
 	public ResponseEntity<Void> createMealPlanMeal(
-			@PathVariable ("mealPlanId") Integer mealId,
+			@PathVariable ("mealPlanId") Integer mealPlanId,
 			@RequestBody String payload,
 			UriComponentsBuilder uriBuilder);
 	
 	@RequestMapping(value="/mealplans/{mealPlanId}/meals/{mealId}", method=RequestMethod.DELETE)
 	public ResponseEntity<Void> deleteMealPlanMeal(
-			@PathVariable ("mealPlanId") Integer mealId,
+			@PathVariable ("mealPlanId") Integer mealPlanId,
 			@PathVariable ("mealId") Integer recipeId);
 
 }

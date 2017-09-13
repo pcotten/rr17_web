@@ -16,6 +16,19 @@ public interface IngredientDAO {
 	
 	public List<Ingredient> getPantryIngredients(Integer pantryId);
 	
+	public Integer createPantryIngredient(Ingredient ingredient, Integer pantryId);
+
+	public Integer updatePantryIngredient(Integer pantryId, Ingredient ingredient);
+
+	public Integer deletePantryIngredient(Integer pantryId, Integer ingredientId);
+
 	public List<Ingredient> getRecipeIngredients(Integer recipeId);
 	
+	public Integer createRecipeIngredient(Ingredient ingredient, Integer recipeId);
+
+	public Integer updateRecipeIngredient(Ingredient ingredient, Integer recipeId);
+
+	public Integer deleteRecipeIngredient(Integer ingredientId, Integer recipeId);
+	
+	public Ingredient getIngredientByName(String name);
 }

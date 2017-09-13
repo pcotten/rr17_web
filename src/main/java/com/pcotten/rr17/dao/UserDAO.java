@@ -1,7 +1,5 @@
 package com.pcotten.rr17.dao;
 
-import java.util.List;
-
 import com.pcotten.rr17.model.User;
 
 public interface UserDAO {

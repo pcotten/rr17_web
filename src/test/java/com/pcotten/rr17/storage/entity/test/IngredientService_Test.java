@@ -44,7 +44,7 @@ public class IngredientService_Test {
 		
 		// Test read operations
 		
-		ingredient = ingredientService.getIngredientById(ingredient.getId());
+		ingredient = ingredientService.getIngredient(ingredient.getId());
 		
 		// Test update operation
 		

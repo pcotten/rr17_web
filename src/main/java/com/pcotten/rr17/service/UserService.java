@@ -11,11 +11,9 @@ import com.pcotten.rr17.model.User;
 
 public interface UserService {
 
-	public User createUser(User user) throws SQLException;
-	
 	public User getUserById(Integer userId);
 	
-	public User getUserByUsername(String username);
+	public User createUser(User user) throws SQLException;
 	
 	public boolean updateUser(User user) throws SQLException;
 	
@@ -27,7 +25,7 @@ public interface UserService {
 
 	public List<Ingredient> getPantryIngredients(Integer userId) throws SQLException;
 
-	public Ingredient createPantryIngredient(Integer userId, Ingredient ingredient);
+	public boolean createPantryIngredient(Integer userId, Ingredient ingredient);
 
 	public boolean updatePantryIngredient(Integer userId, Integer ingredientId, Ingredient ingredient) throws SQLException;
 
@@ -51,7 +49,7 @@ public interface UserService {
 
 	public boolean userExists(User user) throws SQLException;
 
-
+	public User getUserByUsername(String username);
 	
 
 	

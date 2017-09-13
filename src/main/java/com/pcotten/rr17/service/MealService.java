@@ -7,16 +7,18 @@ import com.pcotten.rr17.model.Meal;
 
 public interface MealService {
 
+	public Meal getMeal(Integer id);
+	
 	public Meal createMeal(Meal meal, Integer userId) throws SQLException;
 	
-	public int updateMeal(Meal meal) throws SQLException;
+	public Integer updateMeal(Meal meal) throws SQLException;
 	
-	public int deleteMeal(Integer id, Integer userId) throws SQLException;
+	public Integer deleteMeal(Integer id, Integer userId) throws SQLException;
 
-	public Meal getMealById(Integer id);
-
+	public List<Meal> getMeals(Integer userId);
+	
 	public List<Meal> getMealPlanMeals(Integer id);
 
-	boolean mealExists(Integer userId, Meal meal);
-	
+	public boolean mealExists(Integer userId, Meal meal) throws SQLException;
+
 }

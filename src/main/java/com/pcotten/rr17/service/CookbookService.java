@@ -15,7 +15,7 @@ public interface CookbookService {
 	
 	public boolean deleteCookbook(Integer id) throws SQLException;
 
-	public Cookbook getCookbookById(Integer id);
+	public Cookbook getCookbook(Integer id);
 
 	public List<Recipe> getCookbookRecipes(Integer id) throws SQLException;
 
@@ -26,5 +26,7 @@ public interface CookbookService {
 	public boolean deleteCookbookRecipe(Integer cookbookId, Integer recipeId) throws SQLException;
 
 	public Recipe createCookbookRecipe(Integer cookbookId, Recipe recipe) throws SQLException;
+
+	public List<Cookbook> getCookbooks(Integer userId);
 	
 }

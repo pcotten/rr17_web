@@ -2,10 +2,7 @@ package com.pcotten.rr17.model;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -30,10 +27,10 @@ public class Recipe {
 	private Integer rating;
 	private Date lastPrepared;
 	
-	private Map<String, Map<String, Object>> ingredients;  // name, quantity, quantityUnit
-	private Map<Integer, String> instructions; // orderIndex, text
-	private List<String> images;
-	private List<String> categories;
+	private List<Ingredient> ingredients;  // name, quantity, quantityUnit
+	private List<Instruction> instructions; // orderIndex, text
+	private List<Image> images;
+	private List<Category> categories;
 
 	public Recipe(){
 		init();
@@ -46,10 +43,17 @@ public class Recipe {
 	}
 	
 	public void init(){
-		this.ingredients = new HashMap<String, Map<String, Object>>();
-		this.instructions = new HashMap<Integer, String>();
-		this.images = new ArrayList<String>();
-		this.categories = new ArrayList<String>();
+		this.ingredients = new ArrayList<Ingredient>();
+		this.instructions = new ArrayList<Instruction>();
+		this.images = new ArrayList<Image>();
+		this.categories = new ArrayList<Category>();
+	}
+
+	public Integer getId() {
+		return id;
+	}
+	public void setId(Integer id) {
+		this.id = id;
 	}
 	
 	public String getTitle() {
@@ -60,13 +64,6 @@ public class Recipe {
 		this.title = title;
 	}
 
-	public Integer getId() {
-		return id;
-	}
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
 	public String getDescription() {
 		return description;
 	}
@@ -74,10 +71,26 @@ public class Recipe {
 		this.description = description;
 	}
 	
-	public Integer getServings() {
+	public Integer getOwner() {
+		return owner;
+	}
+
+	public void setOwner(Integer owner) {
+		this.owner = owner;
+	}
+	
+	public String getAttributedTo() {
+		return attributedTo;
+	}
+
+	public void setAttributedTo(String attributedTo) {
+		this.attributedTo = attributedTo;
+	}
+	
+	public Integer getNumberOfServings() {
 		return numberOfServings;
 	}
-	public void setServings(Integer servings) {
+	public void setNumberOfServings(Integer servings) {
 		this.numberOfServings = servings;
 	}
 	
@@ -87,80 +100,52 @@ public class Recipe {
 	public void setOvenTemp(Integer ovenTemp) {
 		this.ovenTemp = ovenTemp;
 	}
-	
-	public Map<String, Map<String, Object>> getIngredients() {
-		return ingredients;
-	}
-	public void setIngredients(Map<String, Map<String, Object>> ingredients) {
-		this.ingredients = ingredients;
-	}
-
-	public Map<Integer, String> getInstructions() {
-		return instructions;
-	}
-	public void setInstructions(Map<Integer, String> instructions) {
-		this.instructions = instructions;
-	}
-	
-	public List<String> getImages() {
-		return images;
-	}
-	public void setImages(List<String> images) {
-		this.images = images;
-	}
-
-	public Integer getOwner() {
-		return owner;
-	}
-
-	public void setOwner(Integer owner) {
-		this.owner = owner;
-	}
-
-	public String getAttributedTo() {
-		return attributedTo;
-	}
-
-	public void setAttributedTo(String attributedTo) {
-		this.attributedTo = attributedTo;
-	}
-
-	public Integer getNumberOfServings() {
-		return numberOfServings;
-	}
-
-	public void setNumberOfServings(Integer numberOfServings) {
-		this.numberOfServings = numberOfServings;
-	}
 
 	public Integer getServingSize() {
 		return servingSize;
 	}
-
 	public void setServingSize(Integer servingSize) {
 		this.servingSize = servingSize;
 	}
-
+	
+	public String getServingSizeUnit() {
+		return servingSizeUnit;
+	}
+	public void setServingSizeUnit(String servingUnit) {
+		this.servingSizeUnit = servingUnit;
+	}
+	
 	public Integer getCookTime() {
 		return cookTime;
 	}
-
 	public void setCookTime(Integer cookTime) {
 		this.cookTime = cookTime;
 	}
-
+	
+	public String getCookTimeUnit() {
+		return cookTimeUnit;
+	}
+	public void setCookTimeUnit(String cookTimeUnit) {
+		this.cookTimeUnit = cookTimeUnit;
+	}
+	
 	public Integer getPrepTime() {
 		return prepTime;
 	}
-
 	public void setPrepTime(Integer prepTime) {
 		this.prepTime = prepTime;
 	}
-
+	
+	public String getPrepTimeUnit() {
+		return prepTimeUnit;
+	}
+	public void setPrepTimeUnit(String prepTimeUnit) {
+		this.prepTimeUnit = prepTimeUnit;
+	}
+	
 	public Integer getRating() {
 		return rating;
 	}
-
 	public void setRating(Integer rating) {
 		this.rating = rating;
 	}
@@ -168,42 +153,43 @@ public class Recipe {
 	public Date getLastPrepared() {
 		return lastPrepared;
 	}
-
 	public void setLastPrepared(Date lastPrepared) {
 		this.lastPrepared = lastPrepared;
 	}
-
-	public List<String> getCategories() {
-		return categories;
+	
+	public List<Ingredient> getIngredients() {
+		return ingredients;
+	}
+	public void setIngredients(List<Ingredient> ingredients) {
+		this.ingredients = ingredients;
 	}
 
-	public void setCategories(List<String> categories) {
+	public List<Instruction> getInstructions() {
+		return instructions;
+	}
+	public void setInstructions(List<Instruction> instructions) {
+		this.instructions = instructions;
+	}
+	
+	public List<Image> getImages() {
+		return images;
+	}
+	public void setImages(List<Image> images) {
+		this.images = images;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+	public void setCategories(List<Category> categories) {
 		this.categories = categories;
 	}
 
-	public String getServingSizeUnit() {
-		return servingSizeUnit;
-	}
 
-	public void setServingSizeUnit(String servingUnit) {
-		this.servingSizeUnit = servingUnit;
-	}
 
-	public String getCookTimeUnit() {
-		return cookTimeUnit;
-	}
 
-	public void setCookTimeUnit(String cookTimeUnit) {
-		this.cookTimeUnit = cookTimeUnit;
-	}
 
-	public String getPrepTimeUnit() {
-		return prepTimeUnit;
-	}
 
-	public void setPrepTimeUnit(String prepTimeUnit) {
-		this.prepTimeUnit = prepTimeUnit;
-	}
 	
 	
 	

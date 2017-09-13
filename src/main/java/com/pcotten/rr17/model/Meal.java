@@ -12,7 +12,7 @@ public class Meal {
 	@NotNull @Size(min=3, max=255)
 	private String name;
 	private List<Recipe> recipes;
-	private Integer ownerId;
+	private Integer owner;
 	private LocalDate lastPrepared;
 	
 	public Meal(){
@@ -47,12 +47,12 @@ public class Meal {
 		this.recipes = recipes;
 	}
 	
-	public Integer getOwnerId() {
-		return ownerId;
+	public Integer getOwner() {
+		return owner;
 	}
 
-	public void setOwnerId(Integer ownerId) {
-		this.ownerId = ownerId;
+	public void setOwner(Integer owner) {
+		this.owner = owner;
 	}
 
 	public LocalDate getLastPrepared() {

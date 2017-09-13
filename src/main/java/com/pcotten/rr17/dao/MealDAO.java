@@ -8,7 +8,7 @@ public interface MealDAO {
 
 	public Meal getMeal(Integer id);
 	
-	public Meal createMealk(Meal meal, Integer userId);
+	public Meal createMeal(Meal meal, Integer userId);
 	
 	public Integer updateMeal(Meal meal);
 	
@@ -17,4 +17,10 @@ public interface MealDAO {
 	public List<Meal> getUserMeals(Integer userId);
 	
 	public List<Meal> getMealPlanMeals(Integer mealPlanId);
+	
+	public Integer removeMealFromUser(Integer mealId, Integer userId);
+
+	public Integer addRecipeToMeal(Integer mealId, Integer recipeId);
+
+	public Integer linkMealToUser(Integer mealId, Integer userId);
 }

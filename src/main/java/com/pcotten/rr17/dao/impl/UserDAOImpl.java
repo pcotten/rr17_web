@@ -37,7 +37,7 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 				+ "lastName, age, city, state, country, gender, pantryCode) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		KeyHolder holder = new GeneratedKeyHolder();
-		Integer id = getJdbcTemplate().update(new PreparedStatementCreator() {
+		getJdbcTemplate().update(new PreparedStatementCreator() {
 
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -58,8 +58,8 @@ public class UserDAOImpl extends JdbcDaoSupport implements UserDAO {
 			}
 		}, holder);
 
-		if (id != null) {
-			user.setId(id);
+		if (holder.getKey() != null) {
+			user.setId(holder.getKey().intValue());
 		}
 		return user;
 	}

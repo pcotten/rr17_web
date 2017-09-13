@@ -8,19 +8,37 @@ import com.pcotten.rr17.model.Ingredient;
 
 public interface IngredientService {
 
+	public Ingredient getIngredient(Integer id);
+	
 	public Ingredient createIngredient(Ingredient ingredient) throws SQLException;
 	
-	public int updateIngredient(Ingredient ingredient) throws SQLException;
+	public Integer updateIngredient(Ingredient ingredient) throws SQLException;
 	
-	public int deleteIngredient(Integer id) throws SQLException;
-
-	public Ingredient getIngredientById(Integer id);
+	public Integer deleteIngredient(Integer id) throws SQLException;
 
 	public List<Category> getIngredientCategories(Integer id);
 	
-	public Ingredient createRecipeIngredient(Ingredient ingredient, Integer recipeId);
+	public List<Ingredient> getRecipeIngredients(Integer recipeId);
 	
-	public Ingredient createPantryIngredient(Ingredient ingredient, Integer pantryId);
+	public Integer createRecipeIngredient(Ingredient ingredient, Integer recipeId) throws SQLException;
+	
+	public Integer updateRecipeIngredient(Ingredient ingredient, Integer recipeId);
+	
+	public Integer deleteRecipeIngredient(Integer ingredientId, Integer recipeId);
+	
+	public List<Ingredient> getPantryIngredients(Integer pantryId);
+	
+	public Integer createPantryIngredient(Ingredient ingredient, Integer pantryId) throws SQLException;
 
-	public Integer getIngredientIdByName(String name);
+	public Integer updatePantryIngredient(Ingredient ingredient, Integer pantryId);
+	
+	public Integer deletePantryIngredient(Integer ingredientId, Integer pantryId);	
+	
+	public Integer getIngredientId(String name);
+
+	public boolean ingredientExists(Ingredient ingredient) throws SQLException;
+
+
+
+
 }
