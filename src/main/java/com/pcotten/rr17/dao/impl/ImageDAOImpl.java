@@ -118,6 +118,126 @@ public class ImageDAOImpl extends JdbcDaoSupport implements ImageDAO{
 		
 		return images;
 	}
+
+	@Override
+	public Integer addImageToRecipe(Integer imageId, Integer recipeId) {
+		Integer result = getJdbcTemplate().update(
+				"INSERT INTO image_recipe (imageId, recipeId) VALUES (?, ?)", 
+				new Object[] {
+						imageId,
+						recipeId
+						});
+		
+		return result;
+	}
+
+	@Override
+	public Integer addImageToIngredient(Integer imageId, Integer ingredientId) {
+			Integer result = getJdbcTemplate().update(
+					"INSERT INTO image_ingredient (imageId, ingredientId) VALUES (?, ?)", 
+					new Object[] {
+							imageId,
+							ingredientId
+							});
+			
+			return result;
+	}
+
+	@Override
+	public Integer addImageToInstruction(Integer imageId, Integer instructionId) {
+			Integer result = getJdbcTemplate().update(
+					"INSERT INTO image_instruction (imageId, instructionId) VALUES (?, ?)", 
+					new Object[] {
+							imageId,
+							instructionId
+							});
+			
+			return result;
+	}
+
+	@Override
+	public Integer addImageToCookbook(Integer imageId, Integer cookbookId) {
+			Integer result = getJdbcTemplate().update(
+					"INSERT INTO image_cookbook (imageId, cookbookId) VALUES (?, ?)", 
+					new Object[] {
+							imageId,
+							cookbookId
+							});
+			
+			return result;
+	}
+
+	@Override
+	public Integer addImageToComment(Integer imageId, Integer commentId) {
+			Integer result = getJdbcTemplate().update(
+					"INSERT INTO image_comment (imageId, commentId) VALUES (?, ?)", 
+					new Object[] {
+							imageId,
+							commentId
+							});
+			
+			return result;
+	}
+
+	@Override
+	public Integer removeImageFromRecipe(Integer imageId, Integer recipeId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM image_recipe WHERE imageId = ? AND recipeId = ?", 
+				new Object[] {
+						imageId,
+						recipeId
+						});
+		
+		return result;
+	}
+
+	@Override
+	public Integer removeImageFromIngredient(Integer imageId, Integer ingredientId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM image_ingredient WHERE imageId = ? AND ingredientId = ?", 
+				new Object[] {
+						imageId,
+						ingredientId
+						});
+		
+		return result;
+	}
+
+	@Override
+	public Integer removeImageFromInstruction(Integer imageId, Integer instructionId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM image_instruction WHERE imageId = ? AND instructionId = ?", 
+				new Object[] {
+						imageId,
+						instructionId
+						});
+		
+		return result;
+	}
+
+	@Override
+	public Integer removeImageFromCookbook(Integer imageId, Integer cookbookId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM image_cookbook WHERE imageId = ? AND cookbookId = ?", 
+				new Object[] {
+						imageId,
+						cookbookId
+						});
+		
+		return result;
+	}
+
+	@Override
+	public Integer removeImageFromComment(Integer imageId, Integer commentId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM image_comment WHERE imageId = ? AND commentId = ?", 
+				new Object[] {
+						imageId,
+						commentId
+						});
+		
+		return result;
+	}
 	
 }
 

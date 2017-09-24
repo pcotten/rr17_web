@@ -17,7 +17,7 @@ public class Recipe {
 	@Size(max=30)
 	private String attributedTo;
 	private Integer numberOfServings;
-	private Integer ovenTemp;
+	private String ovenTemp;
 	private Integer servingSize;
 	private String servingSizeUnit;
 	private Integer cookTime;
@@ -94,10 +94,10 @@ public class Recipe {
 		this.numberOfServings = servings;
 	}
 	
-	public Integer getOvenTemp() {
+	public String getOvenTemp() {
 		return ovenTemp;
 	}
-	public void setOvenTemp(Integer ovenTemp) {
+	public void setOvenTemp(String ovenTemp) {
 		this.ovenTemp = ovenTemp;
 	}
 

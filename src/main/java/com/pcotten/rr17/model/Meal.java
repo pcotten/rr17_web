@@ -11,6 +11,7 @@ public class Meal {
 	private Integer id;
 	@NotNull @Size(min=3, max=255)
 	private String name;
+	private String description;
 	private List<Recipe> recipes;
 	private Integer owner;
 	private LocalDate lastPrepared;
@@ -39,6 +40,14 @@ public class Meal {
 		this.name = name;
 	}
 	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 	public List<Recipe> getRecipes() {
 		return recipes;
 	}

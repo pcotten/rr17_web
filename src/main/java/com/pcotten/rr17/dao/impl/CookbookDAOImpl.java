@@ -57,9 +57,9 @@ public class CookbookDAOImpl extends JdbcDaoSupport implements CookbookDAO{
 	}
 
 	@Override
-	public Cookbook createCookbook(Cookbook cookbook) {
+	public Cookbook createCookbook(Cookbook cookbook, Integer userId) {
 		KeyHolder holder = new GeneratedKeyHolder();
-		Integer id = getJdbcTemplate().update(new PreparedStatementCreator() {
+		getJdbcTemplate().update(new PreparedStatementCreator() {
 
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
@@ -67,13 +67,13 @@ public class CookbookDAOImpl extends JdbcDaoSupport implements CookbookDAO{
 				PreparedStatement ps = con.prepareStatement(
 					sql, Statement.RETURN_GENERATED_KEYS);
 				ps.setString(1, cookbook.getTitle());
-				ps.setInt(2, cookbook.getOwner());
+				ps.setInt(2, userId);
 				
 				return ps;
 			}
 		}, holder);
-		if (id != null) {
-			cookbook.setId(id);
+		if (holder.getKey() != null) {
+			cookbook.setId(holder.getKey().intValue());
 		}
 		
 		return cookbook;

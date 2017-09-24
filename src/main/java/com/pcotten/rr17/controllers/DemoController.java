@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.pcotten.rr17.model.Recipe;
 import com.pcotten.rr17.model.User;
 import com.pcotten.rr17.service.UserService;
 import com.pcotten.rr17.storage.service.DatabaseManager;
@@ -92,6 +93,11 @@ public class DemoController {
 	@RequestMapping(value="/urecovery")
 	public String accountRecovery(@ModelAttribute ("login") User user) {
 		return "urecovery";	
+	}
+	
+	@RequestMapping(value="/newrecipe")
+	public String showNewRecipe(@ModelAttribute ("recipe") Recipe recipe) {
+		return "newRecipe";
 	}
 	
 	@RequestMapping(value="/acctrecovery", method=RequestMethod.POST)

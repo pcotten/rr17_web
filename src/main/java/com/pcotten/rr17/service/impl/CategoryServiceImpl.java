@@ -46,34 +46,38 @@ public class CategoryServiceImpl implements CategoryService {
 		return category;
 	}
 	
-	public Integer updateCategory(Category category) throws SQLException{
+	public boolean updateCategory(Category category) throws SQLException{
 		
+		boolean success = false;
 		int result = categoryDAO.updateCategory(category);
 		
 		if (result > 0){
 			System.out.println("Category '" + category.getName() + "' successfully updated in database");
+			success = true;
 		}
 		else {
 			System.out.println("Failed to update category");
 		}
 
-		return result;
+		return success;
 	}
 	
-	public Integer deleteCategory(Integer id) throws SQLException{
+	public boolean deleteCategory(Integer id) throws SQLException{
 		
+		boolean success = false;
 		int result = -1;
 
 		result = categoryDAO.deleteCategory(id);
 		
 		if (result != -1){
 			System.out.println("Successfully removed category with id " + id);
+			success = true;
 		}
 		else {
 			System.out.println("Unable to remove image category with id " + id);
 		}
 		
-		return result;
+		return success;
 	}
 
 	@Override
@@ -101,27 +105,99 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public Integer linkCategoryToRecipe(Integer categoryId, Integer recipeId) {
+	public boolean addCategoryToRecipe(Integer categoryId, Integer recipeId) {
 		
-		int result = categoryDAO.linkCategoryToRecipe(categoryId, recipeId);
+		boolean success = false;
 		
-		return result;
+		Integer result = categoryDAO.addCategoryToRecipe(categoryId, recipeId);
+		if (result > 0) {
+			System.out.println("Successfully added category to recipe");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to add category to recipe");
+		}
+		return success;
 	}
 
 	@Override
-	public Integer linkCategoryToIngredient(Integer categoryId, Integer ingredientId) {
+	public boolean addCategoryToIngredient(Integer categoryId, Integer ingredientId) {
 		
-		int result = categoryDAO.linkCategoryToIngredient(categoryId, ingredientId);
+		boolean success = false;
 		
-		return result;
+		Integer result = categoryDAO.addCategoryToIngredient(categoryId, ingredientId);
+		if (result > 0) {
+			System.out.println("Successfully added category to ingredient");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to add category to ingredient");
+		}
+		return success;
 	}
 
 	@Override
-	public Integer linkCategoryToCookbook(Integer categoryId, Integer cookbookId) {
+	public boolean addCategoryToCookbook(Integer categoryId, Integer cookbookId) {
 		
-		int result = categoryDAO.linkCategoryToCookbook(categoryId, cookbookId);
+		boolean success = false;
 		
-		return result;
+		Integer result = categoryDAO.addCategoryToCookbook(categoryId, cookbookId);
+		if (result > 0) {
+			System.out.println("Successfully added category to cookbook");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to add category to cookbook");
+		}
+		return success;
+	}
+
+	@Override
+	public boolean removeCategoryFromRecipe(Integer categoryId, Integer recipeId) {
+
+		boolean success = false;
+		
+		Integer result = categoryDAO.removeCategoryFromRecipe(categoryId, recipeId);
+		if (result > 0) {
+			System.out.println("Successfully removed category from recipe");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to remove category from recipe");
+		}
+		return success;
+	}
+
+	@Override
+	public boolean removeCategoryFromIngredient(Integer categoryId, Integer ingredientId) {
+
+		boolean success = false;
+		
+		Integer result = categoryDAO.removeCategoryFromIngredient(categoryId, ingredientId);
+		if (result > 0) {
+			System.out.println("Successfully removed category from ingredient");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to remove category from ingredient");
+		}
+		return success;
+	}
+
+	@Override
+	public boolean removeCategoryFromCookbook(Integer categoryId, Integer cookbookId) {
+
+		boolean success = false;
+		
+		Integer result = categoryDAO.removeCategoryFromCookbook(categoryId, cookbookId);
+		if (result > 0) {
+			System.out.println("Successfully removed category from cookbook");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to remove category from cookbook");
+		}
+		return success;
 	}
 
 

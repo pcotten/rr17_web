@@ -11,14 +11,18 @@ public interface MealService {
 	
 	public Meal createMeal(Meal meal, Integer userId) throws SQLException;
 	
-	public Integer updateMeal(Meal meal) throws SQLException;
+	public boolean updateMeal(Meal meal) throws SQLException;
 	
-	public Integer deleteMeal(Integer id, Integer userId) throws SQLException;
+	public boolean deleteMeal(Integer id, Integer userId) throws SQLException;
 
 	public List<Meal> getMeals(Integer userId);
 	
 	public List<Meal> getMealPlanMeals(Integer id);
 
 	public boolean mealExists(Integer userId, Meal meal) throws SQLException;
+
+	public boolean addRecipeToMeal(Integer mealId, Integer recipeId);
+
+	public boolean removeRecipeFromMeal(Integer mealId, Integer recipeId);
 
 }

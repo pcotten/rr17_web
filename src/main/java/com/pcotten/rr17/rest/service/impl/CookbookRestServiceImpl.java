@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -28,54 +30,56 @@ public class CookbookRestServiceImpl implements CookbookRestService {
 	CookbookService service;
 	@Inject
 	RecipeService recipeService;
+	@Inject
+	CookbookService cookbookService;
 	
 	
-	@Override
-	public ResponseEntity<Void> updateCookbook(
-			@PathVariable Integer cookbookId, 
-			@RequestBody Cookbook cookbook) {
-		
-		ResponseEntity<Void> response = null;
-		
-		try {
-			boolean success = service.updateCookbook(cookbook);
-			if (success) {
-				response = ResponseEntity.ok().build();
-			}
-			else {
-				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-			}
-				
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return response;
-	}
+//	@Override
+//	public ResponseEntity<Void> updateCookbook(
+//			@PathVariable Integer cookbookId, 
+//			@RequestBody Cookbook cookbook) {
+//		
+//		ResponseEntity<Void> response = null;
+//		
+//		try {
+//			boolean success = service.updateCookbook(cookbook);
+//			if (success) {
+//				response = ResponseEntity.ok().build();
+//			}
+//			else {
+//				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+//			}
+//				
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		return response;
+//	}
 
-	@Override
-	public ResponseEntity<Void> deleteCookbook(
-			@PathVariable Integer cookbookId) {
-		
-		ResponseEntity<Void> response = null;
-		
-		try {
-			boolean success = service.deleteCookbook(cookbookId);
-			if (success) {
-				response = ResponseEntity.ok().build();
-			}
-			else {
-				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-			}
-				
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return response;
-	}
+//	@Override
+//	public ResponseEntity<Void> deleteCookbook(
+//			@PathVariable Integer cookbookId) {
+//		
+//		ResponseEntity<Void> response = null;
+//		
+//		try {
+//			boolean success = service.deleteCookbook(cookbookId);
+//			if (success) {
+//				response = ResponseEntity.ok().build();
+//			}
+//			else {
+//				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+//			}
+//				
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+//		return response;
+//	}
 
 	@Override
 	public ResponseEntity<List<Recipe>> getCookbookRecipes(
@@ -101,37 +105,25 @@ public class CookbookRestServiceImpl implements CookbookRestService {
 	}
 
 	@Override
-	public ResponseEntity<Void> createCookbookRecipe(
+	public ResponseEntity<Void> addRecipeToCookbook(
 			@PathVariable Integer cookbookId,
-			@RequestBody Recipe recipe, 
-			UriComponentsBuilder uriBuilder) {
+			@PathVariable Integer recipeId) {
 		
 		ResponseEntity<Void> response = null;
 		
-		try {
-			if (!recipeService.recipeExists(recipe)) {
-				recipe = service.createCookbookRecipe(cookbookId, recipe);
-				if (recipe != null && recipe.getId() != null) {
-					HttpHeaders headers = new HttpHeaders();
-					Map<String, Integer> uriVariables = new HashMap<String, Integer>();
-					uriVariables.put("cookbookId", cookbookId);
-					uriVariables.put("recipeId", recipe.getId());
-					headers.setLocation(uriBuilder.path("cookbooks/{cookbookId}/recipes/{recipeId}").buildAndExpand(uriVariables).toUri());
-					response = new ResponseEntity<Void>(HttpStatus.CREATED);
-				}
-				else {
-					response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
-				}
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
+		boolean success = service.addRecipeToCookbook(cookbookId, recipeId);
+		if(success) {
+			response = ResponseEntity.ok().build();
+		}
+		else {
+			response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
 		}
 
 		return response;
 	}
 
 	@Override
-	public ResponseEntity<Void> deleteCookbookRecipe(
+	public ResponseEntity<Void> removeRecipeFromCookbook(
 			@PathVariable Integer cookbookId, 
 			@PathVariable Integer recipeId) {
 
@@ -139,7 +131,7 @@ public class CookbookRestServiceImpl implements CookbookRestService {
 		
 		boolean success;
 		try {
-			success = service.deleteCookbookRecipe(cookbookId, recipeId);
+			success = service.removeRecipeFromCookbook(cookbookId, recipeId);
 			if (success) {
 				response = ResponseEntity.ok().build();
 			}

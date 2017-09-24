@@ -23,4 +23,6 @@ public interface MealDAO {
 	public Integer addRecipeToMeal(Integer mealId, Integer recipeId);
 
 	public Integer linkMealToUser(Integer mealId, Integer userId);
+
+	public Integer removeRecipeFromMeal(Integer mealId, Integer recipeId);
 }

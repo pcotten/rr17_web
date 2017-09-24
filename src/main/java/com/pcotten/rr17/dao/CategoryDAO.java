@@ -22,9 +22,15 @@ public interface CategoryDAO {
 	
 	public List<Category> getCookbookCategories(Integer cookbookId);
 
-	public int linkCategoryToRecipe(Integer categoryId, Integer recipeId);
+	public int addCategoryToRecipe(Integer categoryId, Integer recipeId);
 
-	public int linkCategoryToIngredient(Integer categoryId, Integer ingredientId);
+	public int addCategoryToIngredient(Integer categoryId, Integer ingredientId);
 
-	public int linkCategoryToCookbook(Integer categoryId, Integer cookbookId);
+	public int addCategoryToCookbook(Integer categoryId, Integer cookbookId);
+
+	public Integer removeCategoryFromRecipe(Integer categoryId, Integer recipeId);
+
+	public Integer removeCategoryFromIngredient(Integer categoryId, Integer ingredientId);
+
+	public Integer removeCategoryFromCookbook(Integer categoryId, Integer cookbookId);
 }

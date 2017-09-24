@@ -19,6 +19,7 @@ import com.pcotten.rr17.model.Cookbook;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Meal;
 import com.pcotten.rr17.model.MealPlan;
+import com.pcotten.rr17.model.Recipe;
 import com.pcotten.rr17.model.User;
 import com.pcotten.rr17.rest.service.UserRestService;
 import com.pcotten.rr17.service.CookbookService;
@@ -26,6 +27,7 @@ import com.pcotten.rr17.service.IngredientService;
 import com.pcotten.rr17.service.MealPlanService;
 import com.pcotten.rr17.service.MealService;
 import com.pcotten.rr17.service.PantryService;
+import com.pcotten.rr17.service.RecipeService;
 import com.pcotten.rr17.service.UserService;
 
 @RestController
@@ -39,6 +41,8 @@ public class UserRestServiceImpl implements UserRestService {
 	private PantryService pantryService;
 	@Inject
 	private CookbookService cookbookService;
+	@Inject
+	private RecipeService recipeService;
 	@Inject
 	private MealService mealService;
 	@Inject
@@ -188,6 +192,137 @@ public class UserRestServiceImpl implements UserRestService {
 		}
 		return response;
 	}
+	
+	public ResponseEntity<Void> updateCookbook(
+			@PathVariable Integer userId, 
+			@PathVariable Integer cookbookId, 
+			@RequestBody Cookbook cookbook) {
+		
+		ResponseEntity<Void> response = null;
+		boolean success = false;
+		try {
+				cookbook.setId(cookbookId);
+				success = cookbookService.updateCookbook(cookbook);
+			if (success) {
+				response = ResponseEntity.ok().build();
+			}
+			else {
+				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return response;
+	}
+	
+	@Override
+	public ResponseEntity<Void> deleteCookbook(
+			@PathVariable Integer userId, 
+			@PathVariable Integer cookbookId) {
+
+		ResponseEntity<Void> response = null;
+		boolean success = false;
+		try {
+				success = cookbookService.deleteCookbook(cookbookId);
+			if (success) {
+				response = ResponseEntity.ok().build();
+			}
+			else {
+				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return response;
+	}
+
+	@Override
+	public ResponseEntity<List<Recipe>> getRecipes(
+			@PathVariable Integer userId) {
+		
+		ResponseEntity<List<Recipe>> response = null;
+
+		response = null;
+		List<Recipe> recipes = recipeService.getUserRecipes(userId);
+		if (recipes != null && !recipes.isEmpty()) {
+			response = ResponseEntity.ok(recipes);
+		}
+		else {
+			response = new ResponseEntity<List<Recipe>>(HttpStatus.NOT_FOUND);
+		}
+	
+		return response;
+	}
+
+	@Override
+	public ResponseEntity<Void> createRecipe(
+			@PathVariable Integer userId, 
+			@RequestBody Recipe recipe, 
+			UriComponentsBuilder uriBuilder) {
+
+		ResponseEntity<Void> response = null;
+		
+		try {
+			if (recipeService.recipeExists(recipe, userId)) {
+				response = new ResponseEntity<Void>(HttpStatus.CONFLICT);
+			}
+			else {
+				recipe = recipeService.createRecipe(recipe, userId);
+				if (recipe != null && recipe.getId() != null) {
+					HttpHeaders headers = new HttpHeaders();
+					Map<String, Integer> uriVariables = new HashMap<String, Integer>();
+					uriVariables.put("userId", userId);
+					uriVariables.put("recipeId", recipe.getId());
+					headers.setLocation(uriBuilder.path("users/{userId}/recipes/{recipeId}").buildAndExpand(uriVariables).toUri());
+					response = new ResponseEntity<Void>(headers, HttpStatus.CREATED);
+				}
+				else {
+					response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return response;
+	}
+
+	@Override
+	public ResponseEntity<Void> updateRecipe(
+			@PathVariable Integer userId, 
+			@PathVariable Integer recipeId, 
+			@RequestBody Recipe recipe) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ResponseEntity<Void> deleteRecipe(
+			@PathVariable Integer userId, 
+			@PathVariable Integer recipeId) {
+		
+		ResponseEntity<Void> response = null;
+		boolean success = false;
+		try {
+				success = recipeService.deleteRecipe(recipeId);
+			if (success) {
+				response = ResponseEntity.ok().build();
+			}
+			else {
+				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return response;
+	}
+
 
 	@Override
 	public ResponseEntity<List<Ingredient>> getPantryIngredients(
@@ -493,6 +628,7 @@ public class UserRestServiceImpl implements UserRestService {
 		
 		return response;
 	}
+
 
 
 

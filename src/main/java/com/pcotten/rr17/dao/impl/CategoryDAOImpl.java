@@ -36,7 +36,7 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 
 		@Override
 		public Category mapRow(ResultSet rs, int row) throws SQLException {
-			// TODO Auto-generated method stubpstmt.setString(1, user.getUsername());
+
 			Category category = new Category();
 			category.setId(rs.getInt("id"));
 			category.setName(rs.getString("name"));
@@ -142,7 +142,7 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 	}
 
 	@Override
-	public int linkCategoryToRecipe(Integer categoryId, Integer recipeId) {
+	public int addCategoryToRecipe(Integer categoryId, Integer recipeId) {
 		Integer result = getJdbcTemplate().update(
 				"call link_category_to_recipe (?, ?)", 
 				new Object[] {
@@ -154,7 +154,7 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 	}
 
 	@Override
-	public int linkCategoryToIngredient(Integer categoryId, Integer ingredientId) {
+	public int addCategoryToIngredient(Integer categoryId, Integer ingredientId) {
 		Integer result = getJdbcTemplate().update(
 				"call link_category_to_ingredient (?, ?)", 
 				new Object[] {
@@ -166,13 +166,49 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 	}
 
 	@Override
-	public int linkCategoryToCookbook(Integer categoryId, Integer cookbookId) {
+	public int addCategoryToCookbook(Integer categoryId, Integer cookbookId) {
 		Integer result = getJdbcTemplate().update(
 				"call link_category_to_cookbook (?, ?)", 
 				new Object[] {
 						categoryId, 
 						cookbookId
 				});
+		
+		return result;
+	}
+
+	@Override
+	public Integer removeCategoryFromRecipe(Integer categoryId, Integer recipeId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM recipe_category WHERE categoryId = ? AND recipeId = ?", 
+				new Object[] {
+						categoryId,
+						recipeId
+						});
+		
+		return result;
+	}
+
+	@Override
+	public Integer removeCategoryFromIngredient(Integer categoryId, Integer ingredientId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM ingredient_category WHERE categoryId = ? AND ingredientId = ?", 
+				new Object[] {
+						categoryId,
+						ingredientId
+						});
+		
+		return result;
+	}
+
+	@Override
+	public Integer removeCategoryFromCookbook(Integer categoryId, Integer cookbookId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM cookbook_category WHERE categoryId = ? AND cookbookId = ?", 
+				new Object[] {
+						categoryId,
+						cookbookId
+						});
 		
 		return result;
 	}

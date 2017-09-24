@@ -9,9 +9,9 @@ public interface ImageService {
 
 	public Image createImage(Image image) throws SQLException;
 	
-	public Integer updateImage(Image image) throws SQLException;
+	public boolean updateImage(Image image) throws SQLException;
 	
-	public Integer deleteImage(Integer id) throws SQLException;
+	public boolean deleteImage(Integer id) throws SQLException;
 
 	public Image getImage(Integer id);
 
@@ -28,4 +28,24 @@ public interface ImageService {
 	public List<Image> getCookbookImages(Integer cookbookId);
 	
 	public List<Image> getCommentImages(Integer commentId);
+
+	public boolean addImageToRecipe(Integer imageId, Integer recipeId);
+	
+	public boolean addImageToIngredient(Integer imageId, Integer ingredientId);
+	
+	public boolean addImageToInstruction(Integer imageId, Integer instructionId);
+	
+	public boolean addImageToCookbook(Integer imageId, Integer cookbookId);
+	
+	public boolean addImageToComment(Integer imageId, Integer commentId);
+	
+	public boolean removeImageFromRecipe(Integer imageId, Integer recipeId);
+	
+	public boolean removeImageFromIngredient(Integer imageId, Integer ingredientId);
+	
+	public boolean removeImageFromInstruction(Integer imageId, Integer instructionId);
+	
+	public boolean removeImageFromCookbook(Integer imageId, Integer cookbookId);
+	
+	public boolean removeImageFromComment(Integer imageId, Integer commentId);
 }

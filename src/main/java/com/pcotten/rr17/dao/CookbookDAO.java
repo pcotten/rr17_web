@@ -8,7 +8,7 @@ public interface CookbookDAO {
 
 	public Cookbook getCookbook(Integer id);
 	
-	public Cookbook createCookbook(Cookbook cookbook);
+	public Cookbook createCookbook(Cookbook cookbook, Integer userId);
 	
 	public Integer updateCookbook(Cookbook cookbook);
 	

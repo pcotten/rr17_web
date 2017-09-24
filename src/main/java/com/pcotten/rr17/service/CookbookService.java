@@ -23,10 +23,19 @@ public interface CookbookService {
 
 	boolean cookbookExists(Integer userId, Cookbook cookbook) throws SQLException;
 
-	public boolean deleteCookbookRecipe(Integer cookbookId, Integer recipeId) throws SQLException;
+	public boolean addRecipeToCookbook(Integer cookbookId, Integer recipeId);
+	
+	public boolean removeRecipeFromCookbook(Integer cookbookId, Integer recipeId) throws SQLException;
+	
+	// replaced by addRecipeToCookbook
+//	public Recipe createCookbookRecipe(Integer cookbookId, Recipe recipe) throws SQLException;
 
-	public Recipe createCookbookRecipe(Integer cookbookId, Recipe recipe) throws SQLException;
-
+	public Integer getCookbookOwner(Integer cookbookId);
+	
 	public List<Cookbook> getCookbooks(Integer userId);
+
+	
+
+	
 	
 }

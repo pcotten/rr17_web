@@ -42,6 +42,7 @@ public class MealDAOImpl extends JdbcDaoSupport implements MealDAO {
 			Meal meal = new Meal();
 			meal.setId(rs.getInt("id"));
 			meal.setName(rs.getString("name"));
+			meal.setDescription(rs.getString("description"));
 			meal.setOwner(rs.getInt("owner"));
 			
 			return meal;
@@ -63,21 +64,22 @@ public class MealDAOImpl extends JdbcDaoSupport implements MealDAO {
 	@Override
 	public Meal createMeal(Meal meal, Integer userId) {
 		KeyHolder holder = new GeneratedKeyHolder();
-		Integer id = getJdbcTemplate().update(new PreparedStatementCreator() {
+		getJdbcTemplate().update(new PreparedStatementCreator() {
 
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-				String sql = "INSERT INTO meal (name, owner) VALUES (?, ?);";
+				String sql = "INSERT INTO meal (name, description, owner) VALUES (?, ?, ?);";
 				PreparedStatement ps = con.prepareStatement(
 					sql, Statement.RETURN_GENERATED_KEYS);
 				ps.setString(1, meal.getName());
-				ps.setInt(2, meal.getOwner());
+				ps.setString(2, meal.getDescription());
+				ps.setInt(3, userId);
 				
 				return ps;
 			}
 		}, holder);
-		if (id != null) {
-			meal.setId(id);
+		if (holder.getKey() != null) {
+			meal.setId(holder.getKey().intValue());
 		}
 		
 		return meal;
@@ -86,9 +88,10 @@ public class MealDAOImpl extends JdbcDaoSupport implements MealDAO {
 	
 	@Override
 	public Integer updateMeal(Meal meal) {
-		Integer result = getJdbcTemplate().update("UPDATE meal SET name = ?, owner = ? WHERE id = ?",
+		Integer result = getJdbcTemplate().update("UPDATE meal SET name = ?, description= ?, owner = ? WHERE id = ?",
 				new Object[] {
 						meal.getName(),
+						meal.getDescription(),
 						meal.getOwner(),
 						meal.getId()
 				});
@@ -162,6 +165,19 @@ public class MealDAOImpl extends JdbcDaoSupport implements MealDAO {
 				new Object[] {
 						mealId,
 						userId
+				});
+		
+		return result;
+	}
+
+
+	@Override
+	public Integer removeRecipeFromMeal(Integer mealId, Integer recipeId) {
+		Integer result = getJdbcTemplate().update(
+				"DELETE FROM meal_user WHERE mealId = ? AND recipeId = ?", 
+				new Object[] {
+						mealId,
+						recipeId
 				});
 		
 		return result;

@@ -50,33 +50,36 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 	
 
-	public Integer updateIngredient(Ingredient ingredient) throws SQLException {
+	public boolean updateIngredient(Ingredient ingredient) throws SQLException {
 
-		
+		boolean success = false;
 		int result = ingredientDAO.updateIngredient(ingredient);
 		
 		if (result != 0){
 			System.out.println("Ingredient " + ingredient.getName() + " successfully updated in database");
+			success = true;
 		}
 		else {
 			System.out.println("Ingredient " + ingredient.getName() + " not updated");
 		}
-		return result;
+		return success;
 	}
 
 
-	public Integer deleteIngredient(Integer id) throws SQLException {
+	public boolean deleteIngredient(Integer id) throws SQLException {
 		
+		boolean success = false;
 		int result = ingredientDAO.deleteIngredient(id);
 
 		if (result != -1){
 			System.out.println("Successfully removed ingredient with id " + id);
+			success = true;
 		}
 		else {
 			System.out.println("Unable to remove ingredient entity with id " + id);
 		}
 		
-		return result;
+		return success;
 	}
 
 	
@@ -99,8 +102,9 @@ public class IngredientServiceImpl implements IngredientService {
 	
 	
 	@Override
-	public Integer createRecipeIngredient(Ingredient ingredient, Integer recipeId) throws SQLException {
+	public boolean addIngredientToRecipe(Ingredient ingredient, Integer recipeId) throws SQLException {
 
+		boolean success = false;
 		int result = 0;
 		
 		if (!ingredientExists(ingredient)) {
@@ -111,34 +115,53 @@ public class IngredientServiceImpl implements IngredientService {
 		}
 		if (ingredient.getId() != null) {
 			result = ingredientDAO.createRecipeIngredient(ingredient, recipeId);
+			if (result > 0) {
+				System.out.println("Successfully added ingredient to recipe");
+				success = true;
+			}
+			else {
+				System.out.println("Failed to add ingredient to recipe");
+			}
 		}
 
-		return result;
+		return success;
 	}
 	
 	
 	@Override
-	public Integer updateRecipeIngredient(Ingredient ingredient, Integer recipeId) {
+	public boolean updateRecipeIngredient(Ingredient ingredient, Integer recipeId) {
 
+		boolean success = false;
 		int result = ingredientDAO.updateRecipeIngredient(ingredient, recipeId);
 		
 		if (result > 0) {
 			System.out.println("Successfully updated ingredient");
+			success = true;
 		}
 		else {
 			System.out.println("Failed to update ingredient");
 		}
 		
-		return result;
+		return success;
 	}
 
 	
 	@Override
-	public Integer deleteRecipeIngredient(Integer ingredientId, Integer recipeId) {
+	public boolean removeIngredientFromRecipe(Integer ingredientId, Integer recipeId) {
 		
-		int result = ingredientDAO.deleteRecipeIngredient(ingredientId, recipeId);
-	
-		return result;
+		boolean success = false;
+		int result = -1;
+		
+		result = ingredientDAO.removeIngredientFromRecipe(ingredientId, recipeId);
+		if (result != -1) {
+			System.out.println("Successfully removed ingredient from recipe");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to remove ingredient from recipe");
+		}
+		
+		return success;
 	}
 	
 	
@@ -151,8 +174,9 @@ public class IngredientServiceImpl implements IngredientService {
 	}
 	
 	@Override
-	public Integer createPantryIngredient(Ingredient ingredient, Integer pantryId) throws SQLException {
+	public boolean addIngredientToPantry(Ingredient ingredient, Integer pantryId) throws SQLException {
 
+		boolean success = false;
 		int result = 0;
 		
 		if (!ingredientExists(ingredient)) {
@@ -163,28 +187,54 @@ public class IngredientServiceImpl implements IngredientService {
 		}
 		if (ingredient.getId() != null) {
 			result = ingredientDAO.createPantryIngredient(ingredient, pantryId);
+			if (result > 0) {
+				System.out.println("Successfully added ingredient to pantry");
+				success = true;
+			}
+			else {
+				System.out.println("Failed to add ingredient to pantry");
+			}
 		}	
 
-		return result;	
+		return success;	
 		
 	}
 
 	
 	@Override
-	public Integer updatePantryIngredient(Ingredient ingredient, Integer pantryId) {
+	public boolean updatePantryIngredient(Ingredient ingredient, Integer pantryId) {
 		
+		boolean success = false;
 		int result = ingredientDAO.updatePantryIngredient(pantryId, ingredient);
 		
-		return result;
+		if (result > 0) {
+			System.out.println("Successfully updated ingredient to pantry");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to update ingredient to pantry");
+		}
+		return success;
 	}
 
 	
 	@Override
-	public Integer deletePantryIngredient(Integer ingredientId, Integer pantryId) {
+	public boolean removeIngredientFromPantry(Integer ingredientId, Integer pantryId) {
 
-		int result = ingredientDAO.deletePantryIngredient(pantryId, ingredientId);
 		
-		return result;
+		boolean success = false;
+		int result = -1;
+		
+		result = ingredientDAO.removeIngredientFromRecipe(ingredientId, pantryId);
+		if (result != -1) {
+			System.out.println("Successfully removed ingredient from pantry");
+			success = true;
+		}
+		else {
+			System.out.println("Failed to remove ingredient from pantry");
+		}
+		
+		return success;
 	}
 
 

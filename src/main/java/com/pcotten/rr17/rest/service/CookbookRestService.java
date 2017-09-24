@@ -16,27 +16,28 @@ import com.pcotten.rr17.model.Recipe;
 @Controller
 public interface CookbookRestService {
 	
-	@RequestMapping(value="/cookbooks/{cookbookId}", method=RequestMethod.PUT)
-	public ResponseEntity<Void> updateCookbook(
-			@PathVariable ("cookbookId") Integer cookbookId,
-			@RequestBody Cookbook cookbook);
+	// covered by UserRestService /users/{userId}/cookbooks/{cookbookId}
+//	@RequestMapping(value="/cookbooks/{cookbookId}", method=RequestMethod.PUT)
+//	public ResponseEntity<Void> updateCookbook(
+//			@PathVariable ("cookbookId") Integer cookbookId,
+//			@RequestBody Cookbook cookbook);
 	
-	@RequestMapping(value="/cookbooks/{cookbookId}", method=RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteCookbook(
-			@PathVariable ("cookbookId") Integer cookbookId);
+//	@RequestMapping(value="/cookbooks/{cookbookId}", method=RequestMethod.DELETE)
+//	public ResponseEntity<Void> deleteCookbook(
+//			@PathVariable ("cookbookId") Integer cookbookId);
 	
 	@RequestMapping(value="/cookbooks/{cookbookId}/recipes", method=RequestMethod.GET)
 	public ResponseEntity<List<Recipe>> getCookbookRecipes(
 			@PathVariable ("cookbookId") Integer cookbookId);
 	
-	@RequestMapping(value="/cookbooks/{cookbookId}/recipes", method=RequestMethod.POST)
-	public ResponseEntity<Void> createCookbookRecipe(
+	
+	@RequestMapping(value="/cookbooks/{cookbookId}/recipes/{recipeId}", method=RequestMethod.POST)
+	public ResponseEntity<Void> addRecipeToCookbook(
 			@PathVariable ("cookbookId") Integer cookbookId,
-			@RequestBody Recipe recipe,
-			UriComponentsBuilder uriBuilder);
+			@PathVariable ("recipeId") Integer recipeId);
 	
 	@RequestMapping(value="/cookbooks/{cookbookId}/recipes/{recipeId}", method=RequestMethod.DELETE)
-	public ResponseEntity<Void> deleteCookbookRecipe(
+	public ResponseEntity<Void> removeRecipeFromCookbook(
 			@PathVariable ("cookbookId") Integer cookbookId,
 			@PathVariable ("recipeId") Integer recipeId);
 }

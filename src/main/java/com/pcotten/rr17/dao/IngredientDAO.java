@@ -28,7 +28,7 @@ public interface IngredientDAO {
 
 	public Integer updateRecipeIngredient(Ingredient ingredient, Integer recipeId);
 
-	public Integer deleteRecipeIngredient(Integer ingredientId, Integer recipeId);
+	public Integer removeIngredientFromRecipe(Integer ingredientId, Integer recipeId);
 	
 	public Ingredient getIngredientByName(String name);
 }

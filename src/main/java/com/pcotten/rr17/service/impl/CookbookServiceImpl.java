@@ -43,7 +43,7 @@ public class CookbookServiceImpl implements CookbookService {
 	
 	public Cookbook createCookbook(Cookbook cookbook, Integer userId) throws SQLException{
 
-		cookbook = cookbookDAO.createCookbook(cookbook);
+		cookbook = cookbookDAO.createCookbook(cookbook, userId);
 		
 		if (cookbook.getId() != null){
 			System.out.println("Cookbook entity " + cookbook.getTitle() 
@@ -109,27 +109,45 @@ public class CookbookServiceImpl implements CookbookService {
 		return recipes;
 	}
 	
+//	@Override
+//	public Recipe createCookbookRecipe(Integer cookbookId, Recipe recipe) throws SQLException {
+//	
+//		if (!recipeService.recipeExists(recipe)) {
+//			recipe = recipeService.createRecipe(recipe, getCookbookOwner(cookbookId));
+//			cookbookDAO.addRecipeToCookbook(cookbookId, recipe.getId());
+//		}
+//		else {
+//			if (recipe != null && recipe.getId() != null) {
+//				cookbookDAO.addRecipeToCookbook(cookbookId, recipe.getId());
+//			}
+//			recipe = null;
+//			// will generate conflict - UI should fetch conflicting recipe 
+//			// and give the user the chance to insert it into the cookbook
+//		}
+//
+//		return recipe;
+//	}
+
 	@Override
-	public Recipe createCookbookRecipe(Integer cookbookId, Recipe recipe) throws SQLException {
-	
-		if (!recipeService.recipeExists(recipe)) {
-			recipe = recipeService.createRecipe(recipe, getCookbookOwner(cookbookId));
-			cookbookDAO.addRecipeToCookbook(cookbookId, recipe.getId());
+	public boolean addRecipeToCookbook(Integer cookbookId, Integer recipeId) {
+		int result = cookbookDAO.deleteCookbookRecipe(cookbookId, recipeId);
+		
+		boolean success = false;
+		
+		if (result >= 0) {
+			success = true;
+			System.out.println("Successfully added recipe to cookbook");
 		}
 		else {
-			if (recipe != null && recipe.getId() != null) {
-				cookbookDAO.addRecipeToCookbook(cookbookId, recipe.getId());
-			}
-			recipe = null;
-			// will generate conflict - UI should fetch conflicting recipe 
-			// and give the user the chance to insert it into the cookbook
+			success = false;
+			System.out.println("Failed to remove recipe from cookbook");
 		}
-
-		return recipe;
+		
+		return success;
 	}
 
 	@Override
-	public boolean deleteCookbookRecipe(Integer cookbookId, Integer recipeId) throws SQLException {
+	public boolean removeRecipeFromCookbook(Integer cookbookId, Integer recipeId) throws SQLException {
 		
 		int result = cookbookDAO.deleteCookbookRecipe(cookbookId, recipeId);
 	
@@ -173,7 +191,8 @@ public class CookbookServiceImpl implements CookbookService {
 		return manager.isExists(ps);
 	}
 
-	private Integer getCookbookOwner(Integer cookbookId) {
+	@Override
+	public Integer getCookbookOwner(Integer cookbookId) {
 		Cookbook cookbook = getCookbook(cookbookId);
 		return cookbook.getOwner();
 	}
@@ -186,6 +205,8 @@ public class CookbookServiceImpl implements CookbookService {
 		
 		return cookbooks;
 	}
+
+
 
 
 }

@@ -60,19 +60,19 @@ public class RecipeServiceImpl implements RecipeService{
 	}
 	
 	
-	public Recipe createRecipe(Recipe recipe, Integer cookbookId) throws SQLException{
+	public Recipe createRecipe(Recipe recipe, Integer userId) throws SQLException{
 		
 		List<Ingredient> ingredients = recipe.getIngredients();
 		List<Instruction> instructions = recipe.getInstructions();
 		List<Image> images = recipe.getImages();
 		List<Category> categories = recipe.getCategories();
 	
-		recipe = recipeDAO.createRecipe(recipe);
+		recipe = recipeDAO.createRecipe(recipe, userId);
 		if (recipe.getId() != null){
 			
 			//Insert and add ingredients
 			for (Ingredient ingredient : ingredients) {
-				int result = ingredientService.createRecipeIngredient(ingredient, recipe.getId());
+				ingredientService.addIngredientToRecipe(ingredient, recipe.getId());
 			}
 			//Insert and add instructions
 			for (Instruction instruction : instructions) {
@@ -84,10 +84,8 @@ public class RecipeServiceImpl implements RecipeService{
 			}
 			//Insert and link categories
 			for (Category category : categories) {
-				categoryService.linkCategoryToRecipe(category.getId(), recipe.getId());
+				categoryService.addCategoryToRecipe(category.getId(), recipe.getId());
 			}
-			
-			recipeDAO.addRecipeToCookbook(recipe.getId(), cookbookId);
 		}
 		else {
 			System.out.println();
@@ -177,13 +175,13 @@ public class RecipeServiceImpl implements RecipeService{
 
 
 	@Override
-	public boolean recipeExists(Recipe recipe) throws SQLException {
+	public boolean recipeExists(Recipe recipe, Integer userId) throws SQLException {
 
 		Connection conn = manager.getConnection();
 		
 		PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM recipes_by_userId WHERE title = ? AND owner = ?");
 		pstmt.setString(1, recipe.getTitle());
-		pstmt.setInt(2, recipe.getOwner());
+		pstmt.setInt(2, userId);
 		
 		return manager.isExists(pstmt);
 	}
@@ -225,6 +223,7 @@ public class RecipeServiceImpl implements RecipeService{
 		
 		List<Recipe> recipes = new ArrayList<Recipe>();
 		
+		// TODO complete search code
 		
 		return null;
 	}
@@ -241,13 +240,7 @@ public class RecipeServiceImpl implements RecipeService{
 	@Override
 	public boolean createRecipeIngredient(Integer recipeId, Ingredient ingredient) throws SQLException {
 
-		boolean success = false;
-		
-		int result = ingredientService.createRecipeIngredient(ingredient, recipeId);
-		
-		if (result > 0) {
-			success = true;
-		}
+		boolean success = ingredientService.addIngredientToRecipe(ingredient, recipeId);
 		
 		return success;
 	}
@@ -256,13 +249,7 @@ public class RecipeServiceImpl implements RecipeService{
 	@Override
 	public boolean updateRecipeIngredient(Integer recipeId, Ingredient ingredient) {
 		
-		boolean success = false;
-		
-		int result = ingredientService.updateRecipeIngredient(ingredient, recipeId);
-		
-		if (result > 0) {
-			success = true;
-		}
+		boolean success = ingredientService.updateRecipeIngredient(ingredient, recipeId);
 		
 		return success;
 	}
@@ -271,14 +258,8 @@ public class RecipeServiceImpl implements RecipeService{
 	@Override
 	public boolean deleteRecipeIngredient(Integer recipeId, Integer ingredientId) {
 		
-		boolean success = false;
-		
-		int result = ingredientService.deleteRecipeIngredient(ingredientId, recipeId);
-		
-		if (result > 0) {
-			success = true;
-		}
-		
+		boolean success = ingredientService.removeIngredientFromRecipe(ingredientId, recipeId);
+
 		return success;
 	}
 
@@ -296,6 +277,15 @@ public class RecipeServiceImpl implements RecipeService{
 	public List<Recipe> getCookbookRecipes(Integer cookbookId) {
 		
 		List<Recipe> recipes = recipeDAO.getCookbookRecipes(cookbookId);
+		
+		return recipes;
+	}
+
+
+	@Override
+	public List<Recipe> getUserRecipes(Integer userId) {
+
+		List<Recipe> recipes = recipeDAO.getUserRecipes(userId);
 		
 		return recipes;
 	}

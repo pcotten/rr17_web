@@ -239,37 +239,19 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public boolean updateMeal(Integer userId, Integer mealId, Meal meal) throws SQLException {
-		
-		int r = 0;
 
 		meal.setId(mealId);
-		r = mealService.updateMeal(meal);
+		boolean success = mealService.updateMeal(meal);
 
-		if (r != 0){
-			System.out.println("Meal successfully updated");
-			return true;
-		}
-		else {
-			System.out.println("Meal not updated");
-			return false;
-		}
+		return success;
 	}
 
 	@Override
 	public boolean deleteMeal(Integer userId, Integer mealId) throws SQLException {
 		
-		int r = -1;
-		
-		r = mealService.deleteMeal(mealId, userId);
+		boolean success = mealService.deleteMeal(mealId, userId);
 
-		if (r == 0) {
-			System.out.println("Ingredient " + mealId + " deleted from pantry.");
-			return true;
-		}
-		else {
-			System.out.println("Failed to delete " + mealId + " ingredient from pantry");
-			return false;
-		}
+		return success;
 	}
 
 	@Override
@@ -307,12 +289,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean updateMealPlan(Integer userId, Integer mealPlanId, MealPlan mealPlan) throws SQLException {
 		
-		int r = 0;
-
 		mealPlan.setId(mealPlanId);
-		r = mealPlanService.updateMealPlan(mealPlan);
+		boolean success = mealPlanService.updateMealPlan(mealPlan);
 
-		if (r != 0){
+		if (success){
 			System.out.println("MealPlan successfully updated");
 			return true;
 		}
@@ -325,11 +305,9 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public boolean deleteMealPlan(Integer userId, Integer mealPlanId) throws SQLException {
 		
-		int r = -1;
+		boolean success = mealPlanService.deleteMealPlan(mealPlanId);
 
-		r = mealPlanService.deleteMealPlan(mealPlanId);
-
-		if (r == 0) {
+		if (success) {
 			System.out.println("Ingredient " + mealPlanId + " deleted from pantry.");
 			return true;
 		}

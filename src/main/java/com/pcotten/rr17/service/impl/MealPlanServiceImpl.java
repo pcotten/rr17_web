@@ -13,6 +13,7 @@ import com.pcotten.rr17.dao.MealPlanDAO;
 import com.pcotten.rr17.model.Meal;
 import com.pcotten.rr17.model.MealPlan;
 import com.pcotten.rr17.service.MealPlanService;
+import com.pcotten.rr17.service.MealService;
 
 @Component
 public class MealPlanServiceImpl implements MealPlanService{
@@ -21,6 +22,8 @@ public class MealPlanServiceImpl implements MealPlanService{
 	DatabaseManager manager;
 	@Inject
 	MealPlanDAO mealPlanDAO;
+	@Inject
+	MealService mealService;
 	
 	public MealPlanServiceImpl(){
 		
@@ -56,34 +59,39 @@ public class MealPlanServiceImpl implements MealPlanService{
 	}
 
 	@Override
-	public Integer updateMealPlan(MealPlan mealPlan) throws SQLException{
+	public boolean updateMealPlan(MealPlan mealPlan) throws SQLException{
 
+		boolean success = false;
 		int result = mealPlanDAO.updateMealPlan(mealPlan);
 		
 		if (result != 0){
 			System.out.println("MealPlan successfully updated in database");
+			success = true;
 		}
 		else {
 			System.out.println("Failed to update MealPlan");
 		}
 		
-		return result;
+		return success;
 	}
 	
 	@Override
-	public Integer deleteMealPlan(Integer id) throws SQLException{
+	public boolean deleteMealPlan(Integer id) throws SQLException{
+		
+		boolean success = false;
 		int result = -1;
 
 		result = mealPlanDAO.deleteMealPlan(id);
 		
 		if (result != -1){
 			System.out.println("Successfully deleted MealPlan with id " + id);
+			success = true;
 		}
 		else {
 			System.out.println("Failed to delete MealPlan with id " + id);
 		}
 		
-		return result;
+		return success;
 	}
 	
 	
@@ -107,5 +115,51 @@ public class MealPlanServiceImpl implements MealPlanService{
 		List<MealPlan> mealPlans = mealPlanDAO.getUserMealPlans(userId);
 		
 		return mealPlans;
+	}
+
+	@Override
+	public List<Meal> getMealPlanMeals(Integer mealPlanId) {
+
+		List<Meal> meals = mealService.getMealPlanMeals(mealPlanId);
+		
+		return meals;
+	}
+
+	@Override
+	public Meal getMealPlanMeal(Integer mealPlanId, Integer mealId) {
+		
+		Meal meal = mealService.getMeal(mealId);
+		
+		return meal;
+	}
+
+	@Override
+	public boolean addMealToMealPlan(Integer mealPlanId, Integer mealId) {
+
+		Integer result = mealPlanDAO.linkMealToMealPlan(mealPlanId, mealId);
+		
+		if (result > 0) {
+			System.out.println("Successfully added meal to mealplan");
+			return true;
+		}
+		else {
+			System.out.println("Failed to add meal to mealplan");
+			return false;
+		}
+	}
+
+	@Override
+	public boolean removeMealFromMealPlan(Integer mealPlanId, Integer mealId) {
+		
+		Integer result = mealPlanDAO.removeMealFromMealPlan(mealPlanId, mealId);
+		
+		if (result > 0) {
+			System.out.println("Successfully added meal to mealplan");
+			return true;
+		}
+		else {
+			System.out.println("Failed to add meal to mealplan");
+			return false;
+		}
 	}
 }

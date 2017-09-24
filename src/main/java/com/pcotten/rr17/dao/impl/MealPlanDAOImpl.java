@@ -70,13 +70,13 @@ public class MealPlanDAOImpl extends JdbcDaoSupport implements MealPlanDAO {
 						Statement.RETURN_GENERATED_KEYS);
 				ps.setString(1, mealPlan.getName());
 				ps.setString(2,  mealPlan.getDescription());
-				ps.setInt(3, mealPlan.getOwner());
+				ps.setInt(3, userId);
 				return ps;
 			}
 			
 		}, holder);
 		if (holder.getKey() != null) {
-			mealPlan.setId((Integer) holder.getKey());
+			mealPlan.setId(holder.getKey().intValue());
 		}
 		
 		return mealPlan;
@@ -130,13 +130,25 @@ public class MealPlanDAOImpl extends JdbcDaoSupport implements MealPlanDAO {
 	@Override
 	public Integer linkMealPlanToUser(Integer mealPlanId, Integer userId) {
 		Integer result = getJdbcTemplate().update(
-				"INSERT INTO meal_user (mealPlanId, userId) VALUES (?, ?)", 
+				"INSERT INTO user_mealplan (mealPlanId, userId) VALUES (?, ?)", 
 				new Object[] {
 						mealPlanId,
 						userId
 				});
 		
 		return result;
+	}
+
+	@Override
+	public Integer removeMealFromMealPlan(Integer mealPlanId, Integer mealId) {
+			Integer result = getJdbcTemplate().update(
+					"DELETE FROM meal_user WHERE mealPlanId = ? AND userId = ?", 
+					new Object[] {
+							mealPlanId,
+							mealId
+					});
+			
+			return result;
 	}
 	
 }

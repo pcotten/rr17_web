@@ -19,4 +19,6 @@ public interface MealPlanDAO {
 	public Integer linkMealToMealPlan(Integer mealPlanId, Integer mealId);
 
 	public Integer linkMealPlanToUser(Integer mealPlanId, Integer userId);
+
+	public Integer removeMealFromMealPlan(Integer mealPlanId, Integer mealId);
 }

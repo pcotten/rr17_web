@@ -211,7 +211,7 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 	}
 
 	@Override
-	public Integer deleteRecipeIngredient(Integer recipeId, Integer ingredientId) {
+	public Integer removeIngredientFromRecipe(Integer recipeId, Integer ingredientId) {
 		Integer result = getJdbcTemplate().update(
 				"DELETE FROM ingredient_recipe WHERE recipeId = ? AND ingredientId = ?", 
 				new Object[] {

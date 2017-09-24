@@ -8,7 +8,7 @@ public interface RecipeDAO {
 	
 	public Recipe getRecipe(Integer id);
 	
-	public Recipe createRecipe(Recipe recipe);
+	public Recipe createRecipe(Recipe recipe, Integer userId);
 	
 	public Integer updateRecipe(Recipe recipe);
 	
@@ -21,5 +21,7 @@ public interface RecipeDAO {
 	public Integer addRecipeToCookbook(Integer id, Integer cookbookId);
 	
 	public List<Recipe> findRecipes(String category, String title, String username);
+
+	public List<Recipe> getUserRecipes(Integer userId);
 	
 }

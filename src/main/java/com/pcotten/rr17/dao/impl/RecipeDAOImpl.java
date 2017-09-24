@@ -44,7 +44,7 @@ public class RecipeDAOImpl extends JdbcDaoSupport implements RecipeDAO {
 			recipe.setOwner(rs.getInt("owner"));
 			recipe.setAttributedTo(rs.getString("attributedTo"));
 			recipe.setNumberOfServings(rs.getInt("numberOfServings"));
-			recipe.setOvenTemp(rs.getInt("ovenTemp"));
+			recipe.setOvenTemp(rs.getString("ovenTemp"));
 			recipe.setServingSize(rs.getInt("servingSize"));
 			recipe.setServingSizeUnit(rs.getString("servingSizeUnit"));
 			recipe.setCookTime(rs.getInt("cookTime"));
@@ -69,7 +69,7 @@ public class RecipeDAOImpl extends JdbcDaoSupport implements RecipeDAO {
 	}
 
 	@Override
-	public Recipe createRecipe(Recipe recipe) {
+	public Recipe createRecipe(Recipe recipe, Integer userId) {
 		KeyHolder holder = new GeneratedKeyHolder();
 		getJdbcTemplate().update(new PreparedStatementCreator() {
 
@@ -83,7 +83,7 @@ public class RecipeDAOImpl extends JdbcDaoSupport implements RecipeDAO {
 				PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 				ps.setString(1, recipe.getTitle());
 				ps.setString(2, recipe.getDescription());
-				ps.setInt(3, recipe.getOwner());
+				ps.setInt(3, userId);
 				ps.setString(4, recipe.getAttributedTo());
 				
 				if (recipe.getNumberOfServings() != null){
@@ -92,7 +92,7 @@ public class RecipeDAOImpl extends JdbcDaoSupport implements RecipeDAO {
 				else 
 					ps.setNull(5, java.sql.Types.INTEGER);
 				if (recipe.getOvenTemp() != null){
-					ps.setInt(6, recipe.getOvenTemp());
+					ps.setString(6, recipe.getOvenTemp());
 				}
 				else 
 					ps.setNull(6, java.sql.Types.INTEGER);
@@ -115,7 +115,8 @@ public class RecipeDAOImpl extends JdbcDaoSupport implements RecipeDAO {
 				else 
 					ps.setNull(11, java.sql.Types.INTEGER);
 				ps.setString(12, recipe.getPrepTimeUnit());
-				return null;
+				
+				return ps;
 			}
 		}, holder);
 		if (holder.getKey() != null) {
@@ -206,6 +207,16 @@ public class RecipeDAOImpl extends JdbcDaoSupport implements RecipeDAO {
 	public List<Recipe> findRecipes(String category, String title, String username) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<Recipe> getUserRecipes(Integer userId) {
+		List<Recipe> recipes = getJdbcTemplate().query(
+				"SELECT * FROM recipes_by_userid WHERE userId = ?", 
+				new Object[] {userId}, 
+				new RecipeRowMapper());
+		
+		return recipes;
 	}
 	
 }

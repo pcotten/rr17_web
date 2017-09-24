@@ -12,27 +12,27 @@ public interface IngredientService {
 	
 	public Ingredient createIngredient(Ingredient ingredient) throws SQLException;
 	
-	public Integer updateIngredient(Ingredient ingredient) throws SQLException;
+	public boolean updateIngredient(Ingredient ingredient) throws SQLException;
 	
-	public Integer deleteIngredient(Integer id) throws SQLException;
+	public boolean deleteIngredient(Integer id) throws SQLException;
 
 	public List<Category> getIngredientCategories(Integer id);
 	
 	public List<Ingredient> getRecipeIngredients(Integer recipeId);
 	
-	public Integer createRecipeIngredient(Ingredient ingredient, Integer recipeId) throws SQLException;
+	public boolean addIngredientToRecipe(Ingredient ingredient, Integer recipeId) throws SQLException;
 	
-	public Integer updateRecipeIngredient(Ingredient ingredient, Integer recipeId);
+	public boolean updateRecipeIngredient(Ingredient ingredient, Integer recipeId);
 	
-	public Integer deleteRecipeIngredient(Integer ingredientId, Integer recipeId);
+	public boolean removeIngredientFromRecipe(Integer ingredientId, Integer recipeId);
 	
 	public List<Ingredient> getPantryIngredients(Integer pantryId);
 	
-	public Integer createPantryIngredient(Ingredient ingredient, Integer pantryId) throws SQLException;
+	public boolean addIngredientToPantry(Ingredient ingredient, Integer pantryId) throws SQLException;
 
-	public Integer updatePantryIngredient(Ingredient ingredient, Integer pantryId);
+	public boolean updatePantryIngredient(Ingredient ingredient, Integer pantryId);
 	
-	public Integer deletePantryIngredient(Integer ingredientId, Integer pantryId);	
+	public boolean removeIngredientFromPantry(Integer ingredientId, Integer pantryId);	
 	
 	public Integer getIngredientId(String name);
 

@@ -49,8 +49,10 @@ public class MealServiceImpl implements MealService {
 			System.out.println("Failed to create meal");
 			throw new SQLException();
 		}
-		for (Recipe recipe : meal.getRecipes()) {			
-			mealDAO.addRecipeToMeal(meal.getId(), recipe.getId());
+		if (meal.getRecipes() != null && !meal.getRecipes().isEmpty()) {
+			for (Recipe recipe : meal.getRecipes()) {			
+				mealDAO.addRecipeToMeal(meal.getId(), recipe.getId());
+			}
 		}
 		
 		mealDAO.linkMealToUser(meal.getId(), userId);
@@ -59,30 +61,33 @@ public class MealServiceImpl implements MealService {
 	}
 
 	
-	public Integer updateMeal(Meal meal) throws SQLException{
+	public boolean updateMeal(Meal meal) throws SQLException{
 		
 		// add owner check
-		
+		boolean success = false;
 		int result = mealDAO.updateMeal(meal);
 		
 		if (result > 0){
 			System.out.println("Meal entity successfully updated in database");
+			success = true;
 		}
 		else {
 			System.out.println("Meal update failedy");
 		}
-		return result;
+		return success;
 	}
 	
 	
-	public Integer deleteMeal(Integer id, Integer userId) throws SQLException{
+	public boolean deleteMeal(Integer id, Integer userId) throws SQLException{
 		
+		boolean success = false;
 		int result = -1;
 		Integer ownerId = getMealOwner(id);
 		if (ownerId.equals(userId)) {
 			result = mealDAO.deleteMeal(ownerId);
 			if (result != -1){
 				System.out.println("Successfully removed meal with id " + id);
+				success = true;
 			}
 			else {
 				System.out.println("Unable to remove recipe meal with id " + id);
@@ -96,8 +101,15 @@ public class MealServiceImpl implements MealService {
 			pstmt.setInt(2, id);
 			
 			result = pstmt.executeUpdate();
+			if (result != -1) {
+				System.out.println("Successfully removed meal with id " + id);
+				success = true;
+			}
+			else {
+				System.out.println("Unable to remove recipe meal with id " + id);
+			}	
 		}
-		return result;
+		return success;
 	}
 
 	private Integer getMealOwner(Integer id) {
@@ -150,5 +162,33 @@ public class MealServiceImpl implements MealService {
 		List<Meal> meals = mealDAO.getUserMeals(userId);
 		
 		return meals;
+	}
+
+	@Override
+	public boolean addRecipeToMeal(Integer mealId, Integer recipeId) {
+
+		Integer result = mealDAO.addRecipeToMeal(mealId, recipeId);
+		if (result > 0) {
+			System.out.println("Successfully added recipe to meal");
+			return true;
+		}
+		else {
+			System.out.println("Failed to add recipe to meal");
+			return false;
+		}
+	}
+
+	@Override
+	public boolean removeRecipeFromMeal(Integer mealId, Integer recipeId) {
+		
+		Integer result = mealDAO.removeRecipeFromMeal(mealId, recipeId);
+		if (result > 0) {
+			System.out.println("Successfully removed recipe from meal");
+			return true;
+		}
+		else {
+			System.out.println("Failed to remove recipe from meal");
+			return false;
+		}
 	}
 }

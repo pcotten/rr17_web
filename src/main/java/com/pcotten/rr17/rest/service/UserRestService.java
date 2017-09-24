@@ -13,6 +13,7 @@ import com.pcotten.rr17.model.Cookbook;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Meal;
 import com.pcotten.rr17.model.MealPlan;
+import com.pcotten.rr17.model.Recipe;
 import com.pcotten.rr17.model.User;
 
 @RequestMapping("/")
@@ -45,7 +46,39 @@ public interface UserRestService {
 			@PathVariable ("userId") Integer userId,
 			@RequestBody Cookbook cookbook,
 			UriComponentsBuilder uriBuilder);
+	
+	@RequestMapping(value="/users/{userId}/cookbooks/{cookbookId}", method=RequestMethod.PUT, consumes="application/json")
+	public ResponseEntity<Void> updateCookbook(
+			@PathVariable ("userId") Integer userId,
+			@PathVariable ("cookbookId") Integer cookbookId,
+			@RequestBody Cookbook cookbook);
 
+	@RequestMapping(value="/users/{userId}/cookbooks/{cookbookId}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> deleteCookbook(
+			@PathVariable ("userId") Integer userId,
+			@PathVariable ("cookbookId") Integer cookbookId);
+		
+	@RequestMapping(value="/users/{userId}/recipes", method=RequestMethod.GET, produces="application/json")
+	public ResponseEntity<List<Recipe>> getRecipes(
+			@PathVariable ("userId") Integer userId);
+	
+	@RequestMapping(value="/users/{userId}/recipes", method=RequestMethod.POST, consumes="application/json", produces="application/json")
+	public ResponseEntity<Void> createRecipe(
+			@PathVariable ("userId") Integer userId,
+			@RequestBody Recipe recipe,
+			UriComponentsBuilder uriBuilder);
+	
+	@RequestMapping(value="/users/{userId}/recipes/{recipeId}", method=RequestMethod.PUT, consumes="application/json")
+	public ResponseEntity<Void> updateRecipe(
+			@PathVariable ("userId") Integer userId,
+			@PathVariable ("recipeId") Integer recipeId,
+			@RequestBody Recipe recipe);
+
+	@RequestMapping(value="/users/{userId}/recipes/{recipeId}", method=RequestMethod.DELETE)
+	public ResponseEntity<Void> deleteRecipe(
+			@PathVariable ("userId") Integer userId,
+			@PathVariable ("recipeId") Integer recipeId);
+	
 	@RequestMapping(value="/users/{userId}/pantry/ingredients", method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<List<Ingredient>> getPantryIngredients(
 			@PathVariable ("userId") Integer userId);

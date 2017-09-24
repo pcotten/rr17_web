@@ -24,7 +24,7 @@ public interface RecipeService {
 	
 	public boolean deleteRecipeIngredient(Integer recipeId, Integer ingredientId);
 	
-	public boolean recipeExists(Recipe recipe) throws SQLException;
+	public boolean recipeExists(Recipe recipe, Integer userId) throws SQLException;
 
 	public List<Recipe> getRecipes(String category, String title, String username) throws SQLException;
 
@@ -32,4 +32,5 @@ public interface RecipeService {
 	
 	public List<Recipe> getCookbookRecipes(Integer cookbookId);
 	
+	public List<Recipe> getUserRecipes(Integer userId);
 }
