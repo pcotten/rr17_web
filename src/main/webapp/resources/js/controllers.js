@@ -14,15 +14,22 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
     $scope.recipe.ingredients=[];
     $scope.instructionForm = {};
     $scope.ingredientForm = {};
-    $scope.panelIsOpen = [true, false, false];
-    $scope.fractionsList = ["1/4", "1/3", "1/2", "2/3", "3/4"];
+    $scope.ingredientDisplay = {}
+    $scope.panelIsOpen = [true, false, false, true];
+    $scope.fractionsList = [
+    	{},
+    	{text: "1/4", value: .25}, 
+    	{text: "1/3", value: .33333}, 
+    	{text: "1/2", value: .5},
+    	{text: "2/3", value: .66667},
+    	{text: "3/4", value: .75}];
     
     $scope.recipe.instructions.push({orderIndex: 1, text:"Instruction one"});
     $scope.recipe.instructions.push({orderIndex: 2, text:"Instruction two"});
     $scope.recipe.instructions.push({orderIndex: 3, text:"Instruction three"});
-    $scope.recipe.ingredients.push({name: "ingredient1", quantity: "1 1/2", quantityUnit: "cups"});
-    $scope.recipe.ingredients.push({name: "ingredient2", quantity: "2", quantityUnit: "tbsp"});
-    $scope.recipe.ingredients.push({name: "ingredient3", quantity: "1/2", quantityUnit: "tsp"});
+    $scope.recipe.ingredients.push({name: "ingredient1", quantityDisplay: "1 1/2", quantity: 1.5, quantityUnit: "cups"});
+    $scope.recipe.ingredients.push({name: "ingredient2", quantityDisplay: "2", quantity: 2, quantityUnit: "tbsp"});
+    $scope.recipe.ingredients.push({name: "ingredient3", quantityDisplay: "1/2", quantity: .5, quantityUnit: "tsp"});
     
 	$scope.init = function(){
 		$scope.fetchServingUnits();
@@ -33,9 +40,10 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
 		for (var i=0; i<dropdowns.length; i++){
 			i.selectedIndex = 1; 
 		}
+		$scope.checkOpenPanels(0);
 	};
 	
-	$scope.fetchOvenTemps = function(){
+    $scope.fetchOvenTemps = function(){
 		if ($scope.ovenTempsList.length === 0){
 			$scope.ovenTempsList.push("");
 			var promise = newRecipeService.fetchOvenTemps();
@@ -157,13 +165,6 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
     		}
     	};
     	document.getElementById("servingSizeUnit").selectedIndex = index;
-    };$scope.submitNewRecipe = function(){
-        var newRecipe = $resource("http://localhost:8080/users/1/recipes");
-        newRecipe.save($scope.recipe, function(response){
-        
-            $scope.result = response.message;
-        });
-        
     };
     
     $scope.addInstruction = function(){
@@ -173,7 +174,7 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
         if (angular.isDefined($scope.instructionForm.text) && $scope.instructionForm.text !== ""){
                 $scope.instruction = {orderIndex : $scope.recipe.instructions.length + 1, text : $scope.instructionForm.text};
                 $scope.recipe.instructions.push($scope.instruction);
-                $scope.instructionForm.text = "";
+                $scope.instructionForm.text = null;
         }
         
     };
@@ -203,13 +204,26 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
             if (!angular.isDefined($scope.ingredientForm.quantityUnit)){
                 $scope.ingredientForm.quantityUnit = "";
             }
+            var index = document.getElementById("ingFraction").selectedIndex;
+            var fractionValue = Number($scope.fractionsList[index].value);
+            if (!isNaN(fractionValue)){
+            	var ingQty = parseInt($scope.ingredientForm.quantity) + fractionValue;
+            }
+            else {
+            	ingQty = parseInt($scope.ingredientForm.quantity)
+            }
             $scope.ingredient = {
                 name: $scope.ingredientForm.name,
-                quantity: $scope.ingredientForm.quantity + " " + $scope.ingredientForm.fraction,
-                quantityUnit: $scope.ingredientForm.quantityUnit};
+                quantity: ingQty,
+                quantityUnit: $scope.ingredientForm.quantityUnit,
+                quantityDisplay: $scope.ingredientForm.quantity + " " + $scope.ingredientForm.fraction
+                };
             
             $scope.recipe.ingredients.push($scope.ingredient);
-            $scope.ingredientForm.name = "";
+            document.getElementById("ingQty").value = null;
+            document.getElementById("ingQtyUnit").selectedIndex = 0;
+            document.getElementById("ingFraction").selectedIndex = 0;
+            $scope.ingredientForm = {};
         }
     };
     
@@ -225,16 +239,18 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
     };
     
     $scope.checkOpenPanels = function(index){
-        for (var i=0; i<$scope.panelIsOpen.length; i++){
-            if (index === i){
-                $scope.panelIsOpen[i] = true;
-            }
-            else {
-                $scope.panelIsOpen[i] = false;
-            }
-        }    
+    	if (index !== 3) {
+	    	for (var i=0; i<$scope.panelIsOpen.length; i++){
+	            if (index === i){
+	                $scope.panelIsOpen[i] = true;
+	            }
+	            else {
+	                $scope.panelIsOpen[i] = false;            
+	            }
+	        } 
+    	}
+    	$scope.panelIsOpen[3] = true;
     }
-    
 }]);
 
 app.directive('elastic', [
@@ -249,8 +265,6 @@ app.directive('elastic', [
                     element[0].style.height = "" + element[0].scrollHeight + "px";
                 };
                 element.on("input change", resize);
-                element.on("focusin", resize);
-                element.on("focusout", resize);
                 $timeout(resize, 0);
             }
         };

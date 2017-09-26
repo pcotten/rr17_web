@@ -38,11 +38,26 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 		public Ingredient mapRow(ResultSet rs, int row) throws SQLException {
 			// TODO Auto-generated method stubpstmt.setString(1, user.getUsername());
 			Ingredient ingredient = new Ingredient();
-			ingredient.setId(rs.getInt("id"));
+			ingredient.setId(rs.getInt("ingredientId"));
 			ingredient.setName(rs.getString("name"));
 			ingredient.setDescription(rs.getString("description"));
 			ingredient.setQuantity(rs.getFloat("quantity"));
 			ingredient.setQuantityUnit(rs.getString("quantityUnit"));
+			ingredient.setQuantityDisplay(rs.getString("quantityDisplay"));
+			
+			return ingredient;
+		}
+		
+	}
+	
+	private static class GenericIngredientMapper implements RowMapper<Ingredient> {
+
+		@Override
+		public Ingredient mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Ingredient ingredient = new Ingredient();
+			ingredient.setId(rs.getInt("id"));
+			ingredient.setName(rs.getString("name"));
+			ingredient.setDescription(rs.getString("description"));
 			
 			return ingredient;
 		}
@@ -51,22 +66,22 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 
 	@Override
 	public Ingredient getIngredient(Integer id) {
-		Ingredient ingredient = (Ingredient) getJdbcTemplate().query(
+		List<Ingredient> ingredients = (List<Ingredient>) getJdbcTemplate().query(
 				"SELECT * FROM ingredient WHERE id =?", 
 				new Object[] {id}, 
-				new IngredientRowMapper());
+				new GenericIngredientMapper());
 		
-		return ingredient;
+		return ingredients.get(0);
 	}
 	
 	@Override
 	public Ingredient getIngredientByName(String name) {
-		Ingredient ingredient = (Ingredient) getJdbcTemplate().query(
-				"SELECT * FROM ingredient WHERE name =?", 
+		List<Ingredient> ingredients = (List<Ingredient>) getJdbcTemplate().query(
+				"SELECT * FROM ingredient WHERE name = ?", 
 				new Object[] {name}, 
-				new IngredientRowMapper());
+				new GenericIngredientMapper());
 		
-		return ingredient;
+		return ingredients.get(0);
 	}
 
 	@Override
@@ -127,13 +142,13 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 	@Override
 	public Integer createPantryIngredient(Ingredient ingredient, Integer pantryId) {
 		Integer result = getJdbcTemplate().update(
-				"INSERT INTO pantry_ingredient (name, description, quantity, quantityUnit, pantryId) "
+				"INSERT INTO pantry_ingredient (ingredientId, quantity, quantityUnit, quantityDisplay, pantryId) "
 				+ "VALUES (?, ?, ?, ?, ?)", 
 				new Object[] {
-					ingredient.getName(),
-					ingredient.getDescription(),
+					ingredient.getId(),
 					ingredient.getQuantity(),
 					ingredient.getQuantityUnit(),
+					ingredient.getQuantityDisplay(),
 					pantryId
 				});
 		return result;
@@ -142,13 +157,12 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 	@Override
 	public Integer updatePantryIngredient(Integer pantryId, Ingredient ingredient) {
 		Integer result = getJdbcTemplate().update(
-				"UPDATE pantry_ingredient SET name = ?, description = ?, quantity = ?, "
-				+ "quantityUnit = ? WHERE pantryId = ? AND ingredientId = ?", 
+				"UPDATE pantry_ingredient SET quantity = ?, "
+				+ "quantityUnit = ?, quantityDisplay = ? WHERE pantryId = ? AND ingredientId = ?", 
 				new Object[] {
-					ingredient.getName(),
-					ingredient.getDescription(),
 					ingredient.getQuantity(),
 					ingredient.getQuantityUnit(),
+					ingredient.getQuantityDisplay(),
 					pantryId,
 					ingredient.getId(),
 				});
@@ -181,13 +195,13 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 	@Override
 	public Integer createRecipeIngredient(Ingredient ingredient, Integer recipeId) {
 		Integer result = getJdbcTemplate().update(
-				"INSERT INTO ingredient_recipe (name, description, quantity, quantityUnit, recipeId) "
+				"INSERT INTO ingredient_recipe (ingredientId, quantity, quantityUnit, quantityDisplay, recipeId) "
 				+ "VALUES (?, ?, ?, ?, ?)", 
 				new Object[] {
-					ingredient.getName(),
-					ingredient.getDescription(),
+					ingredient.getId(),
 					ingredient.getQuantity(),
 					ingredient.getQuantityUnit(),
+					ingredient.getQuantityDisplay(),
 					recipeId
 				});
 		return result;
@@ -196,13 +210,12 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 	@Override
 	public Integer updateRecipeIngredient(Ingredient ingredient, Integer recipeId) {
 		Integer result = getJdbcTemplate().update(
-				"UPDATE ingredient_recipe SET name = ?, description = ?, quantity = ?, "
-				+ "quantityUnit = ? WHERE recipeId = ? AND ingredientId = ?", 
+				"UPDATE ingredient_recipe SET quantity = ?, "
+				+ "quantityUnit = ?, quantityDisplay = ? WHERE recipeId = ? AND ingredientId = ?", 
 				new Object[] {
-					ingredient.getName(),
-					ingredient.getDescription(),
 					ingredient.getQuantity(),
 					ingredient.getQuantityUnit(),
+					ingredient.getQuantityDisplay(),
 					recipeId,
 					ingredient.getId(),
 				});

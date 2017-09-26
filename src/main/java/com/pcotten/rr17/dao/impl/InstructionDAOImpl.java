@@ -56,10 +56,11 @@ public class InstructionDAOImpl extends JdbcDaoSupport implements InstructionDAO
 			@Override
 			public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
 				PreparedStatement ps = con.prepareStatement(
-						"INSERT INTO instruction (orderIndex, text) VALUES (?, ?)", 
+						"INSERT INTO instruction (orderIndex, text, recipeId) VALUES (?, ?, ?)", 
 						Statement.RETURN_GENERATED_KEYS);
 				ps.setInt(1, instruction.getOrderIndex());
 				ps.setString(2, instruction.getText());
+				ps.setInt(3, instruction.getRecipeId());
 				return ps;
 			}
 			

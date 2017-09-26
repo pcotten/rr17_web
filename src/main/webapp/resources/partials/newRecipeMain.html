@@ -36,7 +36,7 @@
                         Ingredients:
                     </p>
                     <ul style="list-style-type:none">
-                        <li ng-repeat="ingredient in recipe.ingredients">{{ingredient.quantity}} {{ingredient.quantityUnit}} {{ingredient.name}}</li>
+                        <li ng-repeat="ingredient in recipe.ingredients">{{ingredient.quantityDisplay}} {{ingredient.quantityUnit}} {{ingredient.name}}</li>
                     </ul>
                     <p>
                         Instructions:
@@ -48,94 +48,97 @@
                  
             </div>
     <div class="recipeForm">
-        <uib-accordion close-others="true">
-            <div uib-accordion-group heading="Recipe details:" class="recipeComponentGroup" is-open="panelIsOpen[0]" ng-click="checkOpenPanels(0)">
-                <table>
+        <uib-accordion close-others="false">
+            <div uib-accordion-group class="panel-default recipeComponentGroup" is-open="panelIsOpen[0]" ng-click="checkOpenPanels(0)" close-others="false">
+                <uib-accordion-heading>
+	                Recipe details: 
+
+	               	<input class="recipeSubmit recipeSave" type="submit" value="Save recipe" ng-click="submitNewRecipe()"></input>
+                </uib-accordion-heading>
+                <table class="recipeFormTable">
                     <tr>
                         <td class="recipeFormLabel">From the Kitchen of:</td>
-                        <td colspan=4><input class="recipeFormInput recipeFormText" type="text" ng-model="recipe.attributedTo"></td>
+                        <td colspan=5><input class=" recipeFormInput recipeFormText" type="text" ng-model="recipe.attributedTo"></td>
                     </tr>
                         <td class="recipeFormLabel">Title:</td>
-                        <td colspan=4><input class="recipeFormInput recipeFormText" type="text" ng-model="recipe.title"></td>
+                        <td colspan=5><input class=" recipeFormInput recipeFormText" type="text" ng-model="recipe.title" required="true"></td>
                     </tr>
                     <tr>
                         <td class="recipeFormLabel">Description:</td>
-                        <td colspan=4><textarea class="recipeFormInput recipeFormTextArea" ng-model="recipe.description">Enter description...</textarea></td>
+                        <td colspan=5><textarea class="recipeFormInput elastic recipeFormTextArea" ng-model="recipe.description">Enter description...</textarea></td>
                     </tr>
                     <tr>
                         <td class="recipeFormLabel">Number of Servings:</td>
-                        <td ><input class="recipeFormNumber" type="number" ng-model="recipe.numberOfServings"></td>
+                        <td colspan=5><input class=" recipeFormNumber" type="number" min=0 ng-model="recipe.numberOfServings"></td>
                     </tr>
                     <tr>
-                         <td class="recipeFormLabel">Serving Size:</td>
-                         <td width="10%"><input class="recipeFormNumber" type="number" ng-model="recipe.servingSize" ng-change="updateServingUnits()"></td>
-                         <td width="20%">
-                         <select id="servingSizeFraction" ng-model="recipe.servingSizeFraction" class="recipeFormSelect">
-                         	<option ng-repeat="item in fractionsList">{{item}}</option>
-                         </select>
-                         </td>
-          
-                         <td width="50%">
-	                         <select id="servingSizeUnit" class="recipeFormSelect" ng-model="recipe.servingSizeUnit">
+                        <td class="recipeFormLabel">Serving Size:</td>
+                        <td colspan=5>
+	                       	<input class="recipeFormNumber inline" type="number" min=0 ng-model="recipe.servingSize" ng-change="updateServingUnits()" />
+	                   		<select id="servingSizeFraction" ng-model="recipe.servingSizeFraction" class="recipeFormSelect recipeFormFraction">
+	                        	<option ng-repeat="item in fractionsList">{{item.text}}</option>
+	                        </select>
+	
+	                        <select id="servingSizeUnit" class="recipeFormSelect recipeServingUnits" ng-model="recipe.servingSizeUnit">
 	                         	<option ng-repeat="unit in servingUnitsList">{{unit}}</option>
-	                         </select>
+	                        </select>
                          </td>
                     </tr>
                     <tr>
                         <td class="recipeFormLabel">Prep Time:</td>
-                        <td><input class="recipeFormNumber" type="number" ng-model="recipe.prepTime" ng-change="updatePrepTimeUnits()"></td>
-                        <td width="50%">
-                        <select id="prepTimeUnit" class="recipeFormSelect" ng-model="recipe.prepTimeUnit" >
+                        <td colspan=4><input class="recipeFormNumber" type="number" min=0 ng-model="recipe.prepTime" ng-change="updatePrepTimeUnits()">
+ 
+                        <select id="prepTimeUnit" class="recipeFormSelect recipeTimeUnit" ng-model="recipe.prepTimeUnit" >
                        		<option ng-repeat="unit in prepTimeUnitsList">{{unit}}</option>
                         </select>
                         </td>
                     </tr>
                     <tr>
                         <td class="recipeFormLabel">Cooking Time:</td>
-                        <td><input class="recipeFormNumber" type="number" ng-model="recipe.cookTime" ng-change="updateCookTimeUnits()"></td>
-                        <td width="50%">
-                        <select id="cookTimeUnit" class="recipeFormSelect" ng-model="recipe.cookTimeUnit" >
+                        <td colspan=4><input class="recipeFormNumber" type="number" ng-model="recipe.cookTime" ng-change="updateCookTimeUnits()">
+                        <select id="cookTimeUnit" class="recipeFormSelect recipeTimeUnit" ng-model="recipe.cookTimeUnit" >
                         	<option ng-repeat="unit in cookTimeUnitsList">{{unit}}</option>
                         </select>
                         </td>
                     </tr>
                     <tr>
                         <td class="recipeFormLabel">Oven Temperature:</td>
-                        <td>
+                        <td colspan=4>
                         <select class="recipeFormSelect" ng-model="recipe.ovenTemp">
                         	<option ng-repeat="item in ovenTempsList">{{item}}</option>
                         </select>
+	                        <input class="recipeFormInput radio" type="radio" name="ovenTempUnit" value="C" ng-model="recipe.ovenTempUnit">C
+	                    	<input class="recipeFormInput radio" type="radio" name="ovenTempUnit" value="F" ng-model="recipe.ovenTempUnit">F
                         </td>
                     </tr>
                 </table>
             </div>
         
-            <div uib-accordion-group heading="Ingredients:" class="recipeComponentGroup" is-open="panelIsOpen[1]" ng-click="checkOpenPanels(1)">
-                <table>
+            <div uib-accordion-group heading="Ingredients:" class="panel-default recipeComponentGroup" is-open="panelIsOpen[1]" ng-click="checkOpenPanels(1)" close-others="false">
+                <table class="recipeFormTable">
                     <tr ng-repeat="ingredient in recipe.ingredients">
-                        <td class="iconCell"><img src="resources/images/round_minus.png" class="smallIcon" ng-click="removeIngredient(ingredient.name)"></td>
-                        <td colspan=5 class="ingredientListItem">{{ingredient.quantity}} {{ingredient.quantityUnit}} {{ingredient.name}} </td>
+                        <td class="ingredientListItem"><img src="resources/images/round_minus.png" class="smallIcon" ng-click="removeIngredient(ingredient.name)">
+                        {{ingredient.quantityDisplay}} {{ingredient.fraction}} {{ingredient.quantityUnit}} {{ingredient.name}} </td>
                     </tr>
                     <tr>
-                        <td></td>
-                        <td><input type="number" class="recipeFormNumber" ng-model="ingredientForm.quantity"></td>
-                        <td>
-                            <select class="recipeFormSelect">
-                                <option ng-repeat="fraction in fractionsList" ng-model="ingredientForm.fraction">{{fraction.text}}</option>
+                        <td colspan=5><input id="ingQty" type="number" class="recipeFormNumber" ng-model="ingredientForm.quantity">
+                      
+                            <select id="ingFraction" class="recipeFormSelect" ng-model="ingredientForm.fraction">
+                                <option ng-repeat="fraction in fractionsList" >{{fraction.text}}</option>
                             </select>
-                        </td>
-                        <td>
-                            <select class="recipeFormSelect">
-                                <option ng-repeat="unit in measUnits" ng-model="ingredientForm.quantityUnit">{{unit}}</option>
+                       
+                        
+                            <select id="ingQtyUnit" class="recipeFormSelect" ng-model="ingredientForm.quantityUnit">
+                                <option ng-repeat="unit in servingUnitsList" >{{unit}}</option>
                             </select>
-                        </td>
-                        <td><input type="text" class="recipeFormInput recipeFormText" name="ingredientName" ng-model="ingredientForm.name"></input></td>
-                        <td class="iconCell"><img src="resources/images/round_plus.png" class="smallIcon" ng-click="addIngredient()"></td>
+             
+                        	<input type="text" class="recipeFormInput recipeFormIngredient" name="ingredientName" ng-model="ingredientForm.name"></input>
+                        <img src="resources/images/round_plus.png" class="smallIcon" ng-click="addIngredient()"></td>
                     </tr>
                 </table>
             </div>
-            <div uib-accordion-group heading="Instructions:" class="recipeComponentGroup" is-open="panelIsOpen[2]" ng-click="checkOpenPanels(2)">
-                <table> 
+            <div uib-accordion-group heading="Instructions:" class="panel-default recipeComponentGroup" is-open="panelIsOpen[2]" ng-click="checkOpenPanels(2)" close-others="false">
+                <table class="recipeFormTable"> 
                     <tr ng-repeat="instruction in recipe.instructions">
                         <td class="iconCell"><img src="resources/images/round_minus.png" class="smallIcon" ng-click="removeInstruction(instruction.orderIndex)"></td>
                         <td class="orderIndex">{{instruction.orderIndex}}.</td>
@@ -148,6 +151,7 @@
                     </tr>
                 </table>
             </div>
-        </uib-accordion>
+
+         </uib-accordion>
     </div>
 </div>

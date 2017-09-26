@@ -76,6 +76,7 @@ public class RecipeServiceImpl implements RecipeService{
 			}
 			//Insert and add instructions
 			for (Instruction instruction : instructions) {
+				instruction.setRecipeId(recipe.getId());
 				instructionService.createInstruction(instruction);
 			}
 			//Insert and link images

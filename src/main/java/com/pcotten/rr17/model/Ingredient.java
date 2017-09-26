@@ -14,6 +14,7 @@ public class Ingredient {
 	@Size(max=255)
 	private String description;
 	private Float quantity;
+	private String quantityDisplay;
 	private String quantityUnit;
 	private List<Category> categories;
 	
@@ -60,6 +61,14 @@ public class Ingredient {
 		this.quantity = quantity;
 	}
 	
+	public String getQuantityDisplay() {
+		return quantityDisplay;
+	}
+
+	public void setQuantityDisplay(String quantityDisplay) {
+		this.quantityDisplay = quantityDisplay;
+	}
+
 	public String getQuantityUnit() {
 		return quantityUnit;
 	}

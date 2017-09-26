@@ -145,12 +145,13 @@ body {
 
     overflow: hidden;
 }
+
 .recipeCard {
     height: 99%;
     width: 58%;
     background-color: white;
-    overflow: auto;
     overflow-x: hidden;
+    overflow-y: auto;
     margin: 3px;
     padding: 10px;
     float: left;
@@ -170,19 +171,8 @@ body {
     border-style: ridge;
     border-color: #c4ffb7;
     border-width: 3px;
-    overflow: hidden;
     overflow-x: hidden;
-}
-.recipeForm > table {
-    width: 100%;
-    border-style: solid;
-    border-color: green;
-    border-width: 1px;
-
-}
-.recipeForm > table > tr > td{
-    padding-top: 2px;
-    padding-bottom: 2px;
+    overflow-y: auto;
 }
 .recipeComponentGroup {
     width: 98%;
@@ -196,6 +186,9 @@ body {
     margin: 4px;
     
 }
+.recipeFormTable {
+	width: 100%;
+}
 .recipeFormLabel {
     height: 1.2em;
     text-align: right;
@@ -205,6 +198,7 @@ body {
 }
 .recipeFormInput {
     border-radius: 7px;
+    display: inline;
 }
 .recipeFormTextArea {
     border-width: 2px;
@@ -220,25 +214,38 @@ body {
     padding: 4px;
     border-style: inset;
 }
+.recipeFormIngredient {
+    font-size: .8em;
+    padding: 4px;
+    border-style: inset;
+}
 .recipeFormNumber {
     border-radius: 7px;
     font-size: .8em;
-    padding: 2px;
+    padding: 4px;
+	width: 25%;
 }
+
 .recipeFormSelect {
     border-radius: 7px;
     font-size: .8em;
-    padding: 2px;
+    padding: 4px;
+    border-style: inset;
+    border-color: initial;
+    border-width: 2px;
+    display: inline;
 }
-.recipeFormInput:hover, .recipeFormNumber:hover {
+.recipeFormInput:hover, .recipeFormNumber:hover, .recipeFormSelect:hover {
     background-color: #c4ffb7;
 }
-.recipeFormInput:focus, .recipeFormNumber:focus {
+.recipeFormInput:focus, .recipeFormNumber:focus, .recipeFormSelect:focus {
     background-color: #c4ffb7;
     outline-style:none;
     box-shadow:none;
 }
-
+td {
+	padding-bottom: 4px;
+}
 td.orderIndex {
     padding: 4px;
     padding-left: 0px;
@@ -272,7 +279,7 @@ td.instructionText {
   border-color: #c4ffb7;
 }
 .instructionTextArea {
-    height: 1.1em;
+
     width: 100%;
     font-size: .8em;
     padding: 4px;
@@ -303,7 +310,6 @@ td.instructionText {
 }
 .recipeCardDetails {
     font-size: 1em;
-    
 }
 .recipeCardLabel {
     text-align: right;
@@ -314,3 +320,22 @@ td.instructionText {
     width:78%;
     padding: 4px;
 }
+.recipeSubmit {
+	width: 30%;
+	padding: 3px;
+	float: right;
+}
+.recipeSave {
+    position: relative;
+    bottom: 8px;
+}
+.recipeServingUnits {
+	width: 100%;
+}
+.recipeFormFraction {
+	width: 25%;
+}
+.recipeTimeUnit {
+	width: 25%;
+}
+
