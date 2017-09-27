@@ -5,9 +5,8 @@ body {
 }
 .header {
     background-color: green;
-    
     width: 100%;
-    height: 8%;
+    height: 10%;
     min-height: 45px;
     margin: 0px;
     margin-top: 2px;
@@ -84,7 +83,7 @@ body {
     background-color: white;
     width: 99%;
     float: left;
-    height: 88%;
+    height: 100%;
     overflow: auto;
     min-height: 440px;
 }
@@ -189,6 +188,7 @@ body {
 .recipeFormTable {
 	width: 100%;
 }
+
 .recipeFormLabel {
     height: 1.2em;
     text-align: right;
@@ -245,6 +245,9 @@ body {
 }
 td {
 	padding-bottom: 4px;
+}
+tr {
+	width: 100%;
 }
 td.orderIndex {
     padding: 4px;
@@ -327,7 +330,7 @@ td.instructionText {
 }
 .recipeSave {
     position: relative;
-    bottom: 8px;
+    bottom: 5px;
 }
 .recipeServingUnits {
 	width: 100%;

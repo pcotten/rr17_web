@@ -62,7 +62,7 @@ public class RecipeServiceImpl implements RecipeService{
 	
 	public Recipe createRecipe(Recipe recipe, Integer userId) throws SQLException{
 		
-		List<Ingredient> ingredients = recipe.getIngredients();
+		Map<Integer, List<Ingredient>> ingredients = recipe.getIngredients();
 		List<Instruction> instructions = recipe.getInstructions();
 		List<Image> images = recipe.getImages();
 		List<Category> categories = recipe.getCategories();
@@ -71,9 +71,13 @@ public class RecipeServiceImpl implements RecipeService{
 		if (recipe.getId() != null){
 			
 			//Insert and add ingredients
-			for (Ingredient ingredient : ingredients) {
-				ingredientService.addIngredientToRecipe(ingredient, recipe.getId());
+			for (Integer i : ingredients.keySet()) {
+				for (Ingredient ingredient : ingredients.get(i)) {
+					ingredientService.addIngredientToRecipe(ingredient, recipe.getId());
+				}
 			}
+			//Link recipe to User
+			
 			//Insert and add instructions
 			for (Instruction instruction : instructions) {
 				instruction.setRecipeId(recipe.getId());
@@ -87,6 +91,8 @@ public class RecipeServiceImpl implements RecipeService{
 			for (Category category : categories) {
 				categoryService.addCategoryToRecipe(category.getId(), recipe.getId());
 			}
+			
+			
 		}
 		else {
 			System.out.println();
@@ -230,9 +236,9 @@ public class RecipeServiceImpl implements RecipeService{
 	}
 
 	@Override
-	public List<Ingredient> getRecipeIngredients(Integer recipeId) {
+	public Map<Integer, List<Ingredient>> getRecipeIngredients(Integer recipeId) {
 
-		List<Ingredient> ingredients = ingredientService.getRecipeIngredients(recipeId);
+		Map<Integer, List<Ingredient>> ingredients = ingredientService.getRecipeIngredients(recipeId);
 		
 		return ingredients;
 	}
@@ -287,6 +293,14 @@ public class RecipeServiceImpl implements RecipeService{
 	public List<Recipe> getUserRecipes(Integer userId) {
 
 		List<Recipe> recipes = recipeDAO.getUserRecipes(userId);
+		// populate ingredients, instructions, images, and categories
+		for (Recipe recipe : recipes) {
+			int id = recipe.getId();
+			recipe.setInstructions(instructionService.getInstructions(id));
+			recipe.setIngredients(ingredientService.getRecipeIngredients(id));
+			recipe.setImages(imageService.getRecipeImages(id));
+			recipe.setCategories(categoryService.getRecipeCategories(id));
+		}
 		
 		return recipes;
 	}

@@ -2,7 +2,10 @@ package com.pcotten.rr17.model;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -27,7 +30,7 @@ public class Recipe {
 	private Integer rating;
 	private Date lastPrepared;
 	
-	private List<Ingredient> ingredients;  // name, quantity, quantityUnit
+	private Map<Integer, List<Ingredient>> ingredients;  // group: orderIndex, ingredientsList
 	private List<Instruction> instructions; // orderIndex, text
 	private List<Image> images;
 	private List<Category> categories;
@@ -43,7 +46,7 @@ public class Recipe {
 	}
 	
 	public void init(){
-		this.ingredients = new ArrayList<Ingredient>();
+		this.ingredients = new HashMap<Integer, List<Ingredient>>();
 		this.instructions = new ArrayList<Instruction>();
 		this.images = new ArrayList<Image>();
 		this.categories = new ArrayList<Category>();
@@ -157,10 +160,10 @@ public class Recipe {
 		this.lastPrepared = lastPrepared;
 	}
 	
-	public List<Ingredient> getIngredients() {
+	public Map<Integer, List<Ingredient>> getIngredients() {
 		return ingredients;
 	}
-	public void setIngredients(List<Ingredient> ingredients) {
+	public void setIngredients(Map<Integer, List<Ingredient>> ingredients) {
 		this.ingredients = ingredients;
 	}
 

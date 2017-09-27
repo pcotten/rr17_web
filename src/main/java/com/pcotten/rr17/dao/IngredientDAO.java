@@ -1,6 +1,7 @@
 package com.pcotten.rr17.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.pcotten.rr17.model.Ingredient;
 
@@ -22,7 +23,7 @@ public interface IngredientDAO {
 
 	public Integer deletePantryIngredient(Integer pantryId, Integer ingredientId);
 
-	public List<Ingredient> getRecipeIngredients(Integer recipeId);
+	public Map<Integer, List<Ingredient>> getRecipeIngredients(Integer recipeId);
 	
 	public Integer createRecipeIngredient(Ingredient ingredient, Integer recipeId);
 

@@ -109,7 +109,7 @@ public class ImageDAOImpl extends JdbcDaoSupport implements ImageDAO{
 	@Override
 	public List<Image> getImages(Integer entityId, String imageType) {
 		List<Image> images = (List<Image>) getJdbcTemplate().query(
-				"SELECT * FROM image WHERE entityId = ? AND imageType = ?)", 
+				"SELECT * FROM image WHERE entityId = ? AND imageType = ?", 
 				new Object[] {
 						entityId,
 						imageType

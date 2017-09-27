@@ -100,6 +100,11 @@ public class DemoController {
 		return "newRecipe";
 	}
 	
+//	@RequestMapping(value="/main")
+//	public String showNewRecipe(@ModelAttribute ("recipe") Recipe recipe) {
+//		return "main";
+//	}
+//	
 	@RequestMapping(value="/acctrecovery", method=RequestMethod.POST)
 	public String recoverUsername(@ModelAttribute ("login") User user, Model model) {
 		

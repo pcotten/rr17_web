@@ -16,6 +16,8 @@ public class Ingredient {
 	private Float quantity;
 	private String quantityDisplay;
 	private String quantityUnit;
+	private Integer groupIndex;
+	private String groupName;
 	private List<Category> categories;
 	
 	public Ingredient(){
@@ -75,6 +77,22 @@ public class Ingredient {
 
 	public void setQuantityUnit(String quantityUnit) {
 		this.quantityUnit = quantityUnit;
+	}
+
+	public Integer getGroupIndex() {
+		return groupIndex;
+	}
+
+	public void setGroupIndex(Integer groupOrderIndex) {
+		this.groupIndex = groupOrderIndex;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 	public List<Category> getCategories() {

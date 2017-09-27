@@ -1,6 +1,7 @@
 package com.pcotten.rr17.rest.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,7 @@ public interface RecipeRestService {
 			@PathVariable ("recipeId") Integer recipeId);
 	
 	@RequestMapping(value="/recipes/{recipeId}/ingredients", method=RequestMethod.GET)
-	public ResponseEntity<List<Ingredient>> getRecipeIngredients(
+	public ResponseEntity<Map<Integer, List<Ingredient>>> getRecipeIngredients(
 			@PathVariable ("recipeId") Integer recipeId);
 
 	@RequestMapping(value="/recipes/{recipeId}/ingredients/{ingredientId}", method=RequestMethod.POST)

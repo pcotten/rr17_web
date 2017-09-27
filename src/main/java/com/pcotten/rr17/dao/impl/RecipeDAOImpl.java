@@ -123,7 +123,17 @@ public class RecipeDAOImpl extends JdbcDaoSupport implements RecipeDAO {
 			recipe.setId(holder.getKey().intValue());
 		}
 		
+		linkToUser(recipe.getId(), userId);
+		
 		return recipe;
+	}
+
+	private void linkToUser(Integer id, Integer userId) {
+		getJdbcTemplate().update("INSERT INTO user_recipe (recipeId, userId) VALUES (?, ?)",
+				new Object[] {
+						id,
+						userId
+				});
 	}
 
 	@Override

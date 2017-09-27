@@ -2,6 +2,7 @@ package com.pcotten.rr17.service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Ingredient;
@@ -18,7 +19,7 @@ public interface IngredientService {
 
 	public List<Category> getIngredientCategories(Integer id);
 	
-	public List<Ingredient> getRecipeIngredients(Integer recipeId);
+	public Map<Integer, List<Ingredient>> getRecipeIngredients(Integer recipeId);
 	
 	public boolean addIngredientToRecipe(Ingredient ingredient, Integer recipeId) throws SQLException;
 	

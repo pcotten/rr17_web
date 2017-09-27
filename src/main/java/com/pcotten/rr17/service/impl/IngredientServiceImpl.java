@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 import org.springframework.stereotype.Component;
@@ -93,9 +95,9 @@ public class IngredientServiceImpl implements IngredientService {
 	
 	
 	@Override
-	public List<Ingredient> getRecipeIngredients(Integer recipeId) {
+	public Map<Integer, List<Ingredient>> getRecipeIngredients(Integer recipeId) {
 
-		List<Ingredient> ingredients = ingredientDAO.getRecipeIngredients(recipeId);
+		Map<Integer, List<Ingredient>> ingredients = ingredientDAO.getRecipeIngredients(recipeId);
 		
 		return ingredients;
 	}

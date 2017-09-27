@@ -3,6 +3,7 @@ package com.pcotten.rr17.rest.service.impl;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -12,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
-
 import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Image;
 import com.pcotten.rr17.model.Ingredient;
@@ -108,18 +107,18 @@ public class RecipeRestServiceImpl implements RecipeRestService {
 	}
 
 	@Override
-	public ResponseEntity<List<Ingredient>> getRecipeIngredients(
+	public ResponseEntity<Map<Integer, List<Ingredient>>> getRecipeIngredients(
 			@PathVariable Integer recipeId) {
 
-		ResponseEntity<List<Ingredient>> response = null;
+		ResponseEntity<Map<Integer, List<Ingredient>>> response = null;
 		
-		List<Ingredient> ingredients = ingredientService.getRecipeIngredients(recipeId);
+		Map<Integer, List<Ingredient>> ingredients = ingredientService.getRecipeIngredients(recipeId);
 		
 		if (ingredients != null && !ingredients.isEmpty()) {
 			response = ResponseEntity.ok(ingredients);
 		}
 		else {
-			response = new ResponseEntity<List<Ingredient>>(HttpStatus.NOT_FOUND);
+			response = new ResponseEntity<Map<Integer, List<Ingredient>>>(HttpStatus.NOT_FOUND);
 		}
 		
 		return response;

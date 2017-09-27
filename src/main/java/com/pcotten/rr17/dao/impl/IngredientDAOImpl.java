@@ -4,7 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -44,6 +47,8 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 			ingredient.setQuantity(rs.getFloat("quantity"));
 			ingredient.setQuantityUnit(rs.getString("quantityUnit"));
 			ingredient.setQuantityDisplay(rs.getString("quantityDisplay"));
+			ingredient.setGroupIndex(rs.getInt("groupIndex"));
+			ingredient.setGroupName(rs.getString("groupName"));
 			
 			return ingredient;
 		}
@@ -183,25 +188,33 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 	}
 
 	@Override
-	public List<Ingredient> getRecipeIngredients(Integer recipeId) {
+	public Map<Integer, List<Ingredient>> getRecipeIngredients(Integer recipeId) {
 		List<Ingredient> ingredients = (List<Ingredient>) getJdbcTemplate().query(
 				"SELECT * FROM ingredients_by_recipeid WHERE recipeId = ?", 
 				new Object[] {recipeId}, 
-				new IngredientRowMapper());
-		
-		return ingredients;
+				new IngredientRowMapper());	
+		Map<Integer, List<Ingredient>> ingredientGroupMap = new HashMap<Integer, List<Ingredient>>();
+		for (Ingredient ingredient : ingredients) {
+			if (ingredientGroupMap.get(ingredient.getGroupIndex()) == null) {
+				ingredientGroupMap.put(ingredient.getGroupIndex(), new ArrayList<Ingredient>());
+			}
+			ingredientGroupMap.get(ingredient.getGroupIndex()).add(ingredient);	
+		}
+		return ingredientGroupMap;
 	}
 
 	@Override
 	public Integer createRecipeIngredient(Ingredient ingredient, Integer recipeId) {
 		Integer result = getJdbcTemplate().update(
-				"INSERT INTO ingredient_recipe (ingredientId, quantity, quantityUnit, quantityDisplay, recipeId) "
-				+ "VALUES (?, ?, ?, ?, ?)", 
+				"INSERT INTO ingredient_recipe (ingredientId, quantity, quantityUnit, "
+				+ "quantityDisplay, groupIndex, groupName, recipeId) VALUES (?, ?, ?, ?, ?, ?, ?)", 
 				new Object[] {
 					ingredient.getId(),
 					ingredient.getQuantity(),
 					ingredient.getQuantityUnit(),
 					ingredient.getQuantityDisplay(),
+					ingredient.getGroupIndex(),
+					ingredient.getGroupName(),
 					recipeId
 				});
 		return result;
@@ -210,12 +223,15 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 	@Override
 	public Integer updateRecipeIngredient(Ingredient ingredient, Integer recipeId) {
 		Integer result = getJdbcTemplate().update(
-				"UPDATE ingredient_recipe SET quantity = ?, "
-				+ "quantityUnit = ?, quantityDisplay = ? WHERE recipeId = ? AND ingredientId = ?", 
+				"UPDATE ingredient_recipe SET quantity = ?, quantityUnit = ?, "
+				+ "quantityDisplay = ?, groupIndex = ?, groupName = ? "
+				+ "WHERE recipeId = ? AND ingredientId = ?", 
 				new Object[] {
 					ingredient.getQuantity(),
 					ingredient.getQuantityUnit(),
 					ingredient.getQuantityDisplay(),
+					ingredient.getGroupIndex(),
+					ingredient.getGroupName(),
 					recipeId,
 					ingredient.getId(),
 				});

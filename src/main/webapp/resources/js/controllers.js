@@ -10,8 +10,9 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
 	$scope.prepTimeQualifier = "pl";
 	$scope.cookTimeQualifier = "pl";
 	$scope.recipe = {};
+	$scope.ingredientGroups = [];
     $scope.recipe.instructions = [];
-    $scope.recipe.ingredients=[];
+    $scope.recipe.ingredients={};
     $scope.instructionForm = {};
     $scope.ingredientForm = {};
     $scope.ingredientDisplay = {}
@@ -24,12 +25,13 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
     	{text: "2/3", value: .66667},
     	{text: "3/4", value: .75}];
     
+    $scope.ingredientGroups.push({name: "Ingredients List", ingredients:[], index: 0});
     $scope.recipe.instructions.push({orderIndex: 1, text:"Instruction one"});
     $scope.recipe.instructions.push({orderIndex: 2, text:"Instruction two"});
     $scope.recipe.instructions.push({orderIndex: 3, text:"Instruction three"});
-    $scope.recipe.ingredients.push({name: "ingredient1", quantityDisplay: "1 1/2", quantity: 1.5, quantityUnit: "cups"});
-    $scope.recipe.ingredients.push({name: "ingredient2", quantityDisplay: "2", quantity: 2, quantityUnit: "tbsp"});
-    $scope.recipe.ingredients.push({name: "ingredient3", quantityDisplay: "1/2", quantity: .5, quantityUnit: "tsp"});
+    $scope.ingredientGroups[0].ingredients.push({name: "ingredient1", quantityDisplay: "1 1/2", quantity: 1.5, quantityUnit: "cups"});
+    $scope.ingredientGroups[0].ingredients.push({name: "ingredient2", quantityDisplay: "2", quantity: 2, quantityUnit: "tbsp"});
+    $scope.ingredientGroups[0].ingredients.push({name: "ingredient3", quantityDisplay: "1/2", quantity: .5, quantityUnit: "tsp"});
     
 	$scope.init = function(){
 		$scope.fetchServingUnits();
@@ -106,13 +108,25 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
 	};
 	
     $scope.submitNewRecipe = function(){
-        var promise = newRecipeService.saveNewRecipe($scope.recipe);
-        promise.then(function(response){
-        	$scope.result = "Success!";
-        }, function(){
-        	$scope.result = "Error";
-        });
+    	for (var i = 0; i < $scope.ingredientGroups.length; i++){
+    		$scope.recipe.ingredients[i] = $scope.ingredientGroups[i].ingredients;
+    	}
+    	if (isRecipeValid($scope.recipe)){
+	        var promise = newRecipeService.saveNewRecipe($scope.recipe);
+	        promise.then(function(response){
+	        	$scope.result = "Success!";
+	        }, function(){
+	        	$scope.result = "Error";
+	        });
+    	}
     };
+    
+    $scope.isRecipeValid = function(recipe){
+    	if (!angular.isDefined(recipe.title) || anugular.equals(recipe.title.trim(), "")) return false;
+    	if (!angular.isDefined(recipe.instructions) || !recipe.instructions.length > 0) return false;
+    	if (!angular.isDefined(recipe.ingredients[0]) || !recipe.ingredients[0].length > 0) return false;
+    	// possibly add more advanced validation in the future
+    }
     
     $scope.updatePrepTimeUnits = function(){
     	index = document.getElementById("prepTimeUnit").selectedIndex;
@@ -150,21 +164,49 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
     	document.getElementById("cookTimeUnit").selectedIndex = index;
     };
     
-    $scope.updateServingUnits = function(){
-    	if (angular.isDefined($scope.recipe.servingSize)){
-    		index = document.getElementById("servingSizeUnit").selectedIndex;
-    		if ($scope.recipe.servingSize === 1 && $scope.servingUnitQualifier === "pl"){
-    			$scope.servingUnitQualifier = "s";
-    			$scope.servingUnitsList = [];
-    			$scope.fetchServingUnits();
-    		}
-    		else if ($scope.recipe.servingSize !== 1 && $scope.servingUnitQualifier === "s"){
-    			$scope.servingUnitQualifier = "pl";
-    			$scope.servingUnitsList = [];
-    			$scope.fetchServingUnits();
-    		}
-    	};
-    	document.getElementById("servingSizeUnit").selectedIndex = index;
+    $scope.updateServingUnits = function(groupIndex){
+    	var refreshFlag = false;
+    	if ($scope.panelIsOpen[0] === true){
+    		unitElement = document.getElementById("servingSize");
+    		fractionElement = document.getElementById("servingSizeFraction");
+    	}
+    	else if ($scope.panelIsOpen[1] === true) {
+    		unitElement = document.getElementById("ingQty" + groupIndex);
+    		fractionElement = document.getElementById("ingFraction" + groupIndex);
+    	}
+    	if (angular.isDefined(unitElement) && angular.isDefined(fractionElement)){
+			if (fractionElement.selectedIndex === 0) {	
+	    		if (parseInt(unitElement.value) === 1 && $scope.servingUnitQualifier === "pl"){
+	    			$scope.servingUnitQualifier = "s";
+	    			refreshFlag = true;
+	    		}
+	    		else if (parseInt(unitElement.value) !== 1 && $scope.servingUnitQualifier === "s"){
+	    			$scope.servingUnitQualifier = "pl";
+	    			refreshFlag = true;
+	    		}
+			}
+			else {
+				if ((!angular.isDefined(unitElement.value) || 
+						parseInt(unitElement.value)  === 0 || 
+						isNaN(parseInt(unitElement.value))) &&
+						$scope.servingUnitQualifier === "pl"){
+					$scope.servingUnitQualifier = "s";
+					refreshFlag = true;
+				}
+				else if (parseInt(unitElement.value) !== 0 
+						&& !isNaN(parseInt(unitElement.value)) 
+						&& $scope.servingUnitQualifier === "s"){
+	    			$scope.servingUnitQualifier = "pl";
+	    			refreshFlag = true;
+	    		}
+			}
+    	}
+		if (refreshFlag){
+    		$scope.servingUnitsList = [];
+			$scope.fetchServingUnits();
+			refreshFlag = false;
+		}
+    	
     };
     
     $scope.addInstruction = function(){
@@ -192,49 +234,74 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
             }
         }
     };
+    $scope.addIngredientGroup = function(){
+    	if(!angular.isDefined($scope.ingredientGroups)){
+    		$scope.ingredientGroups = [];
+    	}
+    	$scope.ingredientGroups.push({name: "", ingredients: [], index: $scope.ingredientGroups.length});
+    };
     
-    $scope.addIngredient = function(){
-        if (!angular.isDefined($scope.recipe.ingredients)) {
-            $scope.recipe.ingredients = [];
-        }
-        if (angular.isDefined($scope.ingredientForm.name) && $scope.ingredientForm.name !== ""){
-            if (!angular.isDefined($scope.ingredientForm.fraction)){
-                    $scope.ingredientForm.fraction = "";
-                }
-            if (!angular.isDefined($scope.ingredientForm.quantityUnit)){
-                $scope.ingredientForm.quantityUnit = "";
-            }
-            var index = document.getElementById("ingFraction").selectedIndex;
-            var fractionValue = Number($scope.fractionsList[index].value);
-            if (!isNaN(fractionValue)){
-            	var ingQty = parseInt($scope.ingredientForm.quantity) + fractionValue;
-            }
-            else {
-            	ingQty = parseInt($scope.ingredientForm.quantity)
-            }
-            $scope.ingredient = {
-                name: $scope.ingredientForm.name,
-                quantity: ingQty,
-                quantityUnit: $scope.ingredientForm.quantityUnit,
-                quantityDisplay: $scope.ingredientForm.quantity + " " + $scope.ingredientForm.fraction
-                };
-            
-            $scope.recipe.ingredients.push($scope.ingredient);
-            document.getElementById("ingQty").value = null;
-            document.getElementById("ingQtyUnit").selectedIndex = 0;
-            document.getElementById("ingFraction").selectedIndex = 0;
-            $scope.ingredientForm = {};
+    $scope.removeIngredientGroup = function(groupIndex){
+    	$scope.ingredientGroups.splice(groupIndex, 1);
+    };
+    
+    $scope.addIngredient = function(groupIndex){
+        if (angular.isDefined($scope.ingredientGroups[groupIndex])){
+        	if (!angular.isDefined($scope.ingredientGroups[groupIndex].ingredients)) {
+        		$scope.ingredientGroups[groupIndex].ingredients = [];
+        	}
+        
+	        if (angular.isDefined($scope.ingredientForm[groupIndex].name) && $scope.ingredientForm[groupIndex].name !== ""){
+	            if (!angular.isDefined($scope.ingredientForm[groupIndex].fraction)){
+	                    $scope.ingredientForm[groupIndex].fraction = "";
+	                }
+	            if (!angular.isDefined($scope.ingredientForm[groupIndex].quantityUnit)){
+	                $scope.ingredientForm[groupIndex].quantityUnit = "";
+	            }
+	            var index = document.getElementById("ingFraction" + groupIndex).selectedIndex;
+	            var fractionValue = Number($scope.fractionsList[index].value);
+	            if (!isNaN(fractionValue)){
+	            	var ingQty = fractionValue;
+	            	if (angular.isDefined($scope.ingredientForm[groupIndex].quantity)){
+	            		ingQty += parseInt($scope.ingredientForm[groupIndex].quantity);
+	            		var qtyDisplay = $scope.ingredientForm[groupIndex].quantity + " " + $scope.ingredientForm[groupIndex].fraction;
+	            	}
+	            	else {
+	            		qtyDisplay = $scope.ingredientForm[groupIndex].fraction;
+	            	}
+	            }
+	            else {
+	            	ingQty = parseInt($scope.ingredientForm[groupIndex].quantity)
+	            	qtyDisplay = $scope.ingredientForm[groupIndex].quantity;
+	            }
+	            $scope.ingredient = {
+	                name: $scope.ingredientForm[groupIndex].name,
+	                quantity: ingQty,
+	                quantityUnit: $scope.ingredientForm[groupIndex].quantityUnit,
+	                quantityDisplay: qtyDisplay,
+	                groupIndex: parseInt(groupIndex),
+	                groupName: $scope.ingredientGroups[groupIndex].name
+	                };
+	            
+	            $scope.ingredientGroups[groupIndex].ingredients.push($scope.ingredient);
+	            document.getElementById("ingQty" + groupIndex).value = null;
+	            document.getElementById("ingQtyUnit" + groupIndex).selectedIndex = 0;
+	            document.getElementById("ingFraction" + groupIndex).selectedIndex = 0;
+	            $scope.ingredientForm[groupIndex] = {};
+	        }
         }
     };
     
-    $scope.removeIngredient = function(name){
-        if (angular.isDefined($scope.recipe.ingredients)) {
-            for (var i=0; i<$scope.recipe.ingredients.length; i++){
-                if ($scope.recipe.ingredients[i].name === name){
-                    $scope.recipe.ingredients.splice(i, 1);
-                    break;
-                }
-            }
+    $scope.removeIngredient = function(groupIndex, ingredient){
+        if (angular.isDefined($scope.ingredientGroups[groupIndex])) {
+        	var index = $scope.ingredientGroups[groupIndex].ingredients.indexOf(ingredient);
+//            for (var i=0; i<$scope.recipe.ingredients.length; i++){
+//                if ($scope.recipe.ingredients[i].name === name){
+//                    $scope.recipe.ingredients.splice(i, 1);
+//                    break;
+//                }
+//            }
+        	$scope.ingredientGroups[groupIndex].ingredients.splice(index, 1)
         }
     };
     
@@ -250,6 +317,16 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
 	        } 
     	}
     	$scope.panelIsOpen[3] = true;
+    };
+    $scope.checkMinValues = function(){
+    	var elements = document.getElementByName("input");
+    	for (var i = 0; i < elements.length; i++){
+    		if (elements[i].type === "number"){
+    			if (elements[i].value < 0){
+    				elements[i].value = 0;
+    			}
+    		}
+    	}
     }
 }]);
 
@@ -270,6 +347,7 @@ app.directive('elastic', [
         };
     }
 ]);
+
     
     
 
