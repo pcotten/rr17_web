@@ -1,0 +1,34 @@
+<div ng-controller="pantryctl" id="innerWrapper" ng-init="init(1)">
+	<div class="pantryView">
+		<div class="pantryWrapper">
+			<div class="pantrySearch">
+				Search: <input type="text" ng-model="searchText">
+			</div>
+			<div class="pantryItems">	
+				<div class="itemRow">
+					<div class="itemWrapper" ng-repeat="ingredient in pantryIngredients | orderBy:'name'" ng-click="selectItem(pantryIngredients.indexOf(ingredient))">
+						<div class="itemMain">
+							<div class="itemImage"><img src="{{ingredient.image.imagePath}}"></div>	
+						</div>
+						<div class="itemInfo">
+							<p>{{ingredient.name}}<br/>Qty: {{ingredient.quantityDisplay}} {{ingredient.quantityUnit}}</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="pantrySelected">
+			<div class="selectedItem">
+				<div class="selectedImage">
+					<img src={{selectedItem.image.imagePath}} ng-show="selectedItem != null">
+				</div>
+				<div class="selectedInfo">
+					<p><b>{{selectedItem.name}}</b></p>
+					<p>{{selectedItem.description}}</p>
+					<p>Last updated: {{selectedItem.lastUpdated}}</p>
+					<p>Nutritional Info:</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

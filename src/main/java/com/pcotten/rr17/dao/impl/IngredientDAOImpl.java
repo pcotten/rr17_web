@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import com.mysql.cj.api.jdbc.Statement;
 import com.pcotten.rr17.dao.IngredientDAO;
+import com.pcotten.rr17.model.Image;
 import com.pcotten.rr17.model.Ingredient;
 
 @Component
@@ -35,7 +36,7 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 		setDataSource(dataSource);
 	}
 	
-	private static class IngredientRowMapper implements RowMapper<Ingredient> {
+	private static class PantryIngredientRowMapper implements RowMapper<Ingredient> {
 
 		@Override
 		public Ingredient mapRow(ResultSet rs, int row) throws SQLException {
@@ -43,12 +44,58 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 			Ingredient ingredient = new Ingredient();
 			ingredient.setId(rs.getInt("ingredientId"));
 			ingredient.setName(rs.getString("name"));
-			ingredient.setDescription(rs.getString("description"));
+			if (rs.getString("description") != null) {
+				ingredient.setDescription(rs.getString("description"));
+			}
+			ingredient.setPantryId(rs.getInt("pantryId"));
 			ingredient.setQuantity(rs.getFloat("quantity"));
-			ingredient.setQuantityUnit(rs.getString("quantityUnit"));
-			ingredient.setQuantityDisplay(rs.getString("quantityDisplay"));
-			ingredient.setGroupIndex(rs.getInt("groupIndex"));
-			ingredient.setGroupName(rs.getString("groupName"));
+			if (rs.getString("quantityUnit") != null) {
+				ingredient.setQuantityUnit(rs.getString("quantityUnit"));
+			}
+			if (rs.getString("quantityDisplay") != null) {
+				ingredient.setQuantityDisplay(rs.getString("quantityDisplay"));
+			}
+			if (rs.getString("imagePath") != null) {
+				Image image = new Image(rs.getString("imagePath"), rs.getString("imageText"), 
+						ingredient.getId(), Image.Type.INGREDIENT);
+				image.setId(rs.getInt("imageId"));
+				ingredient.setImage(image);
+			}
+			
+			return ingredient;
+		}
+		
+	}
+	
+	private static class RecipeIngredientRowMapper implements RowMapper<Ingredient> {
+
+		@Override
+		public Ingredient mapRow(ResultSet rs, int row) throws SQLException {
+			// TODO Auto-generated method stubpstmt.setString(1, user.getUsername());
+			Ingredient ingredient = new Ingredient();
+			ingredient.setId(rs.getInt("ingredientId"));
+			ingredient.setName(rs.getString("name"));
+			if (rs.getString("description") != null) {
+				ingredient.setDescription(rs.getString("description"));
+			}
+			ingredient.setPantryId(rs.getInt("pantryId"));
+			ingredient.setQuantity(rs.getFloat("quantity"));
+			if (rs.getString("quantityUnit") != null) {
+				ingredient.setQuantityUnit(rs.getString("quantityUnit"));
+			}
+			if (rs.getString("quantityDisplay") != null) {
+				ingredient.setQuantityDisplay(rs.getString("quantityDisplay"));
+			}
+			if (rs.getString("groupName") != null) {
+				ingredient.setGroupIndex(rs.getInt("groupIndex"));
+				ingredient.setGroupName(rs.getString("groupName"));
+			}
+//			if (rs.getString("imagePath") != null) {
+//				Image image = new Image(rs.getString("imagePath"), rs.getString("imageText"), 
+//						ingredient.getId(), Image.Type.INGREDIENT);
+//				image.setId(rs.getInt("imageId"));
+//				ingredient.setImage(image);
+//			}
 			
 			return ingredient;
 		}
@@ -139,7 +186,7 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 		List<Ingredient> ingredients = (List<Ingredient>) getJdbcTemplate().query(
 				"SELECT * FROM ingredients_by_pantryid WHERE pantryId = ?", 
 				new Object[] {pantryId}, 
-				new IngredientRowMapper());
+				new PantryIngredientRowMapper());
 		
 		return ingredients;
 	}
@@ -192,7 +239,7 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 		List<Ingredient> ingredients = (List<Ingredient>) getJdbcTemplate().query(
 				"SELECT * FROM ingredients_by_recipeid WHERE recipeId = ?", 
 				new Object[] {recipeId}, 
-				new IngredientRowMapper());	
+				new RecipeIngredientRowMapper());	
 		Map<Integer, List<Ingredient>> ingredientGroupMap = new HashMap<Integer, List<Ingredient>>();
 		for (Ingredient ingredient : ingredients) {
 			if (ingredientGroupMap.get(ingredient.getGroupIndex()) == null) {

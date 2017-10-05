@@ -1,0 +1,525 @@
+/* Global styles and main layout*/
+
+h1 {
+    margin-top: 0;
+}
+
+html, body {
+    box-sizing: border-box;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    min-width: 824px;
+}
+
+#mainWrapper, #outerWrapper {
+    min-height: 100%;
+    min-width: 100%;
+    clear: both;
+}
+
+#innerWrapper {
+	height: 100%;
+    min-height: 100%;
+    width: 100%;
+    min-width: 100%;
+    clear: both;
+}
+
+.master {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    border: 0px;
+}
+
+.main_container {
+    position: relative;
+    box-sizing: border-box;
+    padding: 0px;
+    min-height: 100%;
+}
+
+.header {
+    box-sizing: border-box;
+    position: absolute;
+    left: 1%;
+    padding: 3px;
+    height: 7%;
+    width: 98%;
+    min-height: 40px;
+    border-bottom-color: #0ace55;
+    border-bottom-style: inset;
+    border-bottom-width: 1px;
+}
+
+.header_logo {
+    top: 5%;
+    background-image: url("http://localhost:8080/rr17/resources/images/logo.jpg");
+    background-position: 30%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding: 2px;
+    height: 95%;
+    width: 15%;
+    float: left;
+}
+
+.header_menu {
+    top: 5%;
+    background: -webkit-linear-gradient(left, white, green);
+    padding: 2px;
+    height: 95%;
+    width: 58.5%;
+    float: left;
+}
+
+.header_login {
+    top: 5%;
+    background-color: green;
+    padding: 2px;
+    height: 95%;
+    width: 26.5%;
+    float: left;
+}
+
+.leftSidebar {
+	box-sizing: border-box;
+	position: absolute;
+	top: 8%;
+	left: 1%;
+	height: 86.5%;
+	min-height: 86.5%;
+	width: 15%;
+	float: left;
+}
+
+.main_content {
+    box-sizing: border-box;
+    position: absolute;
+    background-color: white;
+    top: 8%;
+    left: 16%;
+    padding: 5px;
+    height: 86.5%;
+    width: 68%;
+    min-height: 86.5%;
+    float: left;
+}
+
+.rightSidebar {
+	box-sizing: border-box;
+	position: absolute;
+	top: 8%;
+	left: 84%;
+	height: 86.5%;
+	min-height: 86.5%;
+	width: 15%;
+	float: left;
+}
+
+.footer {
+    box-sizing: border-box;
+    position: absolute;
+    background: -webkit-linear-gradient(right, white, green);
+    top: 96%;
+    left: 1%;
+    padding: 2px;
+    height: 2.5%;
+    width: 98%;
+    min-height: 22px;
+    border-top-color: #0ace55;
+    border-top-style: inset;
+    border-top-width: 1px;
+    color: white;
+}
+
+
+
+.login_link {
+    color: white;
+    align-content: center;
+    position: relative;
+    top: 19%;
+    left: 35%;
+}
+.login_link a {
+    color: white;
+    text-decoration: none;
+    
+}
+.login_link a:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+.mainContentMaster {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    border: 0px;
+    padding: 0px;
+    margin: 0px;
+}
+
+.recipeCard {
+	box-sizing: border-box;
+    min-height: inherit;
+    max-height: 100%;
+    width: 59%;
+    background-color: white;
+    overflow-x: hidden;
+    overflow-y: auto;
+    margin: 3px;
+    padding: 10px;
+    float: left;
+    border-style: inset;
+    border color: #ebffe2;
+    border-width: 3px;
+    border-radius: 20px;
+}
+.recipeForm {
+	box-sizing: border-box;
+    min-height: inherit;
+    height: 100%;
+    max-height: 100%;
+    width: 39%;
+    background-color: #ebffe2;
+    border-radius: 20px;
+    float: right;
+    margin: 3px;
+    padding: 10px;
+    display: -webkit-inline-box;
+    border-style: ridge;
+    border-color: #c4ffb7;
+    border-width: 3px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#accordionWrapper {
+	height: 100%;
+	min-height: inherit;
+	width: 100%;
+	min-width: 100%;
+    clear: both;
+    background-color: black;
+}
+.recipeComponentGroup {
+    min-width: inherit;
+    width: 99%;
+    border-style: ridge;
+    /*border-color: #c4ffb7;*/
+    border-color: transparent;
+    border-width: 1px;
+    border-radius: 30px;
+    background-color: #ebffe2;
+    padding: .5%;
+    margin: 1%;
+    
+}
+.recipeFormTable {
+	width: 100%;
+}
+
+.recipeFormLabel {
+    height: 1.2em;
+    text-align: right;
+    padding-right: 6px;
+    width: 24%;
+    font-size: .8em;
+    position: relative;
+    bottom: 1px;
+}
+.recipeFormInput {
+    border-radius: 7px;
+    display: inline;
+}
+.recipeFormTextArea {
+    border-width: 2px;
+    width: 100%;
+    padding: 4px;
+    border-style: inset;
+    border-color: initial;
+    font-size: .8em;
+}
+.recipeFormText {
+    width: 100%;
+    font-size: .8em;
+    padding: 4px;
+    border-style: inset;
+}
+.recipeFormIngredient {
+    font-size: .8em;
+    padding: 4px;
+    border-style: inset;
+}
+.recipeFormNumber {
+    border-radius: 7px;
+    font-size: .8em;
+    padding: 4px;
+	width: 24%;
+}
+
+.recipeFormSelect {
+    border-radius: 7px;
+    font-size: .8em;
+    padding: 4px;
+    border-style: inset;
+    border-color: initial;
+    border-width: 2px;
+    display: inline;
+}
+.recipeFormInput:hover, .recipeFormNumber:hover, .recipeFormSelect:hover {
+    background-color: #c4ffb7;
+}
+.recipeFormInput:focus, .recipeFormNumber:focus, .recipeFormSelect:focus {
+    background-color: #c4ffb7;
+    outline-style:none;
+    box-shadow:none;
+}
+td {
+	padding-bottom: 4px;
+}
+tr {
+	width: 100%;
+}
+td.orderIndex {
+    padding: 4px;
+    padding-left: 0px;
+    text-align: center;
+    font-size: .8em;
+    width: 3%;
+}
+td.instructionText {
+    padding: 4px;
+    text-align: left;
+    font-size: .8em;
+}
+.ingredientListItem {
+    padding: 4px;
+    text-align: left;
+    font-size: .8em;
+}
+.columnHeader {
+    padding-bottom: 8px;
+}
+.panel-group {
+	width: 100%;
+}
+.panel-group .panel {
+	width: 100%;
+}
+.panel-default {
+  border-color: #c4ffb7;
+  width: 100%;
+}
+.panel-default > .panel-heading {
+  color: #333;
+  background-color: #c4ffb7;
+  border-color: #c4ffb7;
+}
+.panel-heading {
+  color: #333;
+  border-color: #c4ffb7;
+  width: 100%;
+}
+
+.panel-body {
+	padding: 10px;
+}
+
+.instructionTextArea {
+
+    width: 100%;
+    font-size: .8em;
+    padding: 4px;
+    border-style: inset;
+    border-width: 2px;
+    border-color: initial;
+    border-radius: 7px;
+    resize: none;
+    overflow: hidden;
+}
+.instructionTextArea:focus{
+    background-color: #c4ffb7;
+    outline-style:none;
+    box-shadow:none; 
+}
+.smallIcon {
+    height: 12px;
+    width: 12px;
+}
+.iconCell {
+    width: 2%;
+    padding-right: 4px;
+    padding-left: 4px;
+}
+
+.recipeCardHeader {
+    font-size: 1.4em;
+}
+.recipeCardDetails {
+    font-size: 1em;
+    min-height: inherit;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.recipeCardLabel {
+    text-align: right;
+    width: 20%;
+    padding: 4px;
+}
+.recipeCardText {
+    width:78%;
+    padding: 4px;
+}
+.recipeSubmit {
+	width: 30%;
+	padding: 3px;
+	float: right;
+}
+.recipeSave {
+    position: relative;
+    bottom: 5px;
+}
+.recipeServingUnits {
+	width: 100%;
+}
+.recipeFormFraction {
+	width: 24%;
+}
+.recipeTimeUnit {
+	width: 24%;
+}
+input[type="button" i] {
+	border-radius: 4px;
+	font-size: .8em
+}
+input[type="submit" i] {
+	border-radius: 4px;
+	font-size: .8em;
+}
+.pantryView {
+	height: 100%;
+	width: 100%;
+	min-height: 100%;
+	min-width: 100%;
+}
+.pantryWrapper {
+	box-sizing: border-box;
+	height: 100%;
+	width: 70%;
+	min-height: 100%;
+	min-widht: 70%;
+	float: left;
+}
+.pantryItems {
+	height: 95%;
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: auto;
+	float: left;
+}
+.pantrySearch {
+	box-sizing: border-box;
+	display: inline;
+	width: 50%;
+	height: 5%;
+	float: left;
+	margin-bottom: 5px;
+}
+.pantrySearch input {
+	border-color: #c4ffb7;
+	border-style: inset;
+	border-size: 2px;
+	border-radius: 5px;
+	width: 75%;
+}
+.pantrySelected {
+	box-sizing: border-box;
+	height: 100%;
+	width: 30%;
+	overflow-y: auto;
+	float: left;
+}
+.selectedItem {
+	box-sizing: border-box;
+	height: 95%;
+	width: 100%;
+	min-height: 90%;
+	min-width: 100%;
+
+}
+.itemRow {
+	height: 149px;
+	padding: 0px;
+	width: 100%;
+	clear: both;
+}
+.itemWrapper {
+	height: 140px;
+	width: 140px;
+	min-height: 140px;
+	min-width: 140px;
+	float: left;
+	padding-left: 6px;
+	padding-right: 6px;
+	padding-top: 12px;
+	border-color: #c4ffb7;
+	border-style: inset;
+	border-size: 2px;
+	border-radius: 10px;
+	margin: 6px;
+}
+.itemMain {
+	height: 75%;
+	width: 100%;
+	min-height: 75%;
+	font-size: .8em;
+	text-align: center;
+	border-bottom-color: #0ace55;
+    border-bottom-style: inset;
+    border-bottom-width: 1px;
+}
+.itemInfo {
+	height: 25%;
+	width: 100%;
+	font-size: .8em;
+	text-align: center;
+}
+.itemImage img{
+	height: 93%;
+	width: 93%;
+}
+.selectedImage {
+	box-sizing: border-box;
+	width: 80%;
+	height: auto;
+	min-width: 80%;
+	min-height: 29%;
+	margin: 10%;
+	border-color: #c4ffb7;
+	border-style: inset;
+	border-size: 2px;
+	border-radius: 15px;
+	padding: 5%;
+}
+.selectedImage img {
+	box-sizing: border-box;
+	height: 100%;
+	width: 100%;
+	min-width: 100%;
+	min-height: 100%;
+}
+
+.selectedInfo {
+	box-sizing: border-box;
+	width: 80%;
+	min-width: 80%;
+	margin: 10%;
+	font-size: 1.5em;
+	font-family: sans-serif;
+	text-align: center;
+}
+

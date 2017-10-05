@@ -95,16 +95,16 @@ public class DemoController {
 		return "urecovery";	
 	}
 	
-	@RequestMapping(value="/newrecipe")
+//	@RequestMapping(value="/newrecipe")
+//	public String showNewRecipe(@ModelAttribute ("recipe") Recipe recipe) {
+//		return "newRecipe";
+//	}
+	
+	@RequestMapping(value="/main")
 	public String showNewRecipe(@ModelAttribute ("recipe") Recipe recipe) {
-		return "newRecipe";
+		return "main";
 	}
 	
-//	@RequestMapping(value="/main")
-//	public String showNewRecipe(@ModelAttribute ("recipe") Recipe recipe) {
-//		return "main";
-//	}
-//	
 	@RequestMapping(value="/acctrecovery", method=RequestMethod.POST)
 	public String recoverUsername(@ModelAttribute ("login") User user, Model model) {
 		

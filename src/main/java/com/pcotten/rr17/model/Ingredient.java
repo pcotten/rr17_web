@@ -13,6 +13,8 @@ public class Ingredient {
 	private String name;
 	@Size(max=255)
 	private String description;
+	private Integer pantryId;
+	private Image image;
 	private Float quantity;
 	private String quantityDisplay;
 	private String quantityUnit;
@@ -53,6 +55,22 @@ public class Ingredient {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public Integer getPantryId() {
+		return pantryId;
+	}
+
+	public void setPantryId(Integer pantryId) {
+		this.pantryId = pantryId;
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
 	}
 
 	public Float getQuantity() {

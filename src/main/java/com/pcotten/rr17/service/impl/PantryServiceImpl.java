@@ -158,8 +158,8 @@ public class PantryServiceImpl implements PantryService{
 
 	@Override
 	public List<Ingredient> getPantryIngredients(Integer userId) {
-
-		List<Ingredient> ingredients = ingredientDAO.getPantryIngredients(userId);
+		Integer pantryId = getPantryId(userId);
+		List<Ingredient> ingredients = ingredientDAO.getPantryIngredients(pantryId);
 		
 		return ingredients;
 	}
