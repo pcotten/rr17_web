@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Cookbook;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Meal;
@@ -420,6 +421,27 @@ public class UserRestServiceImpl implements UserRestService {
 			}
 			else {
 				response = new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return response;
+	}
+	
+	@Override
+	public ResponseEntity<List<Category>> getPantryCategories(
+			@PathVariable Integer userId) {
+		
+		ResponseEntity<List<Category>> response = null;
+		try {
+			List<Category> categories = service.getPantryCategories(userId);
+			if (categories != null && !categories.isEmpty()) {
+				response = ResponseEntity.ok(categories);
+			}
+			else {
+				response = new ResponseEntity<List<Category>>(HttpStatus.NOT_FOUND);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

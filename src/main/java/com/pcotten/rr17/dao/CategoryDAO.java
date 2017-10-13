@@ -22,6 +22,8 @@ public interface CategoryDAO {
 	
 	public List<Category> getCookbookCategories(Integer cookbookId);
 
+	public List<Category> getPantryCategories(Integer userId);
+	
 	public int addCategoryToRecipe(Integer categoryId, Integer recipeId);
 
 	public int addCategoryToIngredient(Integer categoryId, Integer ingredientId);
@@ -33,4 +35,5 @@ public interface CategoryDAO {
 	public Integer removeCategoryFromIngredient(Integer categoryId, Integer ingredientId);
 
 	public Integer removeCategoryFromCookbook(Integer categoryId, Integer cookbookId);
+
 }

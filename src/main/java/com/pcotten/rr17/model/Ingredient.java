@@ -1,6 +1,7 @@
 package com.pcotten.rr17.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -20,6 +21,8 @@ public class Ingredient {
 	private String quantityUnit;
 	private Integer groupIndex;
 	private String groupName;
+	private Date lastUpdated;
+	private NutritionalInfo nutritionalInfo; 
 	private List<Category> categories;
 	
 	public Ingredient(){
@@ -30,6 +33,7 @@ public class Ingredient {
 		super();
 		this.name = name;
 		this.description = description;
+		this.nutritionalInfo = new NutritionalInfo();
 		this.categories = new ArrayList<Category>();
 	}
 	
@@ -111,6 +115,22 @@ public class Ingredient {
 
 	public void setGroupName(String groupName) {
 		this.groupName = groupName;
+	}
+
+	public Date getLastUpdated() {
+		return lastUpdated;
+	}
+
+	public void setLastUpdated(Date lastUpdated) {
+		this.lastUpdated = lastUpdated;
+	}
+
+	public NutritionalInfo getNutritionalInfo() {
+		return nutritionalInfo;
+	}
+
+	public void setNutritionalInfo(NutritionalInfo nutritionalInfo) {
+		this.nutritionalInfo = nutritionalInfo;
 	}
 
 	public List<Category> getCategories() {

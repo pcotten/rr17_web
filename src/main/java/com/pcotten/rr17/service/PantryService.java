@@ -3,6 +3,7 @@ package com.pcotten.rr17.service;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Pantry;
 
@@ -27,6 +28,7 @@ public interface PantryService {
 	public boolean pantryIngredientExists(Integer userId, Ingredient ingredient);
 	
 	public Integer getPantryId(Integer userId);
+
 
 
 

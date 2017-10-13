@@ -21,7 +21,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import com.mysql.cj.api.jdbc.Statement;
+import com.pcotten.rr17.dao.CategoryDAO;
 import com.pcotten.rr17.dao.IngredientDAO;
+import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Image;
 import com.pcotten.rr17.model.Ingredient;
 
@@ -30,6 +32,8 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 	
 	@Inject
 	DataSource dataSource;
+	@Inject
+	CategoryDAO categoryDAO;
 	
 	@PostConstruct
 	private void initDatasource() {
@@ -187,6 +191,10 @@ public class IngredientDAOImpl extends JdbcDaoSupport implements IngredientDAO{
 				"SELECT * FROM ingredients_by_pantryid WHERE pantryId = ?", 
 				new Object[] {pantryId}, 
 				new PantryIngredientRowMapper());
+		for (Ingredient ingredient : ingredients) {
+			List<Category> categories = categoryDAO.getIngredientCategories(ingredient.getId());
+			ingredient.setCategories(categories);
+		}
 		
 		return ingredients;
 	}

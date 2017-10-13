@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Cookbook;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Meal;
@@ -99,6 +100,10 @@ public interface UserRestService {
 	public ResponseEntity<Void> deletePantryIngredient(
 			@PathVariable ("userId") Integer userId,
 			@PathVariable ("ingredientId") Integer ingredientId);
+	
+	@RequestMapping(value="/users/{userId}/pantry/categories", method=RequestMethod.GET, produces="application/json")
+	public ResponseEntity<List<Category>> getPantryCategories(
+			@PathVariable ("userId") Integer userId);
 	
 	@RequestMapping(value="/users/{userId}/meals", method=RequestMethod.GET, produces="application/json")
 	public ResponseEntity<List<Meal>> getMeals(

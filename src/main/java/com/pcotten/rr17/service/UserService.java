@@ -3,6 +3,7 @@ package com.pcotten.rr17.service;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Cookbook;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Meal;
@@ -31,6 +32,8 @@ public interface UserService {
 
 	public boolean deletePantryIngredient(Integer userId, Integer ingredientId) throws SQLException;
 
+	public List<Category> getPantryCategories(Integer userId) throws SQLException;
+
 	public List<Meal> getMeals(Integer userId) throws SQLException ;
 
 	public Meal createMeal(Integer userId, Meal meal) throws SQLException;
@@ -50,6 +53,7 @@ public interface UserService {
 	public boolean userExists(User user) throws SQLException;
 
 	public User getUserByUsername(String username);
+
 	
 
 	

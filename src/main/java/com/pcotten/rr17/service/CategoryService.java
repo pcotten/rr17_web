@@ -20,6 +20,8 @@ public interface CategoryService {
 	public List<Category> getIngredientCategories(Integer ingredientId);
 	
 	public List<Category> getCookbookCategories(Integer cookbookId);
+
+	public List<Category> getPantryCategories(Integer userId);
 	
 	public boolean addCategoryToRecipe(Integer categoryId, Integer recipeId);
 	
@@ -32,4 +34,5 @@ public interface CategoryService {
 	public boolean removeCategoryFromIngredient(Integer categoryId, Integer ingredientId);
 	
 	public boolean removeCategoryFromCookbook(Integer categoryId, Integer cookbookId);
+
 }

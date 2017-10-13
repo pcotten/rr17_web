@@ -105,6 +105,14 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
+	public List<Category> getPantryCategories(Integer userId) {
+		
+		List<Category> categories = categoryDAO.getPantryCategories(userId);
+		
+		return categories;
+	}
+
+	@Override
 	public boolean addCategoryToRecipe(Integer categoryId, Integer recipeId) {
 		
 		boolean success = false;

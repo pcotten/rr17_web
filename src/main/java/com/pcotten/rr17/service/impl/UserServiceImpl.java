@@ -14,12 +14,14 @@ import org.springframework.stereotype.Component;
 import com.pcotten.rr17.storage.service.DatabaseManager;
 import com.pcotten.rr17.storage.service.SQLBuilder;
 import com.pcotten.rr17.dao.UserDAO;
+import com.pcotten.rr17.model.Category;
 import com.pcotten.rr17.model.Cookbook;
 import com.pcotten.rr17.model.Ingredient;
 import com.pcotten.rr17.model.Meal;
 import com.pcotten.rr17.model.MealPlan;
 import com.pcotten.rr17.model.Pantry;
 import com.pcotten.rr17.model.User;
+import com.pcotten.rr17.service.CategoryService;
 import com.pcotten.rr17.service.CookbookService;
 import com.pcotten.rr17.service.IngredientService;
 import com.pcotten.rr17.service.MealPlanService;
@@ -42,6 +44,8 @@ public class UserServiceImpl implements UserService {
 	MealService mealService;
 	@Inject
 	PantryService pantryService;
+	@Inject
+	CategoryService categoryService;
 	@Inject
 	UserDAO userDAO;
 
@@ -205,6 +209,14 @@ public class UserServiceImpl implements UserService {
 //			
 
 	}
+	
+	@Override
+	public List<Category> getPantryCategories(Integer userId) throws SQLException {
+		
+		List<Category> categories = categoryService.getPantryCategories(userId);
+		
+		return categories;
+	}
 
 	@Override
 	public List<Meal> getMeals(Integer userId) throws SQLException {
@@ -336,6 +348,8 @@ public class UserServiceImpl implements UserService {
 		
 		return (User) manager.retrieveSingleEntity(constraints, User.class);
 	}
+
+
 
 
 

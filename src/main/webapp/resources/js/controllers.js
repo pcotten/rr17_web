@@ -67,7 +67,7 @@ app.controller('recipectl', ['newRecipeService', '$scope', '$http', function(new
 			promise.then(function(data){
 				units = data.data.data;
 				for (i=0; i < units.length; i++){
-					$scope.servingUnitsList.push(units[i].value);
+					$scope.servingUnitsList.push(units[i]);
 				}
 			}, function(data) {
 				alert("Failed to get serving units");

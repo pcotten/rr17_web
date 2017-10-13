@@ -20,12 +20,15 @@ import org.springframework.stereotype.Component;
 import com.mysql.cj.api.jdbc.Statement;
 import com.pcotten.rr17.dao.CategoryDAO;
 import com.pcotten.rr17.model.Category;
+import com.pcotten.rr17.service.PantryService;
 
 @Component
 public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 	
 	@Inject
 	DataSource dataSource;
+	@Inject
+	PantryService pantryService;
 	
 	@PostConstruct
 	private void initDatasource() {
@@ -140,6 +143,17 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 		
 		return categories;
 	}
+	
+
+	@Override
+	public List<Category> getPantryCategories(Integer userId) {
+		Integer pantryId = pantryService.getPantryId(userId);
+		List<Category> categories = getJdbcTemplate().query("SELECT * FROM categories_by_pantryId WHERE pantryId = ?",
+				new Object[] {pantryId},
+				new CategoryRowMapper());
+		
+		return categories;
+	}
 
 	@Override
 	public int addCategoryToRecipe(Integer categoryId, Integer recipeId) {
@@ -212,6 +226,7 @@ public class CategoryDAOImpl extends JdbcDaoSupport implements CategoryDAO {
 		
 		return result;
 	}
+
 	
 }
 

@@ -39,7 +39,7 @@
                 <div class="leftSidebar">
             	</div>
                 <div class="main_content">
-                   <div ng-include src="'<%=request.getContextPath() %>/resources/partials/pantryView.html'" id="outerWrapper" class="mainContentMaster">
+                   <div ng-include src="'<%=request.getContextPath() %>/resources/partials/pantryView2.html'" id="outerWrapper" class="mainContentMaster">
                     
                    </div>
                 </div>

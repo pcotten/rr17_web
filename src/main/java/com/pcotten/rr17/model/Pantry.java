@@ -10,6 +10,7 @@ public class Pantry {
 	private String description;
 	private List<Integer> users;
 	private List<Ingredient> ingredients;
+	private List<Category> categories;
 	
 	public Pantry(){
 		
@@ -57,6 +58,14 @@ public class Pantry {
 	}
 	public void setIngredients(List<Ingredient> ingredients) {
 		this.ingredients = ingredients;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
 	}
 	
 }

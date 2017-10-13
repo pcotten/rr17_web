@@ -21,7 +21,26 @@ app.factory('pantryViewService', ['$q', '$http',  function($q, $http) {
                 deferred.resolve("Error");
             });
             return deferred.promise;
-        }
+        },
+	    getPantryCategories:function(userId){
+	
+	        var deferred = $q.defer();
+	        var url = "http://localhost:8080/rr17/users/" + userId + "/pantry/categories";
+	        var req = {
+	                method : 'GET',
+	                url : url
+	        };
+	        $http(req).then(function(data){
+	            if (angular.isDefined(data)){
+	            	deferred.resolve({
+	            		data : data,
+	            	});
+	            }
+	        }, function(data, status){
+	            deferred.resolve("Error");
+	        });
+	        return deferred.promise;
+	    }
     };
 }]);  
 app.factory('newRecipeService', ['$q', '$http',  function($q, $http) {

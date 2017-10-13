@@ -311,22 +311,26 @@ td.instructionText {
 	width: 100%;
 }
 .panel-default {
-  border-color: #c4ffb7;
+  border-color: green;
+  border-style: inset;
+  border-width: 1px;
   width: 100%;
 }
 .panel-default > .panel-heading {
-  color: #333;
-  background-color: #c4ffb7;
-  border-color: #c4ffb7;
+  color: #ffffff;;
+  background: -webkit-radial-gradient(right, white, green);
+  border-color: 333;
+
 }
 .panel-heading {
-  color: #333;
+  color: #ffffff;
   border-color: #c4ffb7;
   width: 100%;
 }
 
 .panel-body {
-	padding: 10px;
+	width: 100%;
+	padding: 0px;
 }
 
 .instructionTextArea {
@@ -409,14 +413,15 @@ input[type="submit" i] {
 .pantryWrapper {
 	box-sizing: border-box;
 	height: 100%;
-	width: 70%;
+	width: 80%;
 	min-height: 100%;
 	min-widht: 70%;
 	float: left;
 }
 .pantryItems {
+	box-sizing: border-box;
 	height: 95%;
-	width: 100%;
+	width: 95%;
 	overflow-x: auto;
 	overflow-y: auto;
 	float: left;
@@ -435,13 +440,24 @@ input[type="submit" i] {
 	border-size: 2px;
 	border-radius: 5px;
 	width: 75%;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.pantrySearch input:hover {
+	background-color: #c4ffb7;
+}
+.pantrySearch input:focus {
+	background-color: #c4ffb7;
+    outline-style:none;
+    box-shadow:none;
 }
 .pantrySelected {
 	box-sizing: border-box;
 	height: 100%;
-	width: 30%;
-	overflow-y: auto;
+	width: 20%;
+	overflow-y: hidden;
 	float: left;
+	margin-top: 5%;
 }
 .selectedItem {
 	box-sizing: border-box;
@@ -451,13 +467,26 @@ input[type="submit" i] {
 	min-width: 100%;
 
 }
+.pantryCategory {
+	width: 100%;
+}
+.outerRowWrapper {
+	overflow-x: auto;
+	overflow-y: hidden;
+	white-space: no-wrap;
+}
+.innerRowWrapper {
+	display: table;
+	
+}
 .itemRow {
+	display: table-row;
 	height: 149px;
 	padding: 0px;
-	width: 100%;
 	clear: both;
 }
 .itemWrapper {
+	display: table-cell;
 	height: 140px;
 	width: 140px;
 	min-height: 140px;
@@ -466,15 +495,20 @@ input[type="submit" i] {
 	padding-left: 6px;
 	padding-right: 6px;
 	padding-top: 12px;
-	border-color: #c4ffb7;
-	border-style: inset;
-	border-size: 2px;
-	border-radius: 10px;
+/* 	border-color: #c4ffb7; */
+/* 	border-style: inset; */
+/* 	border-size: 2px; */
+/* 	border-radius: 10px; */
 	margin: 6px;
 }
+.itemWrapper:hover {
+	background-color: #c4ffb7;
+}
+
 .itemMain {
 	height: 75%;
 	width: 100%;
+
 	min-height: 75%;
 	font-size: .8em;
 	text-align: center;
@@ -482,22 +516,30 @@ input[type="submit" i] {
     border-bottom-style: inset;
     border-bottom-width: 1px;
 }
+
 .itemInfo {
 	height: 25%;
 	width: 100%;
 	font-size: .8em;
 	text-align: center;
 }
-.itemImage img{
-	height: 93%;
-	width: 93%;
+
+.itemImage {
+	position: absolute
+	left:0;
+	right:0;
+	top: 0;
+	bottom: 0;
+}
+.itemImage img {
+	box-sizing: border-box;
+	width: 92%;
+	padding: 4%;
 }
 .selectedImage {
 	box-sizing: border-box;
 	width: 80%;
-	height: auto;
-	min-width: 80%;
-	min-height: 29%;
+	min-width: 40%;
 	margin: 10%;
 	border-color: #c4ffb7;
 	border-style: inset;
@@ -515,11 +557,90 @@ input[type="submit" i] {
 
 .selectedInfo {
 	box-sizing: border-box;
-	width: 80%;
+	width: 90%;
 	min-width: 80%;
-	margin: 10%;
-	font-size: 1.5em;
+	margin: 5%;
 	font-family: sans-serif;
+}
+.selectedInfo th {
+	font-size: 2em;
 	text-align: center;
 }
+.selectedInfo td {
+	font-size: 1em;
+}
+.ingInfoTable {
+	box-sizing: border-box;
+	width: 100%;
+	min-width: 100%;
+}
+.ingInfoTable td {
+	box-sizing: border-box;
+	padding: 6px;
+	height: 1.2em;
+	width: 33%;
+	max-width: 33%;
+	min-width: 33%
+}
+.hiddenInput select{
+	width: 32%;
+	min-width: 32%;
+	max-width: 32%;
+}
+.hiddenInputUnits {
+	width: 60%;
+	min-width: 60%;
+	max-width: 60%;
+}
+.hiddenInput input {
+	width: 32%;
+	min-width: 32%;
+	max-width: 32%;
+}
+
+.hiddenInputText{
+	font-style: bold;
+	font-size: 130%;
+	text-shadow: 3px 2px #e5e5e5;
+}
+.centered {
+	text-align: center;
+}
+.categoryList {
+	list-style-type: none;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+/* .pantryIngredients { */
+/* 	width: 95%; */
+/* 	min-width: 95%; */
+/* 	border-radius: 15px; */
+/* 	margin-right: 20%; */
+/* } */
+/* .pantryIngredients tr thead { */
+/* 	background-color: yellow; */
+/* } */
+
+/* .pantryIngredients tr td { */
+/* 	border-color: #c4ffb7; */
+/* 	border-style: solid; */
+/* 	border-size: 1px; */
+/* 	width: 25%; */
+/* 	min-width: 25%; */
+/* } */
+/* .pantryIngredients tr:hover { */
+/* 	background-color: #c4ffb7; */
+/* } */
+
+/* .pantryIngredients .ingLabel { */
+/* 	text-align: left; */
+/* } */
+/* .pantryIngredients .qty { */
+/* 	text-align: left; */
+/* } */
+/* .pantryIngredients .updated { */
+/* 	text-align: left; */
+/* } */
 

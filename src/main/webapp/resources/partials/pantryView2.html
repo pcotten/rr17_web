@@ -4,14 +4,25 @@
 			<div class="pantrySearch">
 				Search: <input type="text" ng-model="searchText">
 			</div>
-			<div class="pantryItems">	
-				<div class="itemRow">
-					<div class="itemWrapper" ng-repeat="ingredient in searchResults | orderBy:'name'" ng-click="selectItem(searchResults.indexOf(ingredient))">
-						<div class="itemMain">
-							<div class="itemImage"><img src="{{ingredient.image.imagePath}}"></div>	
-						</div>
-						<div class="itemInfo">
-							<p>{{ingredient.name}}<br/>Qty: {{ingredient.quantityDisplay}} {{ingredient.quantityUnit}}</p>
+			<div uib-accordion close-others="false" class="pantryItems">
+				<div ng-repeat="category in categoryIngredients" >
+					<div uib-accordion-group class="panel-default pantryCategory" ng-click="setRowSize(categoryIngredients.indexOf(category))">
+		                <uib-accordion-heading>
+			                {{category.name}}
+		                </uib-accordion-heading>
+		                <div class="outerRowWrapper">
+							<div class="innerRowWrapper" id="{{'ingRow_' + category.name}}">
+								<div class="itemRow">
+									<div class="itemWrapper" ng-repeat="ingredient in category.ingredients | orderBy:'name'" ng-click="selectItem(ingredient)">
+										<div class="itemMain">
+											<div class="itemImage"><img src="{{ingredient.image.imagePath}}"></div>	
+										</div>
+										<div class="itemInfo">
+											<p>{{ingredient.name}}<br/>Qty: {{ingredient.quantityDisplay}} {{ingredient.quantityUnit}}</p>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
